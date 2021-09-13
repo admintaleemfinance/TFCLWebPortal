@@ -1,0 +1,116 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_NewLayout.cshtml";
+}
+
+<!-- ### $App Screen Content ### -->
+<main class='main-content bgc-grey-100' style="padding-top:50px">
+    <div class="row page-title">
+        <div class="col-md-6 text-left">
+            <h4 class="page-title-text">
+                Search CNIC number
+            </h4>
+            <h6 class="page-title-breadcrumbs">
+                <a href="~/Dashboard/Dashboard">Home</a> > Accountant Operations > AML CFT Check
+            </h6>
+        </div>
+        <div class="col-md-6 text-right">
+            @*<button class="btn btn-sm btn-outline-success" onclick="$('#filterForm').toggle();"><i class="fa fa-filter"></i> Filter Records</button>*@
+            <a href="~/Dashboard/Dashboard" class="btn btn-sm btn-outline-success bg1 eft-1" title="Back"><i class="fa fa-angle-double-left"></i> Back To Home </a>
+        </div>
+    </div>
+    <div class="card p-10 mB-20">
+        <div class="row" style="margin-top:100px;margin-bottom:200px">
+            <div class="col-md-3 text-right">
+                <h4>Search CNIC :</h4>
+            </div>
+            <div class="col-md-6">
+                <input type="number" id="cnicText" placeholder="CNIC without - (3754815465445)" maxlength="13" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <a class="btn btn-outline-success" onclick="searchCNIC()" ><i class="fa fa-search"></i> Search</a>
+            </div>
+            <div class="col-md-12 text-center" style="margin-top:50px">
+                <p id="LoadedCNICs"></p>
+            </div>
+            <div class="col-md-12 text-center" id="result" style="margin-top:50px">
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+</main>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="~/js/printThis-master/printThis.js"></script>
+
+<script>
+
+    var getJson = @Html.Raw(Json.Serialize(ViewBag.JsonData));
+    var allResults = JSON.stringify(getJson.value);
+    console.table(allResults);
+    $('#LoadedCNICs').text(getJson.value.length + ' CNICs Loaded.');
+
+
+    function searchCNIC() {
+        var cnic = $('#cnicText').val();
+        if (cnic != "" && cnic.length == 13) {
+            if (allResults.indexOf(cnic) > -1) {
+                printDiv(1, getJson.value.find(x=>x.cnic==cnic));
+            }
+            else {
+                printDiv(0, cnic);
+            }
+        }
+        else {
+            abp.notify.error("Please Enter Valid CNIC number", "Error");
+        }
+
+    }
+
+    function printDiv(present, item) {
+        var d = new Date().toLocaleString();
+
+        if (present == 1) {
+            abp.notify.error("CNIC found in AML/CFT", "");
+
+            $.get("/template/AmlCftReport.html", function (html_string) {
+                html_string = html_string.replace("{display}", "");
+                html_string = html_string.replace("{icon}", "check");
+                html_string = html_string.replaceAll("{color}", "danger");
+                html_string = html_string.replace("{isfound}", "found");
+                html_string = html_string.replaceAll("{CNIC}", item.cnic);
+                html_string = html_string.replace("{name}", item.name);
+                html_string = html_string.replace("{father}", item.fatherName);
+                html_string = html_string.replace("{province}", item.province);
+                html_string = html_string.replace("{district}", item.district);
+                html_string = html_string.replace("{datetime}", d);
+                printResult(html_string);
+            }, 'html'); 
+
+        }
+        else if (present == 0) {
+            abp.notify.success("CNIC Not found in AML/CFT", "");
+            $.get("/template/AmlCftReport.html", function (html_string) {
+                html_string = html_string.replace("{display}", "d-none");
+                html_string = html_string.replace("{icon}", "times");
+                html_string = html_string.replaceAll("{color}", "success");
+                html_string = html_string.replace("{isfound}", "not found");
+                html_string = html_string.replaceAll("{CNIC}", item);
+                html_string = html_string.replace("{datetime}", d);
+
+                printResult(html_string);
+            }, 'html'); 
+        }
+    }
+
+    function printResult(html) {
+        myWindow = window.open('', '', 'width=800,height=700');
+        myWindow.document.write(html);
+        myWindow.document.close(); //missing code
+        myWindow.focus();
+
+    }
+
+
+</script>
