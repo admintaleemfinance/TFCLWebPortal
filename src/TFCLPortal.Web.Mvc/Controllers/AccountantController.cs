@@ -450,6 +450,10 @@ namespace TFCLPortal.Web.Controllers
                             {
                                 installments = schedule.installmentList.Where(x => x.InstNumber != "G*" && x.isPaid != true && DateTime.Parse(x.InstallmentDueDate).Day == day && DateTime.Parse(x.InstallmentDueDate).Month == month && DateTime.Parse(x.InstallmentDueDate).Year == year).ToList();
                             }
+                            else if (filterType == 4)
+                            {
+                                //installments = schedule.installmentList.Where(x => x.InstNumber != "G*" && x.isPaid != true && DateTime.Parse(x.InstallmentDueDate).Day == day && DateTime.Parse(x.InstallmentDueDate).Month == month && DateTime.Parse(x.InstallmentDueDate).Year == year).ToList();
+                            }
                         }
                         else
                         {
@@ -464,6 +468,10 @@ namespace TFCLPortal.Web.Controllers
                             else if (filterType == 3)
                             {
                                 installments = schedule.installmentList.Where(x => x.InstNumber != "G*" && x.isPaid != true && DateTime.Parse(x.InstallmentDueDate).Month == month && DateTime.Parse(x.InstallmentDueDate).Year == year).ToList();
+                            }
+                            else if (filterType == 4)
+                            {
+                                //installments = schedule.installmentList.Where(x => x.InstNumber != "G*" && x.isPaid != true && DateTime.Parse(x.InstallmentDueDate).Month == month && DateTime.Parse(x.InstallmentDueDate).Year == year).ToList();
                             }
                         }
 
@@ -489,6 +497,7 @@ namespace TFCLPortal.Web.Controllers
 
                                     }
                                     installment.PaidAmount = sumOfAmountsPerInstallment.ToString();
+                                    installment.ExcessShort = excessShort.ToString();
 
 
                                     sumOfAmountsPerInstallment = 0;
