@@ -391,6 +391,12 @@ namespace TFCLPortal.EntityFrameworkCore.Repositories
                         dashboard.TotalfileCount = Convert.ToInt32(dataReader["TotalfileCount"]);
                         dashboard.UnderMCRCreviewCount = Convert.ToInt32(dataReader["McrcReviewfileCount"]);
                         dashboard.ManagementApprovedCount = Convert.ToInt32(dataReader["ManagementApprovedCount"]);
+                        
+                        dashboard.SettledfileCount = Convert.ToInt32(dataReader["SettledfileCount"]);
+                        dashboard.SettledfileAmount = Convert.ToInt32(dataReader["SettledfileAmount"]);
+                        dashboard.EarlySettledfileCount = Convert.ToInt32(dataReader["EarlySettledfileCount"]);
+                        dashboard.EarlySettledfileAmount = Convert.ToInt32(dataReader["EarlySettledfileAmount"]);
+
 
 
                     }

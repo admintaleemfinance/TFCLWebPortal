@@ -23,5 +23,7 @@ namespace TFCLPortal.Applications
         public string LastScreen { get; set; }
         public int branchId { get; set; }
         public DateTime AppDate { get; set; }
+        public bool isDeceased { get; set; }//New
+
     }
 }

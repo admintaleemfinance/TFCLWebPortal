@@ -2082,6 +2082,15 @@ namespace TFCLPortal.Web.Controllers
             ViewBag.ClientId = app.ClientID;
             ViewBag.ClientName = app.ClientName;
 
+            if (!app.isDeceased)
+            {
+                ViewBag.Deceased = "No";
+            }
+            else
+            {
+                ViewBag.Deceased = "Yes";
+            }
+
             var schedule = _scheduleAppService.GetScheduleByApplicationId(ApplicationId).Result;
             if (schedule != null)
             {

@@ -159,6 +159,7 @@ using TFCLPortal.ManagmentCommitteeDecisions;
 using TFCLPortal.SalaryDetails;
 using TFCLPortal.TaggedPortfolios;
 using TFCLPortal.Targets;
+using TFCLPortal.DeceasedAuthorizations;
 
 namespace TFCLPortal.EntityFrameworkCore
 {
@@ -187,6 +188,7 @@ namespace TFCLPortal.EntityFrameworkCore
         public DbSet<BranchManagerAction> BranchManagerActionDbSet { get; set; }
         public DbSet<TJSLoanEligibility> TJSLoanEligibilityDbSet { get; set; }
         public DbSet<DeceasedSettlement> DeceasedSettlementDbSet { get; set; }
+        public DbSet<DeceasedAuthorization> DeceasedAuthorizationDbSet { get; set; }
         public DbSet<ManagmentCommitteeDecision> ManagmentCommitteeDecisionDbSet { get; set; }
         public DbSet<LoanNature> LoanNatureDbSet { get; set; }
         public DbSet<BccDecision> BccDecisionDbSet { get; set; }

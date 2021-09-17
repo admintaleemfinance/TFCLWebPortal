@@ -38,7 +38,7 @@
                         </div>
 
                     </div>
-                 
+
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Deceased Settlement O/S Principal Amount</label>
@@ -54,10 +54,10 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Total Amount Payable (Rs)</label>
-                            <input asp-for="TotalAmountPayable" readonly="readonly" value="@(string.Format("{0:#,##0}", ViewBag.TotalPayable))"  class="form-control" />
+                            <input asp-for="TotalAmountPayable" readonly="readonly" value="@(string.Format("{0:#,##0}", ViewBag.TotalPayable))" class="form-control" />
                         </div>
                     </div>
-                 
+
 
                     <div class="col-md-6">
                         <div class="form-group">
@@ -74,11 +74,33 @@
                         <button type="submit" class="btn btn-outline-success" id="uploadBtn"><i class="fa fa-upload"></i> Generate Entry</button>
                     </div>
                 </div>
-</form>
+            </form>
         </div>
     </div>
+
+    <!--Approved Modal -->
+    <div class="modal fade" id="DeceasedModal" tabindex="-1" role="dialog" style="z-index: 1100;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Mark Deceased</h4>
+                </div>
+                <div class="modal-body">
+                    The Client needs to be marked deceased first. Do you want to mark the client deceased?
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-outline-success" href="/Accountant/MarkDeceased">Yes</a>
+                    <a class="btn btn-outline-danger" href="/Accountant/ActiveSchedules">No</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+
 </main>
 <script src="https://code.jquery.com/jquery-3.5.1.js" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.js"></script>
 
 <script>
 
@@ -107,6 +129,19 @@
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
 
+
     });
+
+
+          var isDeceased = '@ViewBag.Deceased';
+
+    if (isDeceased == "No") {
+        $('#DeceasedModal').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        $('#DeceasedModal').modal('show');
+
+    }
 
 </script>

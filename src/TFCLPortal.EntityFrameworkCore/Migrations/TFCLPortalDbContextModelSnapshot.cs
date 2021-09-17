@@ -1127,6 +1127,8 @@ namespace TFCLPortal.Migrations
 
                     b.Property<string>("ScreenStatus");
 
+                    b.Property<bool>("isDeceased");
+
                     b.Property<bool>("isFranchise");
 
                     b.HasKey("Id");
@@ -3557,6 +3559,47 @@ namespace TFCLPortal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ContactDetail");
+                });
+
+            modelBuilder.Entity("TFCLPortal.DeceasedAuthorizations.DeceasedAuthorization", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ApplicationId");
+
+                    b.Property<string>("CNIC");
+
+                    b.Property<string>("ClientName");
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<string>("DateOfDeath");
+
+                    b.Property<long?>("DeleterUserId");
+
+                    b.Property<DateTime?>("DeletionTime");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("ProofUrl");
+
+                    b.Property<string>("ReasonOfDeath");
+
+                    b.Property<string>("RejectionReason");
+
+                    b.Property<bool?>("isAuthorized");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DeceasedAuthorization");
                 });
 
             modelBuilder.Entity("TFCLPortal.DeceasedSettlements.DeceasedSettlement", b =>

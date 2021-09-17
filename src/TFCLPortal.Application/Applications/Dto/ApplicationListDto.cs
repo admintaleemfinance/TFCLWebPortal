@@ -66,6 +66,7 @@ namespace TFCLPortal.Applications.Dto
         public string Longitude { get; set; } // New
         public string Latitude { get; set; } // New
         public int SchoolCategory { get; set; } // New Dropdown
+        public bool isDeceased { get; set; }//New
 
     }
 }

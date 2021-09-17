@@ -32,6 +32,12 @@ namespace TFCLPortal.Applications
         public int TodayMobilizations { get; set; }
         public int TodayMeetingWithClients { get; set; }
 
+        public int SettledfileCount { get; set; }
+        public int SettledfileAmount { get; set; }
+        public int EarlySettledfileCount { get; set; }
+        public int EarlySettledfileAmount { get; set; }
+
+
     }
 
 
