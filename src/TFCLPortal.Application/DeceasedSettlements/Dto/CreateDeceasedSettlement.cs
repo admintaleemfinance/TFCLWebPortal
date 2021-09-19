@@ -19,5 +19,6 @@ namespace TFCLPortal.DeceasedSettlements.Dto
 
         public bool? isManagerAuthorized { get; set; }
         public string ManagerRejectionReason { get; set; }
+
     }
 }

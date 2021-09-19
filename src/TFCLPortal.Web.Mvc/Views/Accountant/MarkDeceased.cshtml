@@ -1,4 +1,4 @@
-﻿@model TFCLPortal.DeceasedSettlements.Dto.CreateDeceasedSettlement
+﻿@model TFCLPortal.DeceasedAuthorizations.Dto.CreateDeceasedAuthorization
 
 @{
     Layout = "~/Views/Shared/_NewLayout.cshtml";
@@ -8,10 +8,10 @@
     <div class="row page-title">
         <div class="col-md-6 text-left">
             <h4 class="page-title-text">
-                Deceased Applicant Settlement Loan
+                Mark Deceased
             </h4>
             <h6 class="page-title-breadcrumbs">
-                <a href="~/Dashboard/Dashboard">Home</a> > Accountant Operations > Loan Recovery > Deceased Applicant Settlement Loan
+                <a href="~/Dashboard/Dashboard">Home</a> > Accountant Operations > Mark Deceased
             </h6>
         </div>
         <div class="col-md-6 text-right">
@@ -25,48 +25,37 @@
                 <div class="row">
                     <input asp-for="ApplicationId" type="hidden" id="ApplicationId" value="@ViewBag.Applicationid" />
 
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Client ID</label>
                             <input type="text" value="@ViewBag.ClientId" readonly="readonly" class="form-control" />
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Applicant Name</label>
-                            <input type="text" value="@ViewBag.ClientName" readonly="readonly" class="form-control text-uppercase" />
+                            <input type="text" value="@ViewBag.ClientName" asp-for="ClientName" readonly="readonly" class="form-control text-uppercase" />
                         </div>
-
                     </div>
-
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label>Deceased Settlement O/S Principal Amount</label>
-                            <input asp-for="OsPrincipalAmount" value="@ViewBag.OsPrincipalAmount" readonly="readonly" class="form-control" />
+                            <label>CNIC</label>
+                            <input type="text" value="@ViewBag.CNIC" asp-for="CNIC" readonly="readonly" class="form-control text-uppercase" />
                         </div>
                     </div>
-                    <div class="col-md-6">
+
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label>Deceased Settlement O/S Markup Amount</label>
-                            <input asp-for="OsMarkupAmount" value="@ViewBag.OsMarkupAmount" readonly="readonly" class="form-control" />
+                            <label>Date Of Death</label>
+                            <input type="date"  asp-for="DateOfDeath" readonly="readonly" class="form-control text-uppercase" />
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label>Total Amount Payable (Rs)</label>
-                            <input asp-for="TotalAmountPayable" readonly="readonly" value="@(string.Format("{0:#,##0}", ViewBag.TotalPayable))" class="form-control" />
+                            <label>ReasonOfDeath</label>
+                            <input asp-for="ReasonOfDeath" readonly="readonly" class="form-control text-uppercase" />
                         </div>
                     </div>
-
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Amount Deposited (Rs)</label>
-                            <input asp-for="AmountDeposited" class="form-control" required="required" />
-                        </div>
-                    </div>
-
-
 
 
 
@@ -89,7 +78,7 @@
                     The Client needs to be marked deceased first. Do you want to mark the client deceased?
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-outline-success" href="/Accountant/MarkDeceased" id="linkToMarkDeceased">Yes</a>
+                    <a class="btn btn-outline-success" href="/Accountant/MarkDeceased">Yes</a>
                     <a class="btn btn-outline-danger" href="/Accountant/ActiveSchedules">No</a>
                 </div>
             </div>
@@ -134,7 +123,6 @@
 
 
           var isDeceased = '@ViewBag.Deceased';
-          var AppId = '@ViewBag.Applicationid';
 
     if (isDeceased == "No") {
         $('#DeceasedModal').modal({
@@ -142,8 +130,6 @@
             keyboard: false
         });
         $('#DeceasedModal').modal('show');
-
-        $('#linkToMarkDeceased').attr("href", "/Accountant/MarkDeceased?ApplicationId=" + AppId);
 
     }
 

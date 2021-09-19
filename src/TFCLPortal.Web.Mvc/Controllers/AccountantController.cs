@@ -2121,6 +2121,19 @@ namespace TFCLPortal.Web.Controllers
             return View();
         }
 
+        public IActionResult MarkDeceased(int ApplicationId)
+        {
+            ViewBag.Applicationid = ApplicationId;
+
+            var app = _applicationAppService.GetApplicationById(ApplicationId);
+            ViewBag.ClientId = app.ClientID;
+            ViewBag.ClientName = app.ClientName;
+            ViewBag.CNIC = app.CNICNo;
+
+
+            return View();
+        }
+
         [HttpPost]
         public IActionResult CreateDeceasedSettlement(CreateDeceasedSettlement input)
         {
