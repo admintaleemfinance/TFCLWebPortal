@@ -292,41 +292,7 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item dropdown collapsed" data-toggle="collapse" data-target="#TA">
-                        <a>
-                            <span class="icon-holder">
-                                <i class="fa fa-tasks"></i>
-                            </span>
-                            <span class="title">Target Allocation<i class="fa fa-caret-down"></i></span>
 
-                        </a>
-                        <ul id="TA" class="collapse sidebar-menua">
-
-                            <li>
-                                <a href="~/Targets/Create">
-                                    <span class="icon-holder">
-                                        <i class="fa fa-edit"></i>
-                                    </span>
-                                    <h6>
-                                        Alocate Targets
-                                    </h6>
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="~/Targets/Index">
-                                    <span class="icon-holder">
-                                        <i class="fa fa-list"></i>
-                                    </span>
-                                    <h6>
-                                        Alocated Targets
-                                    </h6>
-                                </a>
-                            </li>
-
-
-                        </ul>
-                    </li>
 
                     <li class="nav-item dropdown collapsed" data-toggle="collapse" data-target="#MB">
                         <a>
@@ -492,7 +458,45 @@
                         </li>
                     }
 
+                    @if (IsGranted(PermissionNames.Pages_MCRC) || User.Identity.Name == "admin")
+                    {
+                        <li class="nav-item dropdown collapsed" data-toggle="collapse" data-target="#TA">
+                            <a>
+                                <span class="icon-holder">
+                                    <i class="fa fa-tasks"></i>
+                                </span>
+                                <span class="title">Target Allocation<i class="fa fa-caret-down"></i></span>
 
+                            </a>
+                            <ul id="TA" class="collapse sidebar-menua">
+
+                                <li>
+                                    <a href="~/Targets/Create">
+                                        <span class="icon-holder">
+                                            <i class="fa fa-edit"></i>
+                                        </span>
+                                        <h6>
+                                            Alocate Targets
+                                        </h6>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="~/Targets/Index">
+                                        <span class="icon-holder">
+                                            <i class="fa fa-list"></i>
+                                        </span>
+                                        <h6>
+                                            Alocated Targets
+                                        </h6>
+                                    </a>
+                                </li>
+
+
+                            </ul>
+                        </li>
+
+                    }
 
                     @if (IsGranted(PermissionNames.Pages_BM) || User.Identity.Name == "asif.shamsi" || User.Identity.Name == "admin")
                     {
