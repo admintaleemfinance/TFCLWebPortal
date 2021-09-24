@@ -208,6 +208,15 @@
                             </li>
 
                             <li>
+                                <a class="sidebar-link" href="~/About/CalculationEntries">
+                                    <span class="icon-holder">
+                                        <i class="ti-pencil-alt"></i>
+                                    </span>
+                                    <h6>Calculation Queries</h6>
+                                </a>
+                            </li>
+
+                            <li>
                                 <a class='sidebar-link' href="~/Mobilization/Mobilizations">
                                     <span class="icon-holder">
                                         <i class="fa fa-users"></i>
@@ -294,7 +303,7 @@
 
 
 
-                    <li class="nav-item dropdown collapsed" data-toggle="collapse" data-target="#MB">
+                    @*<li class="nav-item dropdown collapsed" data-toggle="collapse" data-target="#MB">
                         <a>
                             <span class="icon-holder">
                                 <i class="fa fa-users"></i>
@@ -323,7 +332,7 @@
                             </li>
 
                         </ul>
-                    </li>
+                    </li>*@
 
                     @if (IsGranted(PermissionNames.Pages_BM) || IsGranted(PermissionNames.Pages_VO))
                     {
