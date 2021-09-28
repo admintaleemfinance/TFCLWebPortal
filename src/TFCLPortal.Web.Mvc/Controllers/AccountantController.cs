@@ -377,6 +377,8 @@ namespace TFCLPortal.Web.Controllers
             decimal totalDue = 0;
             decimal totalPaid = 0;
             decimal totalUnPaid = 0;
+            decimal DefCount = 0;
+            decimal DefAmount = 0;
 
             if (filterType == null)
             {
@@ -427,149 +429,241 @@ namespace TFCLPortal.Web.Controllers
                 getDisbursedApplications = _applicationRepository.GetAllList(x => x.ScreenStatus == ApplicationState.Disbursed).ToList();
             }
 
+            var schedules = _scheduleAppService.GetScheduleList();
+            var paidInstallmentsList = _installmentPaymentAppService.GetAllInstallmentPayments();
+
+
             if (getDisbursedApplications.Count > 0)
             {
                 foreach (var app in getDisbursedApplications)
                 {
-                    var schedule = _scheduleAppService.GetScheduleByApplicationId(app.Id).Result;
+                    var schedule = schedules.Result.Where(x => x.ApplicationId == app.Id).FirstOrDefault();
                     if (schedule != null)
                     {
                         List<ScheduleInstallmenttListDto> installments = new List<ScheduleInstallmenttListDto>();
 
-                        if (day != null)
+                        if (filterType != 3)
                         {
-                            if (filterType == 1)
+                            if (day != null)
                             {
-                                installments = schedule.installmentList.Where(x => x.InstNumber != "G*" && DateTime.Parse(x.InstallmentDueDate).Day == day && DateTime.Parse(x.InstallmentDueDate).Month == month && DateTime.Parse(x.InstallmentDueDate).Year == year).ToList();
+                                if (filterType == 1)
+                                {
+                                    installments = schedule.installmentList.Where(x => x.InstNumber != "G*" && DateTime.Parse(x.InstallmentDueDate).Day == day && DateTime.Parse(x.InstallmentDueDate).Month == month && DateTime.Parse(x.InstallmentDueDate).Year == year).ToList();
+                                }
+                                else if (filterType == 2)
+                                {
+                                    installments = schedule.installmentList.Where(x => x.InstNumber != "G*" && x.isPaid == true && ((DateTime)x.PaymentDate).Day == day && ((DateTime)x.PaymentDate).Month == month && ((DateTime)x.PaymentDate).Year == year).ToList();
+                                }
                             }
-                            else if (filterType == 2)
+                            else
                             {
-                                installments = schedule.installmentList.Where(x => x.InstNumber != "G*" && x.isPaid == true && ((DateTime)x.PaymentDate).Day == day && ((DateTime)x.PaymentDate).Month == month && ((DateTime)x.PaymentDate).Year == year).ToList();
+                                if (filterType == 1)
+                                {
+                                    installments = schedule.installmentList.Where(x => x.InstNumber != "G*" && DateTime.Parse(x.InstallmentDueDate).Month == month && DateTime.Parse(x.InstallmentDueDate).Year == year).ToList();
+                                }
+                                else if (filterType == 2)
+                                {
+                                    installments = schedule.installmentList.Where(x => x.InstNumber != "G*" && x.isPaid == true && ((DateTime)x.PaymentDate).Month == month && ((DateTime)x.PaymentDate).Year == year).ToList();
+                                }
+                              
                             }
-                            else if (filterType == 3)
+
+
+                            var paidInstallments = paidInstallmentsList.Result.Where(x => x.ApplicationId == schedule.ApplicationId && x.isAuthorized == true);
+
+                            if (paidInstallments != null)
                             {
-                                installments = schedule.installmentList.Where(x => x.InstNumber != "G*" && x.isPaid != true && DateTime.Parse(x.InstallmentDueDate).Day == day && DateTime.Parse(x.InstallmentDueDate).Month == month && DateTime.Parse(x.InstallmentDueDate).Year == year).ToList();
+                                foreach (var installment in installments)
+                                {
+                                    if (installment.InstNumber != "0")
+                                    {
+                                        var paidInstByInstNo = paidInstallments.Where(x => x.NoOfInstallment.ToString() == installment.InstNumber);
+
+                                        decimal sumOfAmountsPerInstallment = 0;
+                                        decimal excessShort = 0;
+
+                                        if (paidInstByInstNo.Count() > 0)
+                                        {
+                                            foreach (var paidInstallment in paidInstByInstNo)
+                                            {
+                                                sumOfAmountsPerInstallment += paidInstallment.Amount;
+                                                excessShort = paidInstallment.ExcessShortPayment;
+                                                installment.LastPaymentDate = paidInstallment.DepositDate;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var getLastPaidInstallment = paidInstallments.Where(x => x.ApplicationId == schedule.ApplicationId).LastOrDefault();
+                                            if (getLastPaidInstallment != null)
+                                            {
+                                                excessShort = getLastPaidInstallment.ExcessShortPayment;
+                                                installment.LastPaymentDate = getLastPaidInstallment.DepositDate;
+                                            }
+                                        }
+
+
+                                        installment.PaidAmount = sumOfAmountsPerInstallment.ToString();
+                                        installment.ExcessShort = excessShort.ToString();
+
+
+                                        sumOfAmountsPerInstallment = 0;
+                                    }
+                                    else
+                                    {
+
+                                        var AllDefferedInstallments = schedule.installmentList.Where(x => x.InstNumber == installment.InstNumber).ToList();
+                                        var indexOfThisInstallment = AllDefferedInstallments.IndexOf(installment);
+
+                                        var paidDeferredInstallments = paidInstallments.Where(x => x.NoOfInstallment.ToString() == "0").ToList();
+                                        try
+                                        {
+                                            IGrouping<DateTime, InstallmentPaymentListDto> lastInstallmentDate;
+                                            if (month != DateTime.Now.Month)
+                                            {
+                                                lastInstallmentDate = paidInstallments.Where(x => x.isAuthorized == true && x.InstallmentDueDate.Month == month && x.InstallmentDueDate.Year == year).GroupBy(x => x.InstallmentDueDate).OrderBy(x => x.Key).LastOrDefault();
+                                            }
+                                            else
+                                            {
+                                                lastInstallmentDate = paidInstallments.Where(x => x.isAuthorized == true).GroupBy(x => x.InstallmentDueDate).OrderBy(x => x.Key).LastOrDefault();
+                                            }
+
+                                            if (lastInstallmentDate != null)
+                                            {
+                                                var requiredPayments = paidInstallments.Where(x => x.InstallmentDueDate == lastInstallmentDate.Key).ToList();
+
+                                                decimal sumOfAmountsPerInstallment = 0;
+                                                decimal excessShort = 0;
+
+                                                int appid = schedule.ApplicationId;
+
+                                                foreach (var payment in requiredPayments)
+                                                {
+                                                    if (installment.isPaid == true)
+                                                    {
+                                                        sumOfAmountsPerInstallment += payment.Amount;
+                                                        excessShort += payment.ExcessShortPayment;
+                                                    }
+                                                    else
+                                                    {
+                                                        excessShort = payment.ExcessShortPayment;
+
+                                                    }
+                                                    installment.LastPaymentDate = payment.DepositDate;
+                                                }
+
+                                                installment.PaidAmount = sumOfAmountsPerInstallment.ToString();
+                                                installment.ExcessShort = excessShort.ToString();
+                                            }
+
+                                            //var paidDeferredInstallmentOnThisIndex = paidDeferredInstallments[indexOfThisInstallment];
+                                            //installment.PaidAmount = paidDeferredInstallmentOnThisIndex.Amount.ToString();
+                                            //installment.ExcessShort = paidDeferredInstallmentOnThisIndex.ExcessShortPayment.ToString();
+
+                                        }
+                                        catch
+                                        {
+
+                                        }
+
+                                    }
+                                }
                             }
-                            else if (filterType == 4)
-                            {
-                                //installments = schedule.installmentList.Where(x => x.InstNumber != "G*" && x.isPaid != true && DateTime.Parse(x.InstallmentDueDate).Day == day && DateTime.Parse(x.InstallmentDueDate).Month == month && DateTime.Parse(x.InstallmentDueDate).Year == year).ToList();
-                            }
+
                         }
                         else
                         {
-                            if (filterType == 1)
+                            var installment = schedule.installmentList.Where(x => x.InstNumber != "G*" && x.isPaid != true).FirstOrDefault();
+
+                            var paidInstallments = paidInstallmentsList.Result.Where(x => x.ApplicationId == schedule.ApplicationId && x.isAuthorized == true).LastOrDefault();
+                            if(paidInstallments!=null)
                             {
-                                installments = schedule.installmentList.Where(x => x.InstNumber != "G*" && DateTime.Parse(x.InstallmentDueDate).Month == month && DateTime.Parse(x.InstallmentDueDate).Year == year).ToList();
+                                installment.LastPaymentDate = paidInstallments.DepositDate;
                             }
-                            else if (filterType == 2)
+
+                            if ((DateTime.Parse(installment.InstallmentDueDate))<=DateTime.Now.AddDays(-1))
                             {
-                                installments = schedule.installmentList.Where(x => x.InstNumber != "G*" && x.isPaid == true && ((DateTime)x.PaymentDate).Month == month && ((DateTime)x.PaymentDate).Year == year).ToList();
-                            }
-                            else if (filterType == 3)
-                            {
-                                installments = schedule.installmentList.Where(x => x.InstNumber != "G*" && x.isPaid != true && DateTime.Parse(x.InstallmentDueDate).Month == month && DateTime.Parse(x.InstallmentDueDate).Year == year).ToList();
-                            }
-                            else if (filterType == 4)
-                            {
-                                //installments = schedule.installmentList.Where(x => x.InstNumber != "G*" && x.isPaid != true && DateTime.Parse(x.InstallmentDueDate).Month == month && DateTime.Parse(x.InstallmentDueDate).Year == year).ToList();
+                                installments.Add(installment);
                             }
                         }
-
-
-                        var paidInstallments = _installmentPaymentAppService.GetInstallmentPaymentByApplicationId(schedule.ApplicationId).Result;
-
-                        if (paidInstallments != null)
-                        {
-                            foreach (var installment in installments)
-                            {
-
-                                if (installment.InstNumber != "0")
-                                {
-                                    var paidInstByInstNo = paidInstallments.Where(x => x.NoOfInstallment.ToString() == installment.InstNumber);
-
-                                    decimal sumOfAmountsPerInstallment = 0;
-                                    decimal excessShort = 0;
-                                    foreach (var paidInstallment in paidInstByInstNo)
-                                    {
-                                        sumOfAmountsPerInstallment += paidInstallment.Amount;
-                                        excessShort = paidInstallment.ExcessShortPayment;
-
-
-                                    }
-                                    installment.PaidAmount = sumOfAmountsPerInstallment.ToString();
-                                    installment.ExcessShort = excessShort.ToString();
-
-
-                                    sumOfAmountsPerInstallment = 0;
-                                }
-                                else
-                                {
-                                    var AllDefferedInstallments = schedule.installmentList.Where(x => x.InstNumber == installment.InstNumber).ToList();
-                                    var indexOfThisInstallment = AllDefferedInstallments.IndexOf(installment);
-
-                                    var paidDeferredInstallments = paidInstallments.Where(x => x.NoOfInstallment.ToString() == "0").ToList();
-                                    try
-                                    {
-                                        var paidDeferredInstallmentOnThisIndex = paidDeferredInstallments[indexOfThisInstallment];
-                                        installment.PaidAmount = paidDeferredInstallmentOnThisIndex.Amount.ToString();
-                                        installment.ExcessShort = paidDeferredInstallmentOnThisIndex.ExcessShortPayment.ToString();
-
-                                    }
-                                    catch
-                                    {
-
-                                    }
-
-                                }
-                            }
-                        }
-
-
 
                         if (installments.Count > 0)
-                        {
-                            foreach (var inst in installments)
                             {
-                                inst.ClientId = app.ClientID;
-                                inst.ClientName = app.ClientName;
-                                inst.BusinessName = app.SchoolName;
-                                inst.Applicationid = app.Id;
-                                inst.BranchName = app.BranchCode;
-                                inst.LoanAmount = schedule.LoanAmount;
-                                var sde = users.Where(x => x.Id == app.CreatorUserId).FirstOrDefault();
-                                if (sde != null)
+                                foreach (var inst in installments)
                                 {
-                                    inst.SdeName = sde.FullName;
-                                }
-                                scheduleInstallments.Add(inst);
+                                    inst.ClientId = app.ClientID;
+                                    inst.ClientName = app.ClientName;
+                                    inst.BusinessName = app.SchoolName;
+                                    inst.Applicationid = app.Id;
+                                    inst.BranchName = app.BranchCode;
+                                    inst.LoanAmount = schedule.LoanAmount;
+                                    var sde = users.Where(x => x.Id == app.CreatorUserId).FirstOrDefault();
+                                    if (sde != null)
+                                    {
+                                        inst.SdeName = sde.FullName;
+                                    }
+                                    scheduleInstallments.Add(inst);
 
-                                totalDue += decimal.Parse(inst.installmentAmount.Replace(",", ""));
+                                    totalDue += decimal.Parse(inst.installmentAmount.Replace(",", ""));
 
-                                if (inst.isPaid == true)
-                                {
-                                    totalPaid += decimal.Parse(inst.PaidAmount.Replace(",", ""));
-                                }
-                                else
-                                {
+                                    if (inst.isPaid == true)
+                                    {
+                                        totalPaid += decimal.Parse(inst.PaidAmount.Replace(",", ""));
+                                    }
+                                    else
+                                    {
+                                    inst.DPD = (int)(DateTime.Now - DateTime.Parse(inst.InstallmentDueDate)).TotalDays;
+
                                     totalUnPaid += decimal.Parse(inst.installmentAmount.Replace(",", ""));
+                                    }
+
+                                    if (inst.InstNumber == "0")
+                                    {
+                                        DefCount++;
+                                        DefAmount += decimal.Parse(inst.installmentAmount.Replace(",", ""));
+                                    }
+
+
                                 }
-
-
                             }
                         }
-                    }
+                  
+
                 }
             }
 
             ViewBag.Due = totalDue;
             ViewBag.Paid = totalPaid;
             ViewBag.UnPaid = totalUnPaid;
+            ViewBag.DefCount = DefCount;
+            ViewBag.DefAmount = DefAmount;
 
             var branches = _branchDetailAppService.GetBranchListDetail();
 
             ViewBag.McrcUserList = new SelectList(branches, "Id", "BranchCode");
 
             return View(scheduleInstallments);
+        }
+
+        public async Task<IActionResult> CreateAccdecline(int Id, string Reason)
+        {
+            var app = _applicationAppService.GetApplicationById(Id);
+
+            if (app != null)
+            {
+                CreateFinalWorkflowDto fWobj = new CreateFinalWorkflowDto();
+                fWobj.ApplicationId = app.Id;
+                fWobj.Action = "Decline";
+                fWobj.ActionBy = (int)AbpSession.UserId;
+                fWobj.ApplicationState = ApplicationState.Decline;
+                fWobj.isActive = true;
+
+                _finalWorkflowAppService.CreateFinalWorkflow(fWobj);
+
+                _applicationAppService.ChangeApplicationState(ApplicationState.Decline, app.Id, Reason);
+            }
+
+
+            return RedirectToAction("Index");
         }
 
         public IActionResult ViewInstallmentPayment(int Id)
