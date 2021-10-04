@@ -1128,6 +1128,9 @@ namespace TFCLPortal.Web.Controllers
                     decimal sumOfAllPaymentsForOneInstallment = 0;
 
                     int count = 0;
+                    if(sameInstallmentPaymentsList.Count()>0)
+                    {
+
                     foreach (var payments in sameInstallmentPaymentsList)
                     {
                         if (count > 0)
@@ -1142,6 +1145,11 @@ namespace TFCLPortal.Web.Controllers
                         count++;
                     }
 
+                    }
+                    else
+                    {
+                        sumOfAllPaymentsForOneInstallment = lastPaidInstallment.ExcessShortPayment;
+                    }
                     ViewBag.PreviousBalance = sumOfAllPaymentsForOneInstallment;
                     previous = sumOfAllPaymentsForOneInstallment;
                 }

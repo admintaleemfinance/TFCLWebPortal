@@ -200,7 +200,7 @@
                             @(item.PaidAmount == null ||item.PaidAmount=="" || item.PaidAmount == "0" ? "--" : string.Format("{0:#,##0}", Decimal.Parse((item.PaidAmount).Replace(",", ""))))
                         </td>
                         <td style="text-align:center">
-                            @(item.ExcessShort == null ||item.ExcessShort == "" || item.ExcessShort == "0" ? "--" : string.Format("{0:##,###}", item.ExcessShort))
+                            @(item.ExcessShort == null ||item.ExcessShort == "" || item.ExcessShort == "0" ? "--" : string.Format("{0:##,###}", Decimal.Parse((item.ExcessShort).Replace(",", ""))))
                         </td>
 
 
