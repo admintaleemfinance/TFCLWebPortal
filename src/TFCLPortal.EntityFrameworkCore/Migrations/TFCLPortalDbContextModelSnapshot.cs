@@ -3595,6 +3595,8 @@ namespace TFCLPortal.Migrations
 
                     b.Property<string>("RejectionReason");
 
+                    b.Property<string>("VerifiedBy");
+
                     b.Property<bool?>("isAuthorized");
 
                     b.HasKey("Id");

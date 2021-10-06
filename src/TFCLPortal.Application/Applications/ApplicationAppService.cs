@@ -765,6 +765,22 @@ namespace TFCLPortal.Applications
                 throw new UserFriendlyException(L("GetMethodError{0}", application));
             }
         }
+        public List<ApplicationListCrsDto> GetAllApplicationsListForCRS()
+        {
+            try
+            {
+                var apps = _applicationRepository.GetAllList();
+
+                var appsList = ObjectMapper.Map<List<ApplicationListCrsDto>>(apps);
+
+                return appsList;
+
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(L("GetMethodError{0}", application));
+            }
+        }
 
         public Task<DashboardDataDto> GetTFCLDashboardCountingData(int branchId)
         {

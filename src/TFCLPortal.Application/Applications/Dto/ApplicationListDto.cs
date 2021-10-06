@@ -69,4 +69,22 @@ namespace TFCLPortal.Applications.Dto
         public bool isDeceased { get; set; }//New
 
     }
+    [AutoMapFrom(typeof(Applicationz))]
+    public class ApplicationListCrsDto 
+    {
+        public int Id { get; set; }
+        public int ApplicationId { get; set; }
+        public string ClientName { get; set; }
+        public string MobileNo { get; set; }
+        public string LandLineNo { get; set; }
+        public string CNICNo { get; set; }
+        public string Address { get; set; }
+        public string SchoolName { get; set; }
+        public int ProductType { get; set; }
+        public string ScreenStatus { get; set; }
+        public string Comments { get; set; }
+        public string ProductTypeName { get; set; }
+        public int FK_branchid { get; set; }
+        public string ClientID { get; set; }
+    }
 }
