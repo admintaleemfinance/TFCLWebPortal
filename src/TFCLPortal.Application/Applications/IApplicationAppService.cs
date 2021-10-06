@@ -16,6 +16,7 @@ namespace TFCLPortal.Applications
         Task<string> UpdateApplication(UpdateApplicationDto input);
         ApplicationListDto GetApplicationByApplicationId(int ApplicationId);
         List<ApplicationDto> GetApplicationList(string applicationState, int? branchId, bool showAll = false,bool IsAdmin=false);
+        List<ApplicationListDto> GetAllApplicationsList();
         Task<DashboardDataDto> GetTFCLDashboardCountingData(int branchId);
         Task<List<HighChartWeeklyDto>> GetHighChartWeekData();
         Task<List<BranchPortfolioGraphDto>> GetBranchPortfolioGraphData();
