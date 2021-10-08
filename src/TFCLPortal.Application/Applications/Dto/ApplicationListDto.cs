@@ -73,7 +73,6 @@ namespace TFCLPortal.Applications.Dto
     public class ApplicationListCrsDto 
     {
         public int Id { get; set; }
-        public int ApplicationId { get; set; }
         public string ClientName { get; set; }
         public string MobileNo { get; set; }
         public string LandLineNo { get; set; }

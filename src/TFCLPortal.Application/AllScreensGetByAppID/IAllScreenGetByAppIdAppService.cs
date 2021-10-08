@@ -14,5 +14,6 @@ namespace TFCLPortal.AllScreensGetByAppID
         Task<AllScreenGetBySDEidDto> AllScreenGetBySdeId(int SDE_Id);
         Task<AllScreenGetBySDEidDto> AllScreenGetBySdeIdImproved(int SDE_Id);
         Task<AllScreenGetBySDEidDto> AllScreenGetBySdeIdImprovedTaggedPortfolio(int SDE_Id);
+        Task<GetDataForCRSdto> getDataForCRS(int ApplicationId);
     }
 }

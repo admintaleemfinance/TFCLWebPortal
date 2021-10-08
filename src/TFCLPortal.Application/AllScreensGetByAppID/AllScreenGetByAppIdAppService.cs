@@ -81,6 +81,7 @@ namespace TFCLPortal.AllScreensGetByAppID
         private readonly ISalaryDetailsAppService _salaryDetailsAppService;
         private readonly IEmploymentDetailAppService _employmentDetailAppService;
         private readonly IRepository<TaggedPortfolio> _taggedPortfolioRepository;
+        private readonly IRepository<Applicationz> _applicationRepository;
 
 
         public AllScreenGetByAppIdAppService(
@@ -89,6 +90,7 @@ namespace TFCLPortal.AllScreensGetByAppID
             IEmploymentDetailAppService employmentDetailAppService,
             IBusinessPlanAppService businessPlanAppService,
             IContactDetailAppService contactDetailAppService,
+            IRepository<Applicationz> applicationRepository,
             IBusinessDetailsAppService businessDetailAppService,
             IOtherDetailAppService otherDetailAppService,
             ICollateralDetailAppService collateralDetailAppService,
@@ -130,6 +132,7 @@ namespace TFCLPortal.AllScreensGetByAppID
             _createAssetLiabilityAppService = assetLiabilityDetailAppService;
             _businessIncomeAppService = businessIncomeAppService;
             _tJSLoanEligibilityAppService = tJSLoanEligibilityAppService;
+            _applicationRepository = applicationRepository;
             _businessExpenseAppService = businessExpenseAppService;
             _householdIncomeAppService = householdIncomeAppService;
             _coApplicantDetailAppService = coApplicantDetailAppService;
@@ -146,7 +149,7 @@ namespace TFCLPortal.AllScreensGetByAppID
             _loanEligibilityAppService = loanEligibilityAppService;
 
             _tdsInventoryDetailAppService = tdsInventoryDetailAppService;
-            _salesDetailAppService= salesDetailAppService;
+            _salesDetailAppService = salesDetailAppService;
             _purchaseDetailAppService = purchaseDetailAppService;
             _tDSBusinessExpenseAppService = tDSBusinessExpenseAppService;
             _tDSLoanEligibilityAppService = tDSLoanEligibilityAppService;
@@ -154,6 +157,46 @@ namespace TFCLPortal.AllScreensGetByAppID
             _dependentEducationDetailsAppService = dependentEducationDetailsAppService;
             _salaryDetailsAppService = salaryDetailsAppService;
             _employmentDetailAppService = employmentDetailAppService;
+        }
+
+        public async Task<GetDataForCRSdto> getDataForCRS(int ApplicationId)
+        {
+            try
+            {
+                GetDataForCRSdto data = new GetDataForCRSdto();
+
+                var currentApp = _applicationAppService.GetApplicationById(ApplicationId);
+
+                var apps = _applicationRepository.GetAllListAsync().Result;
+                if(apps!=null&&currentApp!=null)
+                {
+                    data.ApplicationId = currentApp.Id;
+                    data.LoanCycles = apps.FindAll(x => x.CNICNo == currentApp.CNICNo&& (x.ScreenStatus=="Disbursed" || x.ScreenStatus == "Early Settled" || x.ScreenStatus == "Settled" || x.ScreenStatus == "Deceased")).Count;
+                }
+
+                var pd = _personalDetailAppService.GetPersonalDetailByApplicationId(ApplicationId).Result;
+                if(pd!=null)
+                {
+                    data.Age = GetAge((DateTime)pd.BirthDate);
+                }
+
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(L("GetMethodError{0}", "All Screens by (Application ID =" + ApplicationId + " )"));
+            }
+        }
+
+        public static Int32 GetAge(DateTime dateOfBirth)
+        {
+            var today = DateTime.Today;
+
+            var a = (today.Year * 100 + today.Month) * 100 + today.Day;
+            var b = (dateOfBirth.Year * 100 + dateOfBirth.Month) * 100 + dateOfBirth.Day;
+
+            return (a - b) / 10000;
         }
 
         public async Task<AllScreenGetByAppIdDto> AllScreenGetByApplicationId(int ApplicationId)
@@ -224,7 +267,7 @@ namespace TFCLPortal.AllScreensGetByAppID
                 //TDS TJS BUSINESS
                 allScreenGetByAppId.listForSalaryDetail = salaryDetails;
 
-                if(employmentDetails.Count>0)
+                if (employmentDetails.Count > 0)
                 {
                     EmploymentList employmentList = new EmploymentList();
                     employmentList.ApplicationId = ApplicationId;
@@ -371,7 +414,7 @@ namespace TFCLPortal.AllScreensGetByAppID
                 {
                     foreach (var app in apps)
                     {
-                        if(app.ScreenStatus!="decline")
+                        if (app.ScreenStatus != "decline")
                         {
                             int ApplicationId = app.Id;
                             var Deviation = await _applicationWiseDeviationVariableAppService.GetApplicationWiseDeviationVariableDetailByApplicationIdAsync(ApplicationId);
@@ -439,7 +482,7 @@ namespace TFCLPortal.AllScreensGetByAppID
             {
                 AllScreenGetBySDEidDto returnList = new AllScreenGetBySDEidDto();
 
-                var apps = _taggedPortfolioRepository.GetAllList(s => s.NewUserId == SDE_Id&&s.isApproved==true);
+                var apps = _taggedPortfolioRepository.GetAllList(s => s.NewUserId == SDE_Id && s.isApproved == true);
 
                 List<AllScreenGetByAppIdDto> list = new List<AllScreenGetByAppIdDto>();
                 //var apps = _applicationAppService.GetAllApplicationsByUserId(SDE_Id);
