@@ -42,6 +42,7 @@ using TFCLPortal.TaleemJariSahulats;
 using TFCLPortal.TaleemTeacherSahulats;
 using TFCLPortal.TaleemTeacherSahulats.Dto;
 using TFCLPortal.NotificationLogs;
+using TFCLPortal.Branches;
 
 namespace TFCLPortal.Applications
 {
@@ -73,6 +74,7 @@ namespace TFCLPortal.Applications
         private string application = "Application";
         private readonly IBccStateAppService _bccStateAppService;
         private readonly INotificationLogAppService _notificationLogAppService;
+        private readonly IRepository<Branch> _branchRepository;
 
 
 
@@ -81,6 +83,7 @@ namespace TFCLPortal.Applications
             IRepository<ProductType> ProductTyperepo,
             IMobilizationAppService mobilizationAppService,
             IUserAppService userAppService,
+            IRepository<Branch> branchRepository,
             ITaleemJariSahulatAppService taleemJariSahulatAppService,
             ITaleemTeacherSahulatAppService taleemTeacherSahulatAppService,
             IWorkFlowAppService workFlowAppService,
@@ -103,6 +106,7 @@ namespace TFCLPortal.Applications
         {
             _notificationLogAppService = notificationLogAppService;
             _applicationRepository = applicationRepository;
+            _branchRepository = branchRepository;
             _mobilizationStatusRepository = mobilizationStatusRepository;
             _productTypeRepository = ProductTyperepo;
             _mobilizationAppService = mobilizationAppService;
@@ -772,6 +776,17 @@ namespace TFCLPortal.Applications
                 var apps = _applicationRepository.GetAllList();
 
                 var appsList = ObjectMapper.Map<List<ApplicationListCrsDto>>(apps);
+
+                var products = _productTypeRepository.GetAllList();
+                var branches = _branchRepository.GetAllList();
+
+
+                foreach (var app in appsList)
+                {
+                    app.ProductTypeName = products.Where(x => x.Id == app.ProductType).FirstOrDefault().Name;
+                    app.ProductTypeShortCode = products.Where(x => x.Id == app.ProductType).FirstOrDefault().ShortCode;
+                    app.BranchCode=branches.Where(x => x.Id == app.FK_branchid).FirstOrDefault().BranchCode;
+                }
 
                 return appsList;
 

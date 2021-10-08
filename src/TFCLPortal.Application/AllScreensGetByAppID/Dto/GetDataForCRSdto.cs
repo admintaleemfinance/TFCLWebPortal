@@ -44,6 +44,16 @@ namespace TFCLPortal.AllScreensGetByAppID.Dto
     public class GetDataForCRSdto
     {
         public int ApplicationId { get; set; }
+        public string ClientName { get; set; }
+        public string CNICNo { get; set; }
+        public string Address { get; set; }
+        public string SchoolName { get; set; }
+        public string ClientID { get; set; }
+        public string BranchCode { get; set; }
+        public string LoanPurpose { get; set; }
+        public string MarkupApplied { get; set; }
+        public string LoanAmountRequested { get; set; }
+        public string Tenure { get; set; }
 
         //Personal Data
         public int Age { get; set; }

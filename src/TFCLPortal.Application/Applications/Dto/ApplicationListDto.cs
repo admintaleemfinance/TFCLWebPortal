@@ -82,8 +82,10 @@ namespace TFCLPortal.Applications.Dto
         public int ProductType { get; set; }
         public string ScreenStatus { get; set; }
         public string Comments { get; set; }
+        public string ProductTypeShortCode { get; set; }
         public string ProductTypeName { get; set; }
         public int FK_branchid { get; set; }
+        public string BranchCode { get; set; }
         public string ClientID { get; set; }
     }
 }

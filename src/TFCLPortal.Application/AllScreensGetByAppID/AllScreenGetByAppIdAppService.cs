@@ -40,6 +40,7 @@ using TFCLPortal.EmploymentDetails;
 using TFCLPortal.TJSLoanEligibilities;
 using TFCLPortal.TaggedPortfolios;
 using Abp.Domain.Repositories;
+using TFCLPortal.Branches;
 
 namespace TFCLPortal.AllScreensGetByAppID
 {
@@ -82,6 +83,7 @@ namespace TFCLPortal.AllScreensGetByAppID
         private readonly IEmploymentDetailAppService _employmentDetailAppService;
         private readonly IRepository<TaggedPortfolio> _taggedPortfolioRepository;
         private readonly IRepository<Applicationz> _applicationRepository;
+        private readonly IRepository<Branch> _branchRepository;
 
 
         public AllScreenGetByAppIdAppService(
@@ -101,6 +103,7 @@ namespace TFCLPortal.AllScreensGetByAppID
             IHouseholdIncomeAppService householdIncomeAppService,
             ICoApplicantDetailAppService coApplicantDetailAppService,
             ITJSLoanEligibilityAppService tJSLoanEligibilityAppService,
+            IRepository<Branch> branchRepository,
             IGuarantorDetailAppService guarantorDetailAppService,
               IAssociatedIncomeAppService associatedIncomeAppService,
             INonAssociatedIncomeAppService nonAssociatedIncomeAppService,
@@ -147,7 +150,7 @@ namespace TFCLPortal.AllScreensGetByAppID
             _taggedPortfolioRepository = taggedPortfolioRepository;
             _applicationWiseDeviationVariableAppService = applicationWiseDeviationVariableAppService;
             _loanEligibilityAppService = loanEligibilityAppService;
-
+            _branchRepository = branchRepository;
             _tdsInventoryDetailAppService = tdsInventoryDetailAppService;
             _salesDetailAppService = salesDetailAppService;
             _purchaseDetailAppService = purchaseDetailAppService;
@@ -166,16 +169,46 @@ namespace TFCLPortal.AllScreensGetByAppID
                 GetDataForCRSdto data = new GetDataForCRSdto();
 
                 var currentApp = _applicationAppService.GetApplicationById(ApplicationId);
-
                 var apps = _applicationRepository.GetAllListAsync().Result;
-                if(apps!=null&&currentApp!=null)
+                if (apps != null && currentApp != null)
                 {
                     data.ApplicationId = currentApp.Id;
-                    data.LoanCycles = apps.FindAll(x => x.CNICNo == currentApp.CNICNo&& (x.ScreenStatus=="Disbursed" || x.ScreenStatus == "Early Settled" || x.ScreenStatus == "Settled" || x.ScreenStatus == "Deceased")).Count;
+                    data.ClientID = currentApp.ClientID;
+                    data.ClientName = currentApp.ClientName;
+                    data.SchoolName = currentApp.SchoolName;
+                    data.CNICNo = currentApp.CNICNo;
+
+                    var branch = _branchRepository.Get(currentApp.FK_branchid);
+                    data.BranchCode = branch == null ? "--" : branch.BranchCode;
+
+                    var bp = _businessPlanAppService.GetBusinessPlanByApplicationId(ApplicationId);
+                    data.LoanPurpose = bp == null ? "--" : bp.Result.PurposeOfLoanUtilization;
+                    data.LoanAmountRequested = bp == null ? "--" : bp.Result.LoanAmountRecommended;
+                    data.Tenure = bp == null ? "--" : bp.Result.LoanTenureRequestedName;
+
+                    if (currentApp.ProductType==6|| currentApp.ProductType == 7|| currentApp.ProductType == 2|| currentApp.ProductType == 1)
+                    {
+                        var LE = _loanEligibilityAppService.GetLoanEligibilityListByApplicationId(ApplicationId).Result;
+                        if(LE!=null)
+                        {
+                            data.MarkupApplied = LE.Mark_Up;
+                        }
+
+                    }
+                    else if (currentApp.ProductType==8|| currentApp.ProductType == 9|| currentApp.ProductType == 10)
+                    {
+                        var LE = _tDSLoanEligibilityAppService.GetTDSLoanEligibilityListByApplicationId(ApplicationId).Result;
+                        if (LE != null)
+                        {
+                            data.MarkupApplied = LE.Mark_Up;
+                        }
+                    }
+
+                    data.LoanCycles = apps.FindAll(x => x.CNICNo == currentApp.CNICNo && (x.ScreenStatus == "Disbursed" || x.ScreenStatus == "Early Settled" || x.ScreenStatus == "Settled" || x.ScreenStatus == "Deceased")).Count;
                 }
 
                 var pd = _personalDetailAppService.GetPersonalDetailByApplicationId(ApplicationId).Result;
-                if(pd!=null)
+                if (pd != null)
                 {
                     data.Age = GetAge((DateTime)pd.BirthDate);
                 }
