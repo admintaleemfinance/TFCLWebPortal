@@ -50,6 +50,8 @@ using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 using TFCLPortal.Web.Models.AMLCFT;
 using TFCLPortal.TDSLoanEligibilities;
+using TFCLPortal.DeceasedAuthorizations;
+using TFCLPortal.DeceasedAuthorizations.Dto;
 
 namespace TFCLPortal.Web.Controllers
 {
@@ -83,6 +85,8 @@ namespace TFCLPortal.Web.Controllers
         private readonly IRepository<WriteOff, int> _writeOffRepository;
         private readonly IDeceasedSettlementAppService _deceasedSettlementAppService;
         private readonly IRepository<DeceasedSettlement, int> _deceasedSettlementRepository;
+        private readonly IDeceasedAuthorizationAppService _deceasedAuthorizationAppService;
+        private readonly IRepository<DeceasedAuthorization, int> _deceasedAuthorizationRepository;
 
         private readonly IRepository<Holiday, int> _holidayRepository;
         private readonly IRepository<GuarantorDetail, int> _GuarantorRepository;
@@ -95,8 +99,10 @@ namespace TFCLPortal.Web.Controllers
 
         private readonly INotificationLogAppService _notificationLogAppService;
 
-        public AccountantController(ITDSLoanEligibilityAppService tDSLoanEligibilityAppService, IRepository<CoApplicantDetail, int> CoApplicantRepository, IRepository<GuarantorDetail, int> GuarantorRepository, IRepository<Applicationz, Int32> applicationRepository, IRepository<ScheduleTemp, int> scheduleTempRepository, IRepository<DeceasedSettlement, int> deceasedSettlementRepository, IDeceasedSettlementAppService deceasedSettlementAppService, IRepository<WriteOff, int> writeOffRepository, IWriteOffAppService writeOffAppService, IRepository<EarlySettlement, int> earlySettlementRepository, IEarlySettlementAppService earlySettlementAppService, IRepository<AuthorizeInstallmentPayment, int> authorizeInstallmentPaymentRepository, IAuthorizeInstallmentPaymentAppService authorizeInstallmentPaymentAppService, IRepository<InstallmentPayment, int> installmentPaymentRepository, IRepository<Holiday, int> holidayRepository, IRepository<ScheduleInstallment, int> scheduleInstallmentRepository, IInstallmentPaymentAppService installmentPaymentAppService, IRepository<NatureOfPayment, int> natureOfPaymentRepository, IRepository<CompanyBankAccount, int> companyBankAccountRepository, IBADataCheckAppService IBADataCheckAppService, INotificationLogAppService notificationLogAppService, IScheduleTempAppService scheduleTempAppService, UserManager userManager, IRepository<Schedule, int> scheduleRepository, IScheduleAppService scheduleAppService, ICoApplicantDetailAppService coApplicantDetailAppService, IGuarantorDetailAppService guarantorDetailAppService, IBranchDetailAppService branchDetailAppService, IBankAccountAppService bankAccountAppService, ILoanEligibilityAppService loanEligibilityAppService, IBusinessPlanAppService businessPlanAppService, IBccDecisionAppService bccDecisionAppService, IApplicationAppService applicationAppService, IUserAppService userAppService, IFinalWorkflowAppService finalWorkflowAppService)
+        public AccountantController(IRepository<DeceasedAuthorization, int> deceasedAuthorizationRepository,IDeceasedAuthorizationAppService deceasedAuthorizationAppService,ITDSLoanEligibilityAppService tDSLoanEligibilityAppService, IRepository<CoApplicantDetail, int> CoApplicantRepository, IRepository<GuarantorDetail, int> GuarantorRepository, IRepository<Applicationz, Int32> applicationRepository, IRepository<ScheduleTemp, int> scheduleTempRepository, IRepository<DeceasedSettlement, int> deceasedSettlementRepository, IDeceasedSettlementAppService deceasedSettlementAppService, IRepository<WriteOff, int> writeOffRepository, IWriteOffAppService writeOffAppService, IRepository<EarlySettlement, int> earlySettlementRepository, IEarlySettlementAppService earlySettlementAppService, IRepository<AuthorizeInstallmentPayment, int> authorizeInstallmentPaymentRepository, IAuthorizeInstallmentPaymentAppService authorizeInstallmentPaymentAppService, IRepository<InstallmentPayment, int> installmentPaymentRepository, IRepository<Holiday, int> holidayRepository, IRepository<ScheduleInstallment, int> scheduleInstallmentRepository, IInstallmentPaymentAppService installmentPaymentAppService, IRepository<NatureOfPayment, int> natureOfPaymentRepository, IRepository<CompanyBankAccount, int> companyBankAccountRepository, IBADataCheckAppService IBADataCheckAppService, INotificationLogAppService notificationLogAppService, IScheduleTempAppService scheduleTempAppService, UserManager userManager, IRepository<Schedule, int> scheduleRepository, IScheduleAppService scheduleAppService, ICoApplicantDetailAppService coApplicantDetailAppService, IGuarantorDetailAppService guarantorDetailAppService, IBranchDetailAppService branchDetailAppService, IBankAccountAppService bankAccountAppService, ILoanEligibilityAppService loanEligibilityAppService, IBusinessPlanAppService businessPlanAppService, IBccDecisionAppService bccDecisionAppService, IApplicationAppService applicationAppService, IUserAppService userAppService, IFinalWorkflowAppService finalWorkflowAppService)
         {
+            _deceasedAuthorizationRepository = deceasedAuthorizationRepository;
+            _deceasedAuthorizationAppService = deceasedAuthorizationAppService;
             _tDSLoanEligibilityAppService = tDSLoanEligibilityAppService;
             _GuarantorRepository = GuarantorRepository;
             _CoApplicantRepository = CoApplicantRepository;
@@ -2232,9 +2238,37 @@ namespace TFCLPortal.Web.Controllers
             ViewBag.ClientName = app.ClientName;
             ViewBag.CNIC = app.CNICNo;
 
-
             return View();
         }
+
+        public IActionResult declineMarkingDeceased(int Id, string Reason)
+        {
+            var app = _deceasedAuthorizationRepository.Get(Id);
+            app.isAuthorized = false;
+            app.RejectionReason = Reason;
+            _deceasedAuthorizationRepository.Update(app);
+
+            return RedirectToAction("DeceasedAuthorizationList","Accountant");
+        }
+
+        public IActionResult MarkApplicantDeceased(string cnic,int appid)
+        {
+            var apps = _applicationRepository.GetAllList(x => x.CNICNo == cnic).ToList();
+
+            foreach(var app in apps)
+            {
+                app.isDeceased = true;
+                _applicationRepository.Update(app);
+                CurrentUnitOfWork.SaveChanges();
+            }
+
+            var auth = _deceasedAuthorizationRepository.Get(appid);
+            auth.isAuthorized = true;
+            _deceasedAuthorizationRepository.Update(auth);
+
+            return RedirectToAction("DeceasedAuthorizationList", "Accountant");
+        }
+
 
         [HttpPost]
         public IActionResult CreateDeceasedSettlement(CreateDeceasedSettlement input)
@@ -2242,6 +2276,43 @@ namespace TFCLPortal.Web.Controllers
             _deceasedSettlementAppService.Create(input);
 
             return RedirectToAction("Success", "About", new { Message = "Deceased Applicant Settlement Entry Sent to BM for Authorization!" });
+        }
+
+        [HttpPost]
+        public IActionResult CreateDeceasedAuthorization(CreateDeceasedAuthorization input)
+        {
+            _deceasedAuthorizationAppService.Create(input);
+            _notificationLogAppService.SendNotification(66, "Client has been marked deceased.", "Go to Deceased Applicant authorization list to authorize/reject entry.");
+            return RedirectToAction("Success", "About", new { Message = "Deceased Applicant Marking Entry Sent to BM for Authorization!" });
+        }
+
+        public IActionResult DeceasedAuthorizationList(int ApplicationId)
+        {
+            var list = _deceasedAuthorizationAppService.GetAllDeceasedAuthorizations().Result.Where(x => x.isAuthorized == null).ToList();
+
+            List<DeceasedAuthorizationListDto> returnList = new List<DeceasedAuthorizationListDto>();
+
+            if (list != null)
+            {
+                foreach (var item in list)
+                {
+                    var app = _applicationAppService.GetApplicationById(item.ApplicationId);
+                    if (app != null)
+                    {
+                        if (app.FK_branchid == Branchid() || Branchid() == 0)
+                        {
+                            item.ClientID = app.ClientID;
+                            item.ClientName = app.ClientName;
+                            item.SchoolName = app.SchoolName;
+                            item.CNIC = app.CNICNo;
+
+                            returnList.Add(item);
+                        }
+                    }
+                }
+            }
+
+            return View(returnList);
         }
 
         public IActionResult DeceasedSettlementAuthorizationList(int ApplicationId)
@@ -2298,6 +2369,19 @@ namespace TFCLPortal.Web.Controllers
 
             _deceasedSettlementRepository.Update(entry);
             CurrentUnitOfWork.SaveChanges();
+
+            var app = _applicationRepository.Get(entry.ApplicationId);
+            _applicationAppService.ChangeApplicationState(ApplicationState.Deceased, entry.ApplicationId, "Deceased Applicant");
+
+            CreateFinalWorkflowDto fWobj = new CreateFinalWorkflowDto();
+            fWobj.ApplicationId = entry.ApplicationId;
+            fWobj.Action = "Application Submitted";
+            fWobj.ActionBy = (int)AbpSession.UserId;
+            fWobj.ApplicationState = ApplicationState.Submitted;
+            fWobj.isActive = true;
+
+            _finalWorkflowAppService.CreateFinalWorkflow(fWobj);
+
 
             return Json("");
         }

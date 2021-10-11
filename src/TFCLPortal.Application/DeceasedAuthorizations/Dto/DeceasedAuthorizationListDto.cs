@@ -13,6 +13,8 @@ namespace TFCLPortal.DeceasedAuthorizations.Dto
 
         public string ClientName { get; set; }
         public string CNIC { get; set; }
+        public string ClientID { get; set; }
+        public string SchoolName { get; set; }
 
         public string DateOfDeath { get; set; }
         public string ReasonOfDeath { get; set; }

@@ -304,35 +304,35 @@
 
 
                     @*<li class="nav-item dropdown collapsed" data-toggle="collapse" data-target="#MB">
-                        <a>
-                            <span class="icon-holder">
-                                <i class="fa fa-users"></i>
-                            </span>
-                            <span class="title">Mobilizations<i class="fa fa-caret-down"></i></span>
+            <a>
+                <span class="icon-holder">
+                    <i class="fa fa-users"></i>
+                </span>
+                <span class="title">Mobilizations<i class="fa fa-caret-down"></i></span>
 
-                        </a>
-                        <ul id="MB" class="collapse sidebar-menua">
+            </a>
+            <ul id="MB" class="collapse sidebar-menua">
 
-                            <li>
-                                <a class="sidebar-link" href="~/About/Entries">
-                                    <span class="icon-holder">
-                                        <i class="ti-help-alt"></i>
-                                    </span>
-                                    <h6>Website Queries</h6>
-                                </a>
-                            </li>
+                <li>
+                    <a class="sidebar-link" href="~/About/Entries">
+                        <span class="icon-holder">
+                            <i class="ti-help-alt"></i>
+                        </span>
+                        <h6>Website Queries</h6>
+                    </a>
+                </li>
 
-                            <li>
-                                <a class='sidebar-link' href="~/Mobilization/Mobilizations">
-                                    <span class="icon-holder">
-                                        <i class="fa fa-users"></i>
-                                    </span>
-                                    <h6>Mobilization</h6>
-                                </a>
-                            </li>
+                <li>
+                    <a class='sidebar-link' href="~/Mobilization/Mobilizations">
+                        <span class="icon-holder">
+                            <i class="fa fa-users"></i>
+                        </span>
+                        <h6>Mobilization</h6>
+                    </a>
+                </li>
 
-                        </ul>
-                    </li>*@
+            </ul>
+        </li>*@
 
                     @if (IsGranted(PermissionNames.Pages_BM) || IsGranted(PermissionNames.Pages_VO))
                     {
@@ -541,6 +541,29 @@
                                         </a>
                                     </li>
                                 }
+                            </ul>
+                        </li>
+                    }
+
+                    @if (User.Identity.Name == "asif.shamsi" || User.Identity.Name == "admin")
+                    {
+                        <li class="nav-item dropdown collapsed" data-toggle="collapse" data-target="#DAP">
+                            <a>
+                                <span class="icon-holder">
+                                    <i class="fa fa-address-card"></i>
+                                </span>
+                                <span class="title">Deceased Applicants <i class="fa fa-caret-down"></i></span>
+                            </a>
+                            <ul id="DAP" class="collapse sidebar-menua">
+
+                                    <li class="nav-item dropdown">
+                                        <a href="~/Accountant/DeceasedAuthorizationList" class="dropdown-toggle">
+                                            <span class="icon-holder">
+                                                <i class="fa fa-pencil"></i>
+                                            </span>
+                                            <h6>Authorizations</h6>
+                                        </a>
+                                    </li>
                             </ul>
                         </li>
                     }

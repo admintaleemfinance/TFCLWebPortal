@@ -21,7 +21,7 @@
     </div>
     <div class="card p-10 mB-20">
         <div class="bgc-white bd bdrs-3 p-20 mB-20">
-            <form asp-action="CreateDeceasedSettlement" method="post">
+            <form asp-action="CreateDeceasedAuthorization" method="post">
                 <div class="row">
                     <input asp-for="ApplicationId" type="hidden" id="ApplicationId" value="@ViewBag.Applicationid" />
 
@@ -47,13 +47,13 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Date Of Death</label>
-                            <input type="date"  asp-for="DateOfDeath" readonly="readonly" class="form-control text-uppercase" />
+                            <input type="date"  asp-for="DateOfDeath"  class="form-control text-uppercase" />
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label>ReasonOfDeath</label>
-                            <input asp-for="ReasonOfDeath" readonly="readonly" class="form-control text-uppercase" />
+                            <label>Reason Of Death</label>
+                            <input asp-for="ReasonOfDeath"  class="form-control text-uppercase" />
                         </div>
                     </div>
 
