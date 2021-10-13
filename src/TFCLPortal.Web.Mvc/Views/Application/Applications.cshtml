@@ -89,87 +89,96 @@
                     foreach (var item in Model.ToList())
                     {
                         i = i + 1;
-                        <tr>
-                            <td>@i</td>
-                            @*<td>@item.Id</td>*@
-                            @*<td>@item.ClientID</td>*@
-                            <td>@item.AppDate.ToString("dd MMM yyyy hh:mm tt")</td>
-                            <td>@(String.IsNullOrEmpty(item.ClientID) ? item.ShortCode+"-"+item.AppNumber : item.ClientID)</td>
-                            <td>@item.CNICNo</td>
-                            <td>@item.ApplicantName</td>
-                            <td>@item.BranchName</td>
-                            <td>@item.SchoolName</td>
-                            <td>@item.Product</td>
-                            @*<td>@item.MobilizationStatus</td>*@
-                            <td>@item.SDEName</td>
-                            @*<td>@item.NextMeeting.ToString("dd/MM/yyyy")</td>*@
-                            <td>@item.AppStatus</td>
-                            @*<td><a href="~/Application/ApplicationDetail/@item.Id" class="edit-btn"><i class="fa fa-edit" aria-hidden="true"></i></a></td>*@
-                            <!--<td>-->@*<a href="~/Dashboard/Application?id=@item.Id" class="edit-btn"><i class="fa fa-desktop" aria-hidden="true"></i></a>*@<!--</td>-->
-                            @*<td><a href="~/Dashboard/Application?id=@item.Id&&AppDate=@item.AppDate&&ApplicationNo=@(String.IsNullOrEmpty(item.ClientID) ? item.ShortCode+"-"+item.AppNumber : item.ClientID)&&AppStatus=@item.AppStatus&&appName=@item.ApplicantName" class="edit-btn"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>*@
-                            <td>
-                                @*<a href="~/About/Index?id=@item.Id&&u=BM"><i class="fa fa-file" aria-hidden="true"></i></a>*@
-                                <div class="dropdown">
-                                    <a class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fa fa-list"></i>
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <tr>
+                    <td>@i</td>
+                    @*<td>@item.Id</td>*@
+                    @*<td>@item.ClientID</td>*@
+                    <td>@item.AppDate.ToString("dd MMM yyyy hh:mm tt")</td>
+                    <td>@(String.IsNullOrEmpty(item.ClientID) ? item.ShortCode+"-"+item.AppNumber : item.ClientID)</td>
+                    <td>@item.CNICNo</td>
+                    <td>@item.ApplicantName</td>
+                    <td>@item.BranchName</td>
+                    <td>@item.SchoolName</td>
+                    <td>@item.Product</td>
+                    @*<td>@item.MobilizationStatus</td>*@
 
-                                        @if (item.AppStatus.Contains("ecline"))
-                                        {
-                                            <p class="text-center detailHeading dropdown-item">Decline Reason</p>
-                                            <p class="text-center" style="font-size:11px">@item.Comments</p>
-                                            <div class="dropdown-divider"></div>
-                                        }
-                                        @if (item.AppStatus.Contains("rocess"))
-                                        {
-                                            <p class="text-center detailHeading dropdown-item">Last Screen</p>
-                                            <p class="text-center" style="font-size:11px">@(item.LastScreen==null || item.LastScreen == "" ? "--" : item.LastScreen )</p>
-                                            <div class="dropdown-divider"></div>
-                                        }
+                    @if (item.Transferred == null || item.Transferred == "")
+                    {
+                        <td>@item.SDEName</td>
+
+                    }
+                    else
+                    {
+                        <td style="color:blue" title="Transferred From @item.SDEName"><i class="fa fa-at"></i> @item.Transferred </td>
+                    }
+                    @*<td>@item.NextMeeting.ToString("dd/MM/yyyy")</td>*@
+                    <td>@item.AppStatus</td>
+                    @*<td><a href="~/Application/ApplicationDetail/@item.Id" class="edit-btn"><i class="fa fa-edit" aria-hidden="true"></i></a></td>*@
+                    <!--<td>-->@*<a href="~/Dashboard/Application?id=@item.Id" class="edit-btn"><i class="fa fa-desktop" aria-hidden="true"></i></a>*@<!--</td>-->
+                    @*<td><a href="~/Dashboard/Application?id=@item.Id&&AppDate=@item.AppDate&&ApplicationNo=@(String.IsNullOrEmpty(item.ClientID) ? item.ShortCode+"-"+item.AppNumber : item.ClientID)&&AppStatus=@item.AppStatus&&appName=@item.ApplicantName" class="edit-btn"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>*@
+                    <td>
+                        @*<a href="~/About/Index?id=@item.Id&&u=BM"><i class="fa fa-file" aria-hidden="true"></i></a>*@
+                        <div class="dropdown">
+                            <a class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-list"></i>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                                @if (item.AppStatus.Contains("ecline"))
+                                {
+                                    <p class="text-center detailHeading dropdown-item">Decline Reason</p>
+                                    <p class="text-center" style="font-size:11px">@item.Comments</p>
+                                    <div class="dropdown-divider"></div>
+                                }
+                                @if (item.AppStatus.Contains("rocess"))
+                                {
+                                    <p class="text-center detailHeading dropdown-item">Last Screen</p>
+                                    <p class="text-center" style="font-size:11px">@(item.LastScreen==null || item.LastScreen == "" ? "--" : item.LastScreen )</p>
+                                    <div class="dropdown-divider"></div>
+                                }
 
 
 
 
 
-                                        @if (item.ClientID.Length > 0)
-                                        {
+                                @if (item.ClientID.Length > 0)
+                                {
 
-                                            @if (item.ClientID.Substring(0, 3) == "TSS" || item.ClientID.Substring(0, 3) == "TSA")
-                                            {
-                                                <a class="dropdown-item" href="~/Dashboard/Application?id=@item.Id"><i class="fa fa-desktop" aria-hidden="true"></i> Application Detail</a>
-                                                <a class="dropdown-item " target="_blank" href="/Dashboard/ApplicationReport?ApplicationId=@item.Id"><i class="fa fa-print"></i> Print Application</a>
-                                            }
-                                            else if (item.ClientID.Substring(0, 3) == "TDS" || item.ClientID.Substring(0, 3) == "TJS")
-                                            {
-                                                <a class="dropdown-item" href="~/Dashboard/TDSApplication?id=@item.Id"><i class="fa fa-desktop" aria-hidden="true"></i> Application Detail</a>
-                                                <a class="dropdown-item " target="_blank" href="/Dashboard/ApplicationReportTds?ApplicationId=@item.Id"><i class="fa fa-print"></i> Print Application</a>
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <a class="dropdown-item"><i class="fa fa-desktop" aria-hidden="true"></i> Application Detail</a>
-                                        }
-                                        <a class="dropdown-item" href="~/About/Index?id=@item.Id&&u=BM" target="_blank"><i class="fa fa-upload"></i> Upload Documents</a>
-                                        <a class="dropdown-item" href="~/Deviation/ApplicationWiseDetails/@item.Id" target="_blank"><i class="fa fa-clipboard"></i> View Deviation Matrix</a>
-                                        <a class="dropdown-item" href="/Dashboard/ViewApplication?id=@item.Id" target="_blank"><i class="fa fa-search-plus"></i> View Full Application</a>
-                                        <a class="dropdown-item" href="/accountant/UploadedDocuments?applicationid=@item.Id" target="_blank"><i class="fa fa-search-plus"></i> View Credit Bureau Files</a>
-                                        <a class="dropdown-item" href="/Dashboard/Timeline?ApplicationId=@item.Id" target="_blank"><i class="fa fa-search-plus"></i> Application Timeline</a>
-                                        @*<a class="dropdown-item clickingClass" data-toggle="modal" data-target="#Modal" applicationId="@item.Id"><i class="fa fa-print"></i> Print Application</a>*@
-                                        <a class="dropdown-item" href="/McrcDecisions/Index?ApplicationId=@item.Id" target="_blank"><i class="fa fa-comment"></i> MCRC Decisions</a>
-                                        <a class="dropdown-item" href="/BCCDecisions/Index?ApplicationId=@item.Id" target="_blank"><i class="fa fa-comment"></i> BCC Decisions</a>
-                                        <a class="dropdown-item" href="/Application/ApplicationDiscrepencies?id=@item.Id" target="_blank"><i class="fa fa-warning"></i> View Discrepencies</a>
-                                        @if (item.AppStatus == "Early Settled" || item.AppStatus == "Disbursed")
-                                        {
-                                            <a class="dropdown-item" href="/Accountant/ViewSchedule?ApplicationId=@item.Id" target="_blank"><i class="fa fa-calendar"></i> View Schedule</a>
+                                    @if (item.ClientID.Substring(0, 3) == "TSS" || item.ClientID.Substring(0, 3) == "TSA")
+                                    {
+                                        <a class="dropdown-item" href="~/Dashboard/Application?id=@item.Id"><i class="fa fa-desktop" aria-hidden="true"></i> Application Detail</a>
+                                        <a class="dropdown-item " target="_blank" href="/Dashboard/ApplicationReport?ApplicationId=@item.Id"><i class="fa fa-print"></i> Print Application</a>
+                                    }
+                                    else if (item.ClientID.Substring(0, 3) == "TDS" || item.ClientID.Substring(0, 3) == "TJS")
+                                    {
+                                        <a class="dropdown-item" href="~/Dashboard/TDSApplication?id=@item.Id"><i class="fa fa-desktop" aria-hidden="true"></i> Application Detail</a>
+                                        <a class="dropdown-item " target="_blank" href="/Dashboard/ApplicationReportTds?ApplicationId=@item.Id"><i class="fa fa-print"></i> Print Application</a>
+                                    }
+                                }
+                                else
+                                {
+                                    <a class="dropdown-item"><i class="fa fa-desktop" aria-hidden="true"></i> Application Detail</a>
+                                }
+                                <a class="dropdown-item" href="~/About/Index?id=@item.Id&&u=BM" target="_blank"><i class="fa fa-upload"></i> Upload Documents</a>
+                                <a class="dropdown-item" href="~/Deviation/ApplicationWiseDetails/@item.Id" target="_blank"><i class="fa fa-clipboard"></i> View Deviation Matrix</a>
+                                <a class="dropdown-item" href="/Dashboard/ViewApplication?id=@item.Id" target="_blank"><i class="fa fa-search-plus"></i> View Full Application</a>
+                                <a class="dropdown-item" href="/accountant/UploadedDocuments?applicationid=@item.Id" target="_blank"><i class="fa fa-search-plus"></i> View Credit Bureau Files</a>
+                                <a class="dropdown-item" href="/Dashboard/Timeline?ApplicationId=@item.Id" target="_blank"><i class="fa fa-search-plus"></i> Application Timeline</a>
+                                @*<a class="dropdown-item clickingClass" data-toggle="modal" data-target="#Modal" applicationId="@item.Id"><i class="fa fa-print"></i> Print Application</a>*@
+                                <a class="dropdown-item" href="/McrcDecisions/Index?ApplicationId=@item.Id" target="_blank"><i class="fa fa-comment"></i> MCRC Decisions</a>
+                                <a class="dropdown-item" href="/BCCDecisions/Index?ApplicationId=@item.Id" target="_blank"><i class="fa fa-comment"></i> BCC Decisions</a>
+                                <a class="dropdown-item" href="/Application/ApplicationDiscrepencies?id=@item.Id" target="_blank"><i class="fa fa-warning"></i> View Discrepencies</a>
+                                @if (item.AppStatus == "Early Settled" || item.AppStatus == "Disbursed")
+                                {
+                                    <a class="dropdown-item" href="/Accountant/ViewSchedule?ApplicationId=@item.Id" target="_blank"><i class="fa fa-calendar"></i> View Schedule</a>
 
-                                        }
+                                }
 
-                                    </div>
-                                </div>
+                            </div>
+                        </div>
 
-                            </td>
-                        </tr>
+                    </td>
+                </tr>
                     }
                 }
             </tbody>

@@ -431,24 +431,24 @@
                             </div>
                             <div class="content">
                                 <div class="text">Settled</div>
-                                <span class="number count-to" data-from="0" data-to="125" data-speed="1000" data-fresh-interval="20">@(string.Format("{0:#,##0.##}", (Model.SettledfileCount)))</span>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                    <a href="~/Application/Applications?screen=Settled">
-                        <div class="info-box bg-cyan hover-expand-effect">
-                            <div class="icon">
-                                <i class="material-icons">redeem</i>
-                            </div>
-                            <div class="content">
-                                <div class="text">Settled Amount</div>
+                                <span class="number count-to" data-from="0" data-to="125" data-speed="1000" data-fresh-interval="20">@(string.Format("{0:#,##0.## | }", (Model.SettledfileCount)))</span>
                                 <span class="number count-to" data-from="0" data-to="125" data-speed="1000" data-fresh-interval="20">@(string.Format("{0:#,##0.##}", (Model.SettledfileAmount)))</span>
                             </div>
                         </div>
                     </a>
                 </div>
+                @*<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            <a href="~/Application/Applications?screen=Settled">
+                <div class="info-box bg-cyan hover-expand-effect">
+                    <div class="icon">
+                        <i class="material-icons">redeem</i>
+                    </div>
+                    <div class="content">
+                        <div class="text">Settled Amount</div>
+                    </div>
+                </div>
+            </a>
+        </div>*@
                 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                     <a href="~/Application/Applications?screen=Early Settled">
                         <div class="info-box bg-green    hover-expand-effect">
@@ -457,18 +457,32 @@
                             </div>
                             <div class="content">
                                 <div class="text">Early Settled</div>
-                                <span class="number count-to" data-from="0" data-to="125" data-speed="1000" data-fresh-interval="20">@(string.Format("{0:#,##0.##}", (Model.EarlySettledfileCount)))</span>
+                                <span class="number count-to" data-from="0" data-to="125" data-speed="1000" data-fresh-interval="20">@(string.Format("{0:#,##0.## | }", (Model.EarlySettledfileCount)))</span>
+                                <span class="number count-to" data-from="0" data-to="125" data-speed="1000" data-fresh-interval="20">@(string.Format("{0:#,##0.##}", (Model.EarlySettledfileAmount)))</span>
                             </div>
                         </div>
                     </a>
                 </div>
-              
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                    <a href="~/Application/Applications?screen=Deceased">
+                        <div class="info-box bg-green hover-expand-effect">
+                            <div class="icon">
+                                <i class="material-icons">redeem</i>
+                            </div>
+                            <div class="content">
+                                <div class="text">Deceased</div>
+                                <span class="number count-to" data-from="0" data-to="125" data-speed="1000" data-fresh-interval="20">@(string.Format("{0:#,##0.## | }", (Model.DeceasedfileCount)))</span>
+                                <span class="number count-to" data-from="0" data-to="125" data-speed="1000" data-fresh-interval="20">@(string.Format("{0:#,##0.##}", (Model.DeceasedfileAmount)))</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="card bg-cyan" style="height:630px;">
+                    <div class="card bg-cyan" style="height:740px;">
                         <h5 class="font-bold m-b--35 text-center titleCard pt-4">Today's Updates</h5>
                         <div class="body text-white text-uppercase">
                             <ul class="dashboard-stat-list">
@@ -491,20 +505,6 @@
                             </ul>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <a href="~/Application/Applications?screen=Early Settled">
-                        <div class="info-box bg-cyan hover-expand-effect">
-                            <div class="icon">
-                                <i class="material-icons">redeem</i>
-                            </div>
-                            <div class="content">
-                                <div class="text">Early Settled Amount</div>
-                                <span class="number count-to" data-from="0" data-to="125" data-speed="1000" data-fresh-interval="20">@(string.Format("{0:#,##0.##}", (Model.EarlySettledfileAmount)))</span>
-                            </div>
-                        </div>
-                    </a>
                 </div>
             </div>
         </div>

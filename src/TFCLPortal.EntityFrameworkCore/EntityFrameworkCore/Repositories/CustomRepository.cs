@@ -336,6 +336,7 @@ namespace TFCLPortal.EntityFrameworkCore.Repositories
                             obj.branchId = Convert.ToInt32(dataReader["branchId"]);
                             obj.Comments = dataReader["Comments"].ToString();
                             obj.LastScreen = Convert.ToString(dataReader["LastScreen"]);
+                            obj.Transferred = Convert.ToString(dataReader["transferred"]);
                             AppList.Add(obj);
 
                         }
@@ -396,6 +397,9 @@ namespace TFCLPortal.EntityFrameworkCore.Repositories
                         dashboard.SettledfileAmount = Convert.ToInt32(dataReader["SettledfileAmount"]);
                         dashboard.EarlySettledfileCount = Convert.ToInt32(dataReader["EarlySettledfileCount"]);
                         dashboard.EarlySettledfileAmount = Convert.ToInt32(dataReader["EarlySettledfileAmount"]);
+
+                        dashboard.DeceasedfileAmount = Convert.ToInt32(dataReader["DeceasedfileAmount"]);
+                        dashboard.DeceasedfileCount = Convert.ToInt32(dataReader["DeceasedfileCount"]);
 
 
 

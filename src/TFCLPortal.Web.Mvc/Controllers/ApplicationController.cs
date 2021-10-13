@@ -155,7 +155,7 @@ namespace TFCLPortal.Web.Mvc.Controllers
 
             if (sde != "" && sde != null)
             {
-                returnList = returnList.Where(x => x.SDEName == sde).ToList();
+                returnList = returnList.Where(x => x.SDEName == sde || x.Transferred==sde).ToList();
             }
 
 
