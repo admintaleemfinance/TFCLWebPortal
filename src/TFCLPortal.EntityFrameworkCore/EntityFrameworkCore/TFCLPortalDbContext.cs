@@ -160,6 +160,8 @@ using TFCLPortal.SalaryDetails;
 using TFCLPortal.TaggedPortfolios;
 using TFCLPortal.Targets;
 using TFCLPortal.DeceasedAuthorizations;
+using TFCLPortal.PsychometricIndicators;
+using TFCLPortal.SchoolNonFinancials;
 
 namespace TFCLPortal.EntityFrameworkCore
 {
@@ -217,6 +219,8 @@ namespace TFCLPortal.EntityFrameworkCore
         public DbSet<CompanyBankAccount> CompanyBankAccountDbSet { get; set; }
         public DbSet<ProductType> ProductTypeDbSet { get; set; }
         public DbSet<SchoolClass> SchoolClassDbSet { get; set; }
+        public DbSet<PsychometricIndicator> PsychometricIndicatorDbSet { get; set; }
+        public DbSet<SchoolNonFinancial> SchoolNonFinancialDbSet { get; set; }
         public DbSet<Province> ProvinceDbSet { get; set; }
         public DbSet<District> DistrictDbSet { get; set; }
         public DbSet<FileType> FileTypeDbSet { get; set; }

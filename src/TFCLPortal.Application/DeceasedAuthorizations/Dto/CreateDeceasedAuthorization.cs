@@ -1,4 +1,5 @@
 ﻿using Abp.AutoMapper;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,5 +22,8 @@ namespace TFCLPortal.DeceasedAuthorizations.Dto
         public string VerifiedBy { get; set; }
 
         public string ProofUrl { get; set; }
+
+        public IFormFile file { get; set; }
+
     }
 }

@@ -18,6 +18,7 @@ namespace TFCLPortal.Applications
         List<ApplicationDto> GetApplicationList(string applicationState, int? branchId, bool showAll = false,bool IsAdmin=false);
         List<ApplicationListDto> GetAllApplicationsList();
         List<ApplicationListCrsDto> GetAllApplicationsListForCRS();
+        List<ApplicationListCrsDto> GetAllApplicationsListforcrsTSSTSA();
         Task<DashboardDataDto> GetTFCLDashboardCountingData(int branchId);
         Task<List<HighChartWeeklyDto>> GetHighChartWeekData();
         Task<List<BranchPortfolioGraphDto>> GetBranchPortfolioGraphData();

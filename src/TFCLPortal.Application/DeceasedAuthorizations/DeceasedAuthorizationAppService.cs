@@ -13,6 +13,9 @@ using TFCLPortal.DynamicDropdowns.ReferenceChecks;
 using TFCLPortal.DynamicDropdowns.UtilityBillPayments;
 using TFCLPortal.DeceasedAuthorizations.Dto;
 using TFCLPortal.NatureOfPayments;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace TFCLPortal.DeceasedAuthorizations
 {
@@ -26,6 +29,7 @@ namespace TFCLPortal.DeceasedAuthorizations
         private readonly IRepository<CompanyBankAccount> _companyBankAccountRepository;
         private readonly IRepository<NatureOfPayment> _natureOfPaymentRepository;
         private readonly IApplicationAppService _applicationAppService;
+        private readonly IHostingEnvironment _env;
 
 
         #endregion
@@ -53,6 +57,12 @@ namespace TFCLPortal.DeceasedAuthorizations
             try
             {
                 var DeceasedAuthorization = ObjectMapper.Map<DeceasedAuthorization>(createDeceasedAuthorization);
+
+                if(createDeceasedAuthorization.file!=null)
+                {
+
+                }
+
                 await _DeceasedAuthorizationRepository.InsertAsync(DeceasedAuthorization);
 
             }
@@ -141,7 +151,7 @@ namespace TFCLPortal.DeceasedAuthorizations
         {
             try
             {
-                var DeceasedAuthorization = _DeceasedAuthorizationRepository.GetAllList().ToList();
+                var DeceasedAuthorization = _DeceasedAuthorizationRepository.GetAllList();
                 var payments = ObjectMapper.Map<List<DeceasedAuthorizationListDto>>(DeceasedAuthorization);
                 return payments;
             }
@@ -171,6 +181,8 @@ namespace TFCLPortal.DeceasedAuthorizations
                 throw new UserFriendlyException(L("GetMethodError{0}", "payment"));
             }
         }
+
+
         #endregion
     }
 }

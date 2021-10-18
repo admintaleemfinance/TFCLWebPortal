@@ -20,7 +20,6 @@ namespace TFCLPortal.DeceasedAuthorizations
         public bool? isAuthorized { get; set; }
         public string RejectionReason { get; set; }
         public string VerifiedBy { get; set; }
-
         public string ProofUrl { get; set; }
     }
 }

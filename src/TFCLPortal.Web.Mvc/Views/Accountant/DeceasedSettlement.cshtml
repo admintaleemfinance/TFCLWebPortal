@@ -21,7 +21,7 @@
     </div>
     <div class="card p-10 mB-20">
         <div class="bgc-white bd bdrs-3 p-20 mB-20">
-            <form asp-action="CreateDeceasedSettlement" method="post">
+            <form asp-action="CreateDeceasedSettlement" method="post" enctype="multipart/form-data">
                 <div class="row">
                     <input asp-for="ApplicationId" type="hidden" id="ApplicationId" value="@ViewBag.Applicationid" />
 
@@ -65,7 +65,12 @@
                             <input asp-for="AmountDeposited" class="form-control" required="required" />
                         </div>
                     </div>
-
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Upload Document</label>
+                            <input asp-for="file" />
+                        </div>
+                    </div>
 
 
 

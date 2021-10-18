@@ -52,6 +52,8 @@ using TFCLPortal.Web.Models.AMLCFT;
 using TFCLPortal.TDSLoanEligibilities;
 using TFCLPortal.DeceasedAuthorizations;
 using TFCLPortal.DeceasedAuthorizations.Dto;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace TFCLPortal.Web.Controllers
 {
@@ -99,7 +101,7 @@ namespace TFCLPortal.Web.Controllers
 
         private readonly INotificationLogAppService _notificationLogAppService;
 
-        public AccountantController(IRepository<DeceasedAuthorization, int> deceasedAuthorizationRepository,IDeceasedAuthorizationAppService deceasedAuthorizationAppService,ITDSLoanEligibilityAppService tDSLoanEligibilityAppService, IRepository<CoApplicantDetail, int> CoApplicantRepository, IRepository<GuarantorDetail, int> GuarantorRepository, IRepository<Applicationz, Int32> applicationRepository, IRepository<ScheduleTemp, int> scheduleTempRepository, IRepository<DeceasedSettlement, int> deceasedSettlementRepository, IDeceasedSettlementAppService deceasedSettlementAppService, IRepository<WriteOff, int> writeOffRepository, IWriteOffAppService writeOffAppService, IRepository<EarlySettlement, int> earlySettlementRepository, IEarlySettlementAppService earlySettlementAppService, IRepository<AuthorizeInstallmentPayment, int> authorizeInstallmentPaymentRepository, IAuthorizeInstallmentPaymentAppService authorizeInstallmentPaymentAppService, IRepository<InstallmentPayment, int> installmentPaymentRepository, IRepository<Holiday, int> holidayRepository, IRepository<ScheduleInstallment, int> scheduleInstallmentRepository, IInstallmentPaymentAppService installmentPaymentAppService, IRepository<NatureOfPayment, int> natureOfPaymentRepository, IRepository<CompanyBankAccount, int> companyBankAccountRepository, IBADataCheckAppService IBADataCheckAppService, INotificationLogAppService notificationLogAppService, IScheduleTempAppService scheduleTempAppService, UserManager userManager, IRepository<Schedule, int> scheduleRepository, IScheduleAppService scheduleAppService, ICoApplicantDetailAppService coApplicantDetailAppService, IGuarantorDetailAppService guarantorDetailAppService, IBranchDetailAppService branchDetailAppService, IBankAccountAppService bankAccountAppService, ILoanEligibilityAppService loanEligibilityAppService, IBusinessPlanAppService businessPlanAppService, IBccDecisionAppService bccDecisionAppService, IApplicationAppService applicationAppService, IUserAppService userAppService, IFinalWorkflowAppService finalWorkflowAppService)
+        public AccountantController(IRepository<DeceasedAuthorization, int> deceasedAuthorizationRepository, IDeceasedAuthorizationAppService deceasedAuthorizationAppService, ITDSLoanEligibilityAppService tDSLoanEligibilityAppService, IRepository<CoApplicantDetail, int> CoApplicantRepository, IRepository<GuarantorDetail, int> GuarantorRepository, IRepository<Applicationz, Int32> applicationRepository, IRepository<ScheduleTemp, int> scheduleTempRepository, IRepository<DeceasedSettlement, int> deceasedSettlementRepository, IDeceasedSettlementAppService deceasedSettlementAppService, IRepository<WriteOff, int> writeOffRepository, IWriteOffAppService writeOffAppService, IRepository<EarlySettlement, int> earlySettlementRepository, IEarlySettlementAppService earlySettlementAppService, IRepository<AuthorizeInstallmentPayment, int> authorizeInstallmentPaymentRepository, IAuthorizeInstallmentPaymentAppService authorizeInstallmentPaymentAppService, IRepository<InstallmentPayment, int> installmentPaymentRepository, IRepository<Holiday, int> holidayRepository, IRepository<ScheduleInstallment, int> scheduleInstallmentRepository, IInstallmentPaymentAppService installmentPaymentAppService, IRepository<NatureOfPayment, int> natureOfPaymentRepository, IRepository<CompanyBankAccount, int> companyBankAccountRepository, IBADataCheckAppService IBADataCheckAppService, INotificationLogAppService notificationLogAppService, IScheduleTempAppService scheduleTempAppService, UserManager userManager, IRepository<Schedule, int> scheduleRepository, IScheduleAppService scheduleAppService, ICoApplicantDetailAppService coApplicantDetailAppService, IGuarantorDetailAppService guarantorDetailAppService, IBranchDetailAppService branchDetailAppService, IBankAccountAppService bankAccountAppService, ILoanEligibilityAppService loanEligibilityAppService, IBusinessPlanAppService businessPlanAppService, IBccDecisionAppService bccDecisionAppService, IApplicationAppService applicationAppService, IUserAppService userAppService, IFinalWorkflowAppService finalWorkflowAppService)
         {
             _deceasedAuthorizationRepository = deceasedAuthorizationRepository;
             _deceasedAuthorizationAppService = deceasedAuthorizationAppService;
@@ -335,6 +337,8 @@ namespace TFCLPortal.Web.Controllers
             return View(list);
         }
 
+
+
         public IActionResult DisbursedApplications()
         {
 
@@ -471,7 +475,7 @@ namespace TFCLPortal.Web.Controllers
                                 {
                                     installments = schedule.installmentList.Where(x => x.InstNumber != "G*" && x.isPaid == true && ((DateTime)x.PaymentDate).Month == month && ((DateTime)x.PaymentDate).Year == year).ToList();
                                 }
-                              
+
                             }
 
 
@@ -581,58 +585,58 @@ namespace TFCLPortal.Web.Controllers
                             var installment = schedule.installmentList.Where(x => x.InstNumber != "G*" && x.isPaid != true).FirstOrDefault();
 
                             var paidInstallments = paidInstallmentsList.Result.Where(x => x.ApplicationId == schedule.ApplicationId && x.isAuthorized == true).LastOrDefault();
-                            if(paidInstallments!=null)
+                            if (paidInstallments != null)
                             {
                                 installment.LastPaymentDate = paidInstallments.DepositDate;
                             }
 
-                            if ((DateTime.Parse(installment.InstallmentDueDate))<=DateTime.Now.AddDays(-1))
+                            if ((DateTime.Parse(installment.InstallmentDueDate)) <= DateTime.Now.AddDays(-1))
                             {
                                 installments.Add(installment);
                             }
                         }
 
                         if (installments.Count > 0)
+                        {
+                            foreach (var inst in installments)
                             {
-                                foreach (var inst in installments)
+                                inst.ClientId = app.ClientID;
+                                inst.ClientName = app.ClientName;
+                                inst.BusinessName = app.SchoolName;
+                                inst.Applicationid = app.Id;
+                                inst.BranchName = app.BranchCode;
+                                inst.LoanAmount = schedule.LoanAmount;
+                                var sde = users.Where(x => x.Id == app.CreatorUserId).FirstOrDefault();
+                                if (sde != null)
                                 {
-                                    inst.ClientId = app.ClientID;
-                                    inst.ClientName = app.ClientName;
-                                    inst.BusinessName = app.SchoolName;
-                                    inst.Applicationid = app.Id;
-                                    inst.BranchName = app.BranchCode;
-                                    inst.LoanAmount = schedule.LoanAmount;
-                                    var sde = users.Where(x => x.Id == app.CreatorUserId).FirstOrDefault();
-                                    if (sde != null)
-                                    {
-                                        inst.SdeName = sde.FullName;
-                                    }
-                                    scheduleInstallments.Add(inst);
+                                    inst.SdeName = sde.FullName;
+                                }
+                                scheduleInstallments.Add(inst);
 
-                                    totalDue += decimal.Parse(inst.installmentAmount.Replace(",", ""));
+                                totalDue += decimal.Parse(inst.installmentAmount.Replace(",", ""));
 
-                                    if (inst.isPaid == true)
-                                    {
-                                        totalPaid += decimal.Parse(inst.PaidAmount.Replace(",", ""));
-                                    }
-                                    else
-                                    {
+                                if (inst.isPaid == true)
+                                {
+                                    totalPaid += decimal.Parse(inst.PaidAmount.Replace(",", ""));
+                                }
+                                else
+                                {
                                     inst.DPD = (int)(DateTime.Now - DateTime.Parse(inst.InstallmentDueDate)).TotalDays;
 
                                     totalUnPaid += decimal.Parse(inst.installmentAmount.Replace(",", ""));
-                                    }
-
-                                    if (inst.InstNumber == "0")
-                                    {
-                                        DefCount++;
-                                        DefAmount += decimal.Parse(inst.installmentAmount.Replace(",", ""));
-                                    }
-
-
                                 }
+
+                                if (inst.InstNumber == "0")
+                                {
+                                    DefCount++;
+                                    DefAmount += decimal.Parse(inst.installmentAmount.Replace(",", ""));
+                                }
+
+
                             }
                         }
-                  
+                    }
+
 
                 }
             }
@@ -1134,22 +1138,22 @@ namespace TFCLPortal.Web.Controllers
                     decimal sumOfAllPaymentsForOneInstallment = 0;
 
                     int count = 0;
-                    if(sameInstallmentPaymentsList.Count()>0)
+                    if (sameInstallmentPaymentsList.Count() > 0)
                     {
 
-                    foreach (var payments in sameInstallmentPaymentsList)
-                    {
-                        if (count > 0)
+                        foreach (var payments in sameInstallmentPaymentsList)
                         {
-                            sumOfAllPaymentsForOneInstallment += (payments.Amount);
-                        }
-                        else
-                        {
-                            sumOfAllPaymentsForOneInstallment += (payments.Amount + payments.PreviousBalance);
-                        }
+                            if (count > 0)
+                            {
+                                sumOfAllPaymentsForOneInstallment += (payments.Amount);
+                            }
+                            else
+                            {
+                                sumOfAllPaymentsForOneInstallment += (payments.Amount + payments.PreviousBalance);
+                            }
 
-                        count++;
-                    }
+                            count++;
+                        }
 
                     }
                     else
@@ -2248,14 +2252,14 @@ namespace TFCLPortal.Web.Controllers
             app.RejectionReason = Reason;
             _deceasedAuthorizationRepository.Update(app);
 
-            return RedirectToAction("DeceasedAuthorizationList","Accountant");
+            return RedirectToAction("DeceasedAuthorizationList", "Accountant");
         }
 
-        public IActionResult MarkApplicantDeceased(string cnic,int appid)
+        public IActionResult MarkApplicantDeceased(string cnic, int appid)
         {
             var apps = _applicationRepository.GetAllList(x => x.CNICNo == cnic).ToList();
 
-            foreach(var app in apps)
+            foreach (var app in apps)
             {
                 app.isDeceased = true;
                 _applicationRepository.Update(app);
@@ -2273,19 +2277,52 @@ namespace TFCLPortal.Web.Controllers
         [HttpPost]
         public IActionResult CreateDeceasedSettlement(CreateDeceasedSettlement input)
         {
-            _deceasedSettlementAppService.Create(input);
+            string uploadFileResult = UploadImagestoServer(input.file, "wwwroot/uploads/DeceasedFiles/" + input.ApplicationId + "/");
+            if (uploadFileResult != "Error")
+            {
+                input.ProofUrl = uploadFileResult;
+            }
 
-            return RedirectToAction("Success", "About", new { Message = "Deceased Applicant Settlement Entry Sent to BM for Authorization!" });
+            _deceasedSettlementAppService.Create(input);
+            _notificationLogAppService.SendNotification(69, "Deceased Applicant Settlement Entry has been recieved.", "Go to Deceased Applicant Settlement Authorization list to authorize/reject entry.");
+
+            return RedirectToAction("Success", "About", new { Message = "Deceased Applicant Settlement Entry Sent to Finance Department for Authorization!" });
         }
 
         [HttpPost]
         public IActionResult CreateDeceasedAuthorization(CreateDeceasedAuthorization input)
         {
+            string uploadFileResult = UploadImagestoServer(input.file, "wwwroot/uploads/DeceasedFiles/" + input.ApplicationId + "/");
+            if (uploadFileResult != "Error")
+            {
+                input.ProofUrl = uploadFileResult;
+            }
+
             _deceasedAuthorizationAppService.Create(input);
-            _notificationLogAppService.SendNotification(66, "Client has been marked deceased.", "Go to Deceased Applicant authorization list to authorize/reject entry.");
             return RedirectToAction("Success", "About", new { Message = "Deceased Applicant Marking Entry Sent to BM for Authorization!" });
         }
+        private string UploadImagestoServer(IFormFile document, string path)
+        {
+            try
+            {
+                Directory.CreateDirectory(path);
 
+                string extension = System.IO.Path.GetExtension(document.FileName);
+                string filePath = Path.Combine(path, document.FileName + "_" + DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss") + extension);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    document.CopyTo(fileStream);
+                }
+
+                return filePath;
+            }
+            catch (Exception ex)
+            {
+                return "Error";
+            }
+
+        }
         public IActionResult DeceasedAuthorizationList(int ApplicationId)
         {
             var list = _deceasedAuthorizationAppService.GetAllDeceasedAuthorizations().Result.Where(x => x.isAuthorized == null).ToList();
@@ -2355,6 +2392,8 @@ namespace TFCLPortal.Web.Controllers
         public JsonResult AuthorizeDeceasedSettlement(int Id, string Decision, string Reason)
         {
             var entry = _deceasedSettlementRepository.Get(Id);
+
+          
 
             if (Decision == "Authorize")
             {

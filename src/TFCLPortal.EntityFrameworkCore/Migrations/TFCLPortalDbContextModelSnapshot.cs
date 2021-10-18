@@ -3634,6 +3634,8 @@ namespace TFCLPortal.Migrations
 
                     b.Property<decimal>("OsPrincipalAmount");
 
+                    b.Property<string>("ProofUrl");
+
                     b.Property<string>("RejectionReason");
 
                     b.Property<decimal>("TotalAmountPayable");
@@ -7068,6 +7070,53 @@ namespace TFCLPortal.Migrations
                     b.ToTable("ProductDetail");
                 });
 
+            modelBuilder.Entity("TFCLPortal.PsychometricIndicators.PsychometricIndicator", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ApplicationId");
+
+                    b.Property<int>("AvoidConflict");
+
+                    b.Property<int>("BusinessLuck");
+
+                    b.Property<string>("ComparedFee");
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<long?>("DeleterUserId");
+
+                    b.Property<DateTime?>("DeletionTime");
+
+                    b.Property<int>("DigitalInitiatives");
+
+                    b.Property<int>("HopefulForFuture");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("MixExpenses");
+
+                    b.Property<int>("MotivationToRunSchool");
+
+                    b.Property<int>("ParentEngagement");
+
+                    b.Property<int>("PercentageToSteal");
+
+                    b.Property<int>("TeacherTrainings");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PsychometricIndicator");
+                });
+
             modelBuilder.Entity("TFCLPortal.PurchaseDetails.PurchaseDetail", b =>
                 {
                     b.Property<int>("Id")
@@ -7748,6 +7797,73 @@ namespace TFCLPortal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ScheduleInstallment");
+                });
+
+            modelBuilder.Entity("TFCLPortal.SchoolNonFinancials.SchoolNonFinancial", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ApplicationId");
+
+                    b.Property<string>("AyasPresent");
+
+                    b.Property<int>("BuildingCondition");
+
+                    b.Property<int>("BusinessRadius");
+
+                    b.Property<string>("BusinessSuccession");
+
+                    b.Property<string>("ChildProtection");
+
+                    b.Property<string>("CleanWater");
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<long?>("DeleterUserId");
+
+                    b.Property<DateTime?>("DeletionTime");
+
+                    b.Property<string>("EmergencyExits");
+
+                    b.Property<int>("FinancialRecords");
+
+                    b.Property<string>("FirstAid");
+
+                    b.Property<string>("FunctionalComputerLab");
+
+                    b.Property<string>("HealthEnvironment");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("LearningAid");
+
+                    b.Property<string>("PowerBackup");
+
+                    b.Property<string>("ProperLighting");
+
+                    b.Property<string>("SchoolDecor");
+
+                    b.Property<string>("SchoolManagementSystem");
+
+                    b.Property<string>("SecurityGuards");
+
+                    b.Property<string>("SeperateWashrooms");
+
+                    b.Property<string>("TeacherTrainings");
+
+                    b.Property<int>("TransactionHistory");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SchoolNonFinancial");
                 });
 
             modelBuilder.Entity("TFCLPortal.TDSBusinessExpenses.TDSBusinessExpense", b =>

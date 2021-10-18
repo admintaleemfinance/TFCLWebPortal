@@ -47,7 +47,9 @@
                     <th>
                         amount Deposited
                     </th>
-                   
+                    <th>
+                        Document
+                    </th>
                     <th colspan="2">
                         Actions
                     </th>
@@ -73,9 +75,18 @@
                     <td>
                         @(string.Format("{0:#,##0}", item.AmountDeposited))
                     </td>
-
                     <td>
-                        <a href="/Accountant/DeceasedSettlementAuthorization?Id=@item.Id" ><i class="fa fa-check"></i> <i class="fa fa-times"></i> Authorize / Reject</a>
+                        @if (item.ProofUrl != "" && item.ProofUrl != null)
+                        {
+                            <a href="../@item.ProofUrl.Replace("wwwroot/","")"><i class="fa fa-download"></i></a>
+                        }
+                        else
+                        {
+                            <p>--</p>
+                        }
+                    </td>
+                    <td>
+                        <a href="/Accountant/DeceasedSettlementAuthorization?Id=@item.Id"><i class="fa fa-check"></i> <i class="fa fa-times"></i> Authorize / Reject</a>
                         @*<a class="openModal" data-user-id="@item.Id" data-toggle="modal" data-target="#Modal"><i class="fa fa-check"></i> <i class="fa fa-times"></i> Authorize / Reject</a>*@
                     </td>
                     <td>

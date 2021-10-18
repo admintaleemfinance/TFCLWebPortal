@@ -797,6 +797,34 @@ namespace TFCLPortal.Applications
             }
         }
 
+        public List<ApplicationListCrsDto> GetAllApplicationsListforcrsTSSTSA()
+        {
+            try
+            {
+                var apps = _applicationRepository.GetAllList(x=>x.ProductType==1|| x.ProductType == 2|| x.ProductType == 6|| x.ProductType == 7).ToList();
+
+                var appsList = ObjectMapper.Map<List<ApplicationListCrsDto>>(apps);
+
+                var products = _productTypeRepository.GetAllList();
+                var branches = _branchRepository.GetAllList();
+
+
+                foreach (var app in appsList)
+                {
+                    app.ProductTypeName = products.Where(x => x.Id == app.ProductType).FirstOrDefault().Name;
+                    app.ProductTypeShortCode = products.Where(x => x.Id == app.ProductType).FirstOrDefault().ShortCode;
+                    app.BranchCode = branches.Where(x => x.Id == app.FK_branchid).FirstOrDefault().BranchCode;
+                }
+
+                return appsList;
+
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(L("GetMethodError{0}", application));
+            }
+        }
+
         public Task<DashboardDataDto> GetTFCLDashboardCountingData(int branchId)
         {
             try
