@@ -1351,6 +1351,21 @@ namespace TFCLPortal.Web.Controllers
                 scheduleInstallment.PaymentDate = payment.DepositDate;
                 _scheduleInstallmentRepository.Update(scheduleInstallment);
                 CurrentUnitOfWork.SaveChanges();
+
+                var allUnpaidInstallments = _scheduleInstallmentRepository.GetAllList(x => x.FK_ScheduleId == schedule.Id && (x.isPaid == false || x.isPaid == null));
+                if(allUnpaidInstallments.Count<1)
+                {
+                    _applicationAppService.ChangeApplicationState(ApplicationState.Settled, payment.ApplicationId, "All Installments Paid");
+                    
+                    CreateFinalWorkflowDto fWobj = new CreateFinalWorkflowDto();
+                    fWobj.ApplicationId = payment.ApplicationId;
+                    fWobj.Action = "All Installments Paid";
+                    fWobj.ActionBy = (int)AbpSession.UserId;
+                    fWobj.ApplicationState = ApplicationState.Settled;
+                    fWobj.isActive = true;
+
+                    _finalWorkflowAppService.CreateFinalWorkflow(fWobj);
+                }
             }
             return RedirectToAction("AuthorizationInstallmentPayment");
         }

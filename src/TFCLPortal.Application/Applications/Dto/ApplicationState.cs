@@ -37,6 +37,7 @@ namespace TFCLPortal.Applications.Dto
         public static string BCC_Approved = "BCC Approved";
         public static string MC_Authorized = "MC Authorized";
         public static string EarlySettled = "Early Settled";
+        public static string Settled = "Settled";
         public static string Deceased = "Deceased";
 
 
