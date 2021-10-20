@@ -186,32 +186,23 @@ namespace TFCLPortal.AllScreensGetByAppID
                     data.LoanAmountRequested = bp == null ? "--" : bp.Result.LoanAmountRecommended;
                     data.Tenure = bp == null ? "--" : bp.Result.LoanTenureRequestedName;
 
-                    if (currentApp.ProductType==6|| currentApp.ProductType == 7|| currentApp.ProductType == 2|| currentApp.ProductType == 1)
-                    {
-                        var LE = _loanEligibilityAppService.GetLoanEligibilityListByApplicationId(ApplicationId).Result;
-                        if(LE!=null)
-                        {
-                            data.MarkupApplied = LE.Mark_Up;
-                        }
 
-                    }
-                    else if (currentApp.ProductType==8|| currentApp.ProductType == 9|| currentApp.ProductType == 10)
+                    var LE = _loanEligibilityAppService.GetLoanEligibilityListByApplicationId(ApplicationId).Result;
+                    if (LE != null)
                     {
-                        var LE = _tDSLoanEligibilityAppService.GetTDSLoanEligibilityListByApplicationId(ApplicationId).Result;
-                        if (LE != null)
-                        {
-                            data.MarkupApplied = LE.Mark_Up;
-                        }
+                        data.MarkupApplied = LE.Mark_Up;
                     }
 
                     data.LoanCycles = apps.FindAll(x => x.CNICNo == currentApp.CNICNo && (x.ScreenStatus == "Disbursed" || x.ScreenStatus == "Early Settled" || x.ScreenStatus == "Settled" || x.ScreenStatus == "Deceased")).Count;
+                    var pd = _personalDetailAppService.GetPersonalDetailByApplicationId(ApplicationId).Result;
+                    if (pd != null)
+                    {
+                        data.Age = GetAge((DateTime)pd.BirthDate);
+                    }
+                
                 }
 
-                var pd = _personalDetailAppService.GetPersonalDetailByApplicationId(ApplicationId).Result;
-                if (pd != null)
-                {
-                    data.Age = GetAge((DateTime)pd.BirthDate);
-                }
+                
 
 
                 return data;

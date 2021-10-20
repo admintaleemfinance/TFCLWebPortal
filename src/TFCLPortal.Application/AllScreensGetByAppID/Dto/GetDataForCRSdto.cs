@@ -57,6 +57,11 @@ namespace TFCLPortal.AllScreensGetByAppID.Dto
 
         //Personal Data
         public int Age { get; set; }
+        public string ResidenceAccommodationType { get; set; }
+        public int YearsAtResidence { get; set; }
+        public string OtherBusinessIncome { get; set; }
+        public bool TaxFiler { get; set; }
+        public int expInSchoolYears { get; set; }
 
 
         //Financial Data

@@ -33,6 +33,7 @@
         padding: 4px;
         text-transform: uppercase
     }
+
     .container {
         background: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url("/Theame/images/bg.png");
         background-repeat: no-repeat;
@@ -49,7 +50,7 @@
         <div class="col-md-4 text-center" style="padding-top:30px">
             <h3 style="text-transform:uppercase">Loan Schedule</h3>
         </div>
-      
+
     </div>
 
     <div class="row" style="padding-top:30px;">
@@ -107,10 +108,10 @@
                 </tr>
                 <tr>
                     <td>
-                        <b>APR</b>
+                        <b>APR *</b>
                     </td>
                     <td>
-                        @Model.Markup
+                        @Model.Markup%
                     </td>
                     <td>
                         <b>Current Status</b>
@@ -266,10 +267,10 @@
                     }
 
                     @*@{
-                    totalPrincipal = totalPrincipal + (item.principal == "--" || item.principal == "" || item.principal == null ? 0 : int.Parse(item.principal.Replace(",", "")));
-                    totalInterest = totalInterest + (item.markup == "--" || item.markup == "" || item.markup == null ? 0 : int.Parse(item.markup.Replace(",", "")));
-                    totalInstallment = totalInstallment + (item.installmentAmount == "--" || item.installmentAmount == "" || item.installmentAmount == null ? 0 : int.Parse(item.installmentAmount.Replace(",", "")));
-                }*@
+                            totalPrincipal = totalPrincipal + (item.principal == "--" || item.principal == "" || item.principal == null ? 0 : int.Parse(item.principal.Replace(",", "")));
+                            totalInterest = totalInterest + (item.markup == "--" || item.markup == "" || item.markup == null ? 0 : int.Parse(item.markup.Replace(",", "")));
+                            totalInstallment = totalInstallment + (item.installmentAmount == "--" || item.installmentAmount == "" || item.installmentAmount == null ? 0 : int.Parse(item.installmentAmount.Replace(",", "")));
+                        }*@
 
 
                 }
@@ -294,7 +295,10 @@
 
 
             </table>
-            <div class="col-md-12 text-right" style="padding-top: 40px;font-size: 12px;">Print Date : @ViewBag.PrintDate</div>
+            <div class="row">
+                <div class="col-md-8" style="padding-top: 40px;font-size: 12px;"><i>*Annual IRR for this loan is @Model.IRR%</i></div>
+                <div class="col-md-4 text-right" style="padding-top: 40px;font-size: 12px;"><i>Print Date : @ViewBag.PrintDate</i></div>
+            </div>
         </div>
     </div>
 
