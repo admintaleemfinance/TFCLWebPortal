@@ -3987,6 +3987,48 @@ namespace TFCLPortal.Migrations
                     b.ToTable("ApplicantType");
                 });
 
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.AvoidConflicts.AvoidConflict", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AvoidConflict");
+                });
+
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.AyasPresents.AyasPresent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AyasPresent");
+                });
+
             modelBuilder.Entity("TFCLPortal.DynamicDropdowns.BankRatings.BankRating", b =>
                 {
                     b.Property<int>("Id")
@@ -4008,6 +4050,69 @@ namespace TFCLPortal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("BankRating");
+                });
+
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.BankingTransactiones.BankingTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BankingTransaction");
+                });
+
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.BiggestMotivations.BiggestMotivation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BiggestMotivation");
+                });
+
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.BuildingConditions.BuildingCondition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BuildingCondition");
                 });
 
             modelBuilder.Entity("TFCLPortal.DynamicDropdowns.BuildingStatuses.BuildingStatus", b =>
@@ -4052,6 +4157,27 @@ namespace TFCLPortal.Migrations
                     b.ToTable("BusinessLegalStatus");
                 });
 
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.BusinessRadiuses.BusinessRadius", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BusinessRadius");
+                });
+
             modelBuilder.Entity("TFCLPortal.DynamicDropdowns.BusinessTypes.BusinessType", b =>
                 {
                     b.Property<int>("Id")
@@ -4077,6 +4203,27 @@ namespace TFCLPortal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("BusinessType");
+                });
+
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.CleanWaters.CleanWater", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CleanWater");
                 });
 
             modelBuilder.Entity("TFCLPortal.DynamicDropdowns.ClientBusinessClassifications.ClientBusinessClassification", b =>
@@ -4295,6 +4442,27 @@ namespace TFCLPortal.Migrations
                     b.ToTable("Designation");
                 });
 
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.DigitalInitiatives.DigitalInitiative", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DigitalInitiative");
+                });
+
             modelBuilder.Entity("TFCLPortal.DynamicDropdowns.Districts.District", b =>
                 {
                     b.Property<int>("Id")
@@ -4339,6 +4507,27 @@ namespace TFCLPortal.Migrations
                     b.ToTable("DropdownUpdateStatus");
                 });
 
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.FinancialRecords.FinancialRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FinancialRecord");
+                });
+
             modelBuilder.Entity("TFCLPortal.DynamicDropdowns.FundSources.FundSource", b =>
                 {
                     b.Property<int>("Id")
@@ -4379,6 +4568,27 @@ namespace TFCLPortal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Gender");
+                });
+
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.HopefulFutures.HopefulFuture", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HopefulFuture");
                 });
 
             modelBuilder.Entity("TFCLPortal.DynamicDropdowns.InventoryEntrySources.InventoryEntrySource", b =>
@@ -4442,6 +4652,27 @@ namespace TFCLPortal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("LandTypes");
+                });
+
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.LearningAids.LearningAid", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LearningAid");
                 });
 
             modelBuilder.Entity("TFCLPortal.DynamicDropdowns.LegalStatuses.LegalStatus", b =>
@@ -4750,6 +4981,27 @@ namespace TFCLPortal.Migrations
                     b.ToTable("OwnershipStatus");
                 });
 
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.ParentEngagements.ParentEngagement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ParentEngagement");
+                });
+
             modelBuilder.Entity("TFCLPortal.DynamicDropdowns.PaymentsFrequency.PaymentFrequency", b =>
                 {
                     b.Property<int>("Id")
@@ -4769,6 +5021,48 @@ namespace TFCLPortal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PaymentFrequency");
+                });
+
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.PeopleSteals.PeopleSteal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PeopleSteal");
+                });
+
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.PowerBackups.PowerBackup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PowerBackup");
                 });
 
             modelBuilder.Entity("TFCLPortal.DynamicDropdowns.ProductTypes.ProductType", b =>
@@ -5094,6 +5388,27 @@ namespace TFCLPortal.Migrations
                     b.ToTable("SchoolType");
                 });
 
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.SecurityGuards.SecurityGuard", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SecurityGuard");
+                });
+
             modelBuilder.Entity("TFCLPortal.DynamicDropdowns.SpouseStatuses.SpouseStatus", b =>
                 {
                     b.Property<int>("Id")
@@ -5134,6 +5449,48 @@ namespace TFCLPortal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("StudentGender");
+                });
+
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.TeacherTrainingDays.TeacherTrainingDay", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TeacherTrainingDay");
+                });
+
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.TeacherTrainings.TeacherTraining", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TeacherTraining");
                 });
 
             modelBuilder.Entity("TFCLPortal.DynamicDropdowns.UtilityBillPayments.UtilityBillPayment", b =>
@@ -7797,6 +8154,69 @@ namespace TFCLPortal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ScheduleInstallment");
+                });
+
+            modelBuilder.Entity("TFCLPortal.SchoolFinancials.SchoolFinancial", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AllOtherExpenses");
+
+                    b.Property<int>("ApplicationId");
+
+                    b.Property<string>("AvgMonthlyFee");
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<string>("CurrentAsset");
+
+                    b.Property<string>("CurrentLiabilities");
+
+                    b.Property<long?>("DeleterUserId");
+
+                    b.Property<DateTime?>("DeletionTime");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<int>("NoOfClassrooms");
+
+                    b.Property<int>("NoOfNonTeachingStaff");
+
+                    b.Property<int>("NoOfStudents");
+
+                    b.Property<int>("NoOfTeachingStaff");
+
+                    b.Property<string>("PreviousYear");
+
+                    b.Property<string>("ProfitMargin");
+
+                    b.Property<string>("TotalAsset");
+
+                    b.Property<string>("TotalExpensesFromDebt");
+
+                    b.Property<string>("TotalExpensesFromRentMortgage");
+
+                    b.Property<string>("TotalExpensesFromSalary");
+
+                    b.Property<string>("TotalLiabilities");
+
+                    b.Property<string>("TotalProfit");
+
+                    b.Property<string>("TotalRevenue");
+
+                    b.Property<string>("WorkingCapital");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SchoolFinancial");
                 });
 
             modelBuilder.Entity("TFCLPortal.SchoolNonFinancials.SchoolNonFinancial", b =>

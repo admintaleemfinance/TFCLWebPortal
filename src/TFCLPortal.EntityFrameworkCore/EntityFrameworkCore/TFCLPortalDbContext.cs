@@ -162,6 +162,24 @@ using TFCLPortal.Targets;
 using TFCLPortal.DeceasedAuthorizations;
 using TFCLPortal.PsychometricIndicators;
 using TFCLPortal.SchoolNonFinancials;
+using TFCLPortal.SchoolFinancials;
+using TFCLPortal.DynamicDropdowns.AyasPresents;
+using TFCLPortal.DynamicDropdowns.BuildingConditions;
+using TFCLPortal.DynamicDropdowns.PowerBackups;
+using TFCLPortal.DynamicDropdowns.CleanWaters;
+using TFCLPortal.DynamicDropdowns.LearningAids;
+using TFCLPortal.DynamicDropdowns.TeacherTrainings;
+using TFCLPortal.DynamicDropdowns.SecurityGuards;
+using TFCLPortal.DynamicDropdowns.FinancialRecords;
+using TFCLPortal.DynamicDropdowns.BusinessRadiuses;
+using TFCLPortal.DynamicDropdowns.BankingTransactiones;
+using TFCLPortal.DynamicDropdowns.PeopleSteals;
+using TFCLPortal.DynamicDropdowns.AvoidConflicts;
+using TFCLPortal.DynamicDropdowns.BiggestMotivations;
+using TFCLPortal.DynamicDropdowns.HopefulFutures;
+using TFCLPortal.DynamicDropdowns.DigitalInitiatives;
+using TFCLPortal.DynamicDropdowns.TeacherTrainingDays;
+using TFCLPortal.DynamicDropdowns.ParentEngagements;
 
 namespace TFCLPortal.EntityFrameworkCore
 {
@@ -221,6 +239,7 @@ namespace TFCLPortal.EntityFrameworkCore
         public DbSet<SchoolClass> SchoolClassDbSet { get; set; }
         public DbSet<PsychometricIndicator> PsychometricIndicatorDbSet { get; set; }
         public DbSet<SchoolNonFinancial> SchoolNonFinancialDbSet { get; set; }
+        public DbSet<SchoolFinancial> SchoolFinancialDbSet { get; set; }
         public DbSet<Province> ProvinceDbSet { get; set; }
         public DbSet<District> DistrictDbSet { get; set; }
         public DbSet<FileType> FileTypeDbSet { get; set; }
@@ -276,6 +295,9 @@ namespace TFCLPortal.EntityFrameworkCore
         public DbSet<PurchaseDetail> PurchaseDetailDbSet { get; set; }
         public DbSet<PurchaseDetailChild> PurchaseDetailChildDbSet { get; set; }
         public DbSet<PurchaseDetailGrandChild> PurchaseDetailGrandChildDbSet { get; set; }
+        public DbSet<AyasPresent> AyasPresentDbSet { get; set; }
+        public DbSet<BuildingCondition> BuildingConditionDbSet { get; set; }
+        public DbSet<PowerBackup> PowerBackupDbSet { get; set; }
 
         public DbSet<TdsInventoryDetail> TdsInventoryDetailDbSet { get; set; }
         public DbSet<TdsInventoryDetailChild> TdsInventoryDetailChildDbSet { get; set; }
@@ -353,6 +375,26 @@ namespace TFCLPortal.EntityFrameworkCore
 
         /*Taleem dost Sahulat DBSets*/
         public DbSet<BusinessDetailTDS> BusinessDetailTDSDbSet { get; set; }
+
+        public DbSet<CleanWater> CleanWaterDbSet { get; set; }
+        public DbSet<LearningAid> LearningAidDbSet { get; set; }
+        public DbSet<TeacherTraining> TeacherTrainingDbSet { get; set; }
+        public DbSet<SecurityGuard> SecurityGuardDbSet { get; set; }
+        public DbSet<FinancialRecord> FinancialRecordDbSet { get; set; }
+        public DbSet<BusinessRadius> BusinessRadiusDbSet { get; set; }
+        public DbSet<BankingTransaction> BankingTransactionDbSet { get; set; }
+
+        public DbSet<PeopleSteal> PeopleStealDbSet { get; set; }
+        public DbSet<AvoidConflict> AvoidConflictDbSet { get; set; }
+        public DbSet<BiggestMotivation> BiggestMotivationDbSet { get; set; }
+        public DbSet<HopefulFuture> HopefulFutureDbSet { get; set; }
+        public DbSet<DigitalInitiative> DigitalInitiativeDbSet { get; set; }
+        public DbSet<TeacherTrainingDay> TeacherTrainingDayDbSet { get; set; }
+        public DbSet<ParentEngagement> ParentEngagementDbSet { get; set; }
+
+
+
+
         public DbSet<TDSLoanEligibility> TDSLoanEligibilityDbSet { get; set; }
         public DbSet<Bank> BankDbSet { get; set; }
         public DbSet<FinancialInformationTDS> FinancialInformationTDSDbSet { get; set; }

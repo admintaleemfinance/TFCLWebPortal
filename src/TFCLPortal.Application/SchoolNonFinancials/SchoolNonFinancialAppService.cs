@@ -54,30 +54,6 @@ namespace TFCLPortal.SchoolNonFinancials
                 var filesList = _SchoolNonFinancialRepository.GetAllList().Where(x => x.ApplicationId == ApplicationId).ToList();
                 var files = ObjectMapper.Map<List<SchoolNonFinancialListDto>>(filesList);
 
-                //foreach (var file in files)
-                //{
-                //    if(file.Fk_idForName!=0)
-                //    {
-                //        if (file.ScreenCode.StartsWith("co_applicant"))
-                //        {
-                //            var coapplicantFile=_coApplicantDetailAppService.GetCoApplicantDetailById(file.Fk_idForName).Result.FirstOrDefault();
-                //            if(coapplicantFile!=null)
-                //            {
-                //                file.RespectiveName = coapplicantFile.FullName;
-                //            }
-                //        }
-                //        else if (file.ScreenCode.StartsWith("guarantor"))
-                //        {
-                //            var guarantorFile = _guarantorDetailAppService.GetGuarantorDetailById(file.Fk_idForName).Result.FirstOrDefault();
-                //            if (guarantorFile != null)
-                //            {
-                //                file.RespectiveName = guarantorFile.FullName;
-                //            }
-                //        }
-
-                //    }
-                //}
-
 
                 return files;
             }
