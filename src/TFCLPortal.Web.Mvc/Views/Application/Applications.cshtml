@@ -168,7 +168,7 @@
                                 <a class="dropdown-item" href="/McrcDecisions/Index?ApplicationId=@item.Id" target="_blank"><i class="fa fa-comment"></i> MCRC Decisions</a>
                                 <a class="dropdown-item" href="/BCCDecisions/Index?ApplicationId=@item.Id" target="_blank"><i class="fa fa-comment"></i> BCC Decisions</a>
                                 <a class="dropdown-item" href="/Application/ApplicationDiscrepencies?id=@item.Id" target="_blank"><i class="fa fa-warning"></i> View Discrepencies</a>
-                                @if (item.AppStatus == "Early Settled" || item.AppStatus == "Disbursed")
+                                @if (item.AppStatus == "Early Settled" || item.AppStatus == "Disbursed" || item.AppStatus == "Deceased" || item.AppStatus == "Settled")
                                 {
                                     <a class="dropdown-item" href="/Accountant/ViewSchedule?ApplicationId=@item.Id" target="_blank"><i class="fa fa-calendar"></i> View Schedule</a>
 
