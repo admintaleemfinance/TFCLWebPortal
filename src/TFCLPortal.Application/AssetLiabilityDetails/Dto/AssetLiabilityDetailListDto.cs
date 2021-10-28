@@ -75,5 +75,24 @@ namespace TFCLPortal.AssetLiabilityDetails.Dto
 
         public decimal LiablityStudentSecurityDeposit { get; set; }
         public DateTime AssetLiabilityAsOn { get; set; }
+
+        //----------------------------Addition Due to CAT--------------------------------//
+        public string qtyCurrAccountRecievable { get; set; }
+        public string detailsCurrAccountRecievable { get; set; }
+        public string qtyCurrCommittee { get; set; }
+        public string detailsCurrCommittee { get; set; }
+        public string CurrTotalCurrentAssets { get; set; }
+        public string qtyCurrLoanPayableBanks { get; set; }
+        public string detailsCurrLoanPayableBanks { get; set; }
+        public string qtyCurrAccountPayable { get; set; }
+        public string detailsCurrAccountPayable { get; set; }
+        public string qtyCurrCommitteeLiabilities { get; set; }
+        public string detailsCurrCommitteeLiabilities { get; set; }
+        public string qtyCurrAdvanceReceived { get; set; }
+        public string detailsCurrAdvanceReceived { get; set; }
+        public string CurrTotalCurrentLiabilities { get; set; }
+
+        public string TotalFixedAssets { get; set; }
+        public string TotalLongTermLiabilities { get; set; }
     }
 }
