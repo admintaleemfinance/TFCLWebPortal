@@ -2414,6 +2414,19 @@ namespace TFCLPortal.Web.Controllers
             {
                 entry.isAuthorized = true;
                 entry.RejectionReason = Reason;
+
+                var app = _applicationRepository.Get(entry.ApplicationId);
+                _applicationAppService.ChangeApplicationState(ApplicationState.Deceased, entry.ApplicationId, "Deceased Applicant");
+
+                CreateFinalWorkflowDto fWobj = new CreateFinalWorkflowDto();
+                fWobj.ApplicationId = entry.ApplicationId;
+                fWobj.Action = "Application Submitted";
+                fWobj.ActionBy = (int)AbpSession.UserId;
+                fWobj.ApplicationState = ApplicationState.Submitted;
+                fWobj.isActive = true;
+
+                _finalWorkflowAppService.CreateFinalWorkflow(fWobj);
+
             }
             else if (Decision == "Reject")
             {
@@ -2424,17 +2437,7 @@ namespace TFCLPortal.Web.Controllers
             _deceasedSettlementRepository.Update(entry);
             CurrentUnitOfWork.SaveChanges();
 
-            var app = _applicationRepository.Get(entry.ApplicationId);
-            _applicationAppService.ChangeApplicationState(ApplicationState.Deceased, entry.ApplicationId, "Deceased Applicant");
-
-            CreateFinalWorkflowDto fWobj = new CreateFinalWorkflowDto();
-            fWobj.ApplicationId = entry.ApplicationId;
-            fWobj.Action = "Application Submitted";
-            fWobj.ActionBy = (int)AbpSession.UserId;
-            fWobj.ApplicationState = ApplicationState.Submitted;
-            fWobj.isActive = true;
-
-            _finalWorkflowAppService.CreateFinalWorkflow(fWobj);
+         
 
 
             return Json("");
