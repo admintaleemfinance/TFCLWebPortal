@@ -98,6 +98,9 @@ using TFCLPortal.BusinessDetailsTDS;
 using TFCLPortal.TDSBusinessExpenses;
 using TFCLPortal.PurchaseDetails;
 using Abp.Runtime.Validation;
+using TFCLPortal.SchoolFinancials;
+using TFCLPortal.SchoolNonFinancials;
+using TFCLPortal.PsychometricIndicators;
 
 namespace TFCLPortal.Web.Mvc.Controllers
 {
@@ -153,15 +156,20 @@ namespace TFCLPortal.Web.Mvc.Controllers
         private readonly IPurchaseDetailAppService _purchaseDetailAppService;
         private readonly ITDSBusinessExpenseAppService _tDSBusinessExpenseAppService;
         private readonly IDependentEducationDetailsAppService _dependentEducationDetailsAppService;
+        private readonly ISchoolFinancialAppService _schoolFinancialAppService;
+        private readonly ISchoolNonFinancialAppService _schoolNonFinancialAppService;
+        private readonly IPsychometricIndicatorAppService _psychometricIndicatorAppService;
 
         private readonly UserManager _userManager;
         private readonly IUserAppService _userAppService;
 
         private readonly IHostingEnvironment _env;
 
-        public DashboardController(IFcmTokenAppService fcmTokenAppService, ITDSLoanEligibilityAppService tDSLoanEligibilityAppService, ITDSBusinessExpenseAppService tDSBusinessExpenseAppService, IBusinessDetailsTDSAppService businessDetailsTDSAppService, IPurchaseDetailAppService purchaseDetailAppService, ISalesDetailAppService salesDetailAppService, ITdsInventoryDetailAppService tdsInventoryDetailAppService, IDependentEducationDetailsAppService dependentEducationDetailsAppService, IMobilizationAppService mobilizationAppService, INotificationLogAppService notificationLogAppService, IHostingEnvironment env, IMcrcDecisionAppService McrcDecisionAppService, IMcrcRecordAppService mcrcRecordAppService, IMcrcStateAppService mcrcStateAppService, IBccStateAppService bccStateAppService, IFinalWorkflowAppService finalWorkflowAppService, IAssociatedIncomeAppService associatedIncomeAppService, IBranchManagerActionAppService branchManagerActionAppService, INonAssociatedIncomeAppService nonAssociatedIncomeAppService, IUserAppService userAppService, UserManager userManager)
+        public DashboardController(IPsychometricIndicatorAppService psychometricIndicatorAppService,ISchoolNonFinancialAppService schoolNonFinancialAppService,ISchoolFinancialAppService schoolFinancialAppService,IFcmTokenAppService fcmTokenAppService, ITDSLoanEligibilityAppService tDSLoanEligibilityAppService, ITDSBusinessExpenseAppService tDSBusinessExpenseAppService, IBusinessDetailsTDSAppService businessDetailsTDSAppService, IPurchaseDetailAppService purchaseDetailAppService, ISalesDetailAppService salesDetailAppService, ITdsInventoryDetailAppService tdsInventoryDetailAppService, IDependentEducationDetailsAppService dependentEducationDetailsAppService, IMobilizationAppService mobilizationAppService, INotificationLogAppService notificationLogAppService, IHostingEnvironment env, IMcrcDecisionAppService McrcDecisionAppService, IMcrcRecordAppService mcrcRecordAppService, IMcrcStateAppService mcrcStateAppService, IBccStateAppService bccStateAppService, IFinalWorkflowAppService finalWorkflowAppService, IAssociatedIncomeAppService associatedIncomeAppService, IBranchManagerActionAppService branchManagerActionAppService, INonAssociatedIncomeAppService nonAssociatedIncomeAppService, IUserAppService userAppService, UserManager userManager)
         {
-
+            _psychometricIndicatorAppService = psychometricIndicatorAppService;
+            _schoolNonFinancialAppService = schoolNonFinancialAppService;
+            _schoolFinancialAppService = schoolFinancialAppService;
             _userManager = userManager;
             _userAppService = userAppService;
             _mcrcStateAppService = mcrcStateAppService;
@@ -763,6 +771,11 @@ namespace TFCLPortal.Web.Mvc.Controllers
             if (_forSDEAppService.CheckForSDEByApplicationId(Id)) { ViewBag.isExistSR = 1; } else { ViewBag.isExistSR = 0; }
 
 
+            if (_schoolFinancialAppService.CheckSchoolFinancialByApplicationId(Id)) { ViewBag.isExistSF = 1; } else { ViewBag.isExistSF = 0; }
+            if (_schoolNonFinancialAppService.CheckSchoolNonFinancialByApplicationId(Id)) { ViewBag.isExistSNF = 1; } else { ViewBag.isExistSNF = 0; }
+            if (_psychometricIndicatorAppService.CheckPsychometricIndicatorByApplicationId(Id)) { ViewBag.isExistPI = 1; } else { ViewBag.isExistPI = 0; }
+
+
 
             //Checking existing Data in Tables END
 
@@ -879,7 +892,6 @@ namespace TFCLPortal.Web.Mvc.Controllers
             //ViewBag.isExistSR = 0;
             //var isExistSR = _forSDEAppService.GetForSDEByApplicationId(Id);
             if (_forSDEAppService.CheckForSDEByApplicationId(Id)) { ViewBag.isExistSR = 1; } else { ViewBag.isExistSR = 0; }
-
 
 
             //Checking existing Data in Tables END
@@ -1323,6 +1335,63 @@ namespace TFCLPortal.Web.Mvc.Controllers
 
                     var data = _forSDEAppService.GetForSDEByApplicationId(ApplicationId);
                     return PartialView("_forSde", data.Result);
+                }
+                else if (viewName == "SCHOOL FINANCIAL DETAILS")
+                {
+                    if (applicationData.ScreenStatus == ApplicationState.Submitted)
+                    {
+                        var Actions = _branchManagerActionAppService.GetBranchManagerActionByApplicationId(ApplicationId).Where(x => x.isActive == false && x.ScreenName == viewName.Replace(" ", "").ToLower()).FirstOrDefault();
+
+                        if (Actions != null)
+                        {
+                            ViewBag.SFAction = Actions.ActionType;
+                        }
+                    }
+                    else
+                    {
+                        ViewBag.SFAction = "Hide";
+                    }
+
+                    var data = _schoolFinancialAppService.GetSchoolFinancialByApplicationId(ApplicationId);
+                    return PartialView("_schoolFinancialDetails", data.Result);
+                }
+                else if (viewName == "SCHOOL NON-FINANCIAL DETAILS")
+                {
+                    if (applicationData.ScreenStatus == ApplicationState.Submitted)
+                    {
+                        var Actions = _branchManagerActionAppService.GetBranchManagerActionByApplicationId(ApplicationId).Where(x => x.isActive == false && x.ScreenName == viewName.Replace(" ", "").ToLower()).FirstOrDefault();
+
+                        if (Actions != null)
+                        {
+                            ViewBag.SNFAction = Actions.ActionType;
+                        }
+                    }
+                    else
+                    {
+                        ViewBag.SNFAction = "Hide";
+                    }
+
+                    var data = _schoolNonFinancialAppService.GetSchoolNonFinancialByApplicationId(ApplicationId);
+                    return PartialView("_schoolNonFinancialDetails", data.Result);
+                }
+                else if (viewName == "PSYCHOMETRIC INDICATORS")
+                {
+                    if (applicationData.ScreenStatus == ApplicationState.Submitted)
+                    {
+                        var Actions = _branchManagerActionAppService.GetBranchManagerActionByApplicationId(ApplicationId).Where(x => x.isActive == false && x.ScreenName == viewName.Replace(" ", "").ToLower()).FirstOrDefault();
+
+                        if (Actions != null)
+                        {
+                            ViewBag.PIAction = Actions.ActionType;
+                        }
+                    }
+                    else
+                    {
+                        ViewBag.PIAction = "Hide";
+                    }
+
+                    var data = _psychometricIndicatorAppService.GetPsychometricIndicatorByApplicationId(ApplicationId);
+                    return PartialView("_psychometricIndicators", data.Result);
                 }
                 else if (viewName == "REFERENCES DETAILS")
                 {

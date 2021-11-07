@@ -47,12 +47,12 @@ namespace TFCLPortal.SchoolFinancials
         }
 
 
-        public List<SchoolFinancialListDto> GetSchoolFinancialByApplicationId(int ApplicationId)
+        public async Task<SchoolFinancialListDto> GetSchoolFinancialByApplicationId(int ApplicationId)
         {
             try
             {
-                var filesList = _SchoolFinancialRepository.GetAllList().Where(x => x.ApplicationId == ApplicationId).ToList();
-                var files = ObjectMapper.Map<List<SchoolFinancialListDto>>(filesList);
+                var filesList = _SchoolFinancialRepository.GetAllList(x => x.ApplicationId == ApplicationId).FirstOrDefault();
+                var files = ObjectMapper.Map<SchoolFinancialListDto>(filesList);
 
                 //foreach (var file in files)
                 //{

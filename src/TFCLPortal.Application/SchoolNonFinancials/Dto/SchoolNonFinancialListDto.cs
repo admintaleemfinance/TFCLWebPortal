@@ -13,6 +13,7 @@ namespace TFCLPortal.SchoolNonFinancials.Dto
 
         public int ApplicationId { get; set; }
         public int BuildingCondition { get; set; }
+        public string BuildingConditionName { get; set; }
         public string PowerBackup { get; set; }
         public string FirstAid { get; set; }
         public string AyasPresent { get; set; }
@@ -29,9 +30,12 @@ namespace TFCLPortal.SchoolNonFinancials.Dto
         public string SecurityGuards { get; set; }
         public string HealthEnvironment { get; set; }
         public int FinancialRecords { get; set; }
+        public string FinancialRecordsName { get; set; }
         public string BusinessSuccession { get; set; }
         public int BusinessRadius { get; set; }
+        public string BusinessRadiusName { get; set; }
         public int TransactionHistory { get; set; }
+        public string TransactionHistoryName { get; set; }
 
 
     }

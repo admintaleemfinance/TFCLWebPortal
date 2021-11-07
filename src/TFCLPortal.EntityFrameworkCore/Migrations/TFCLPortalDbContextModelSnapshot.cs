@@ -5441,6 +5441,27 @@ namespace TFCLPortal.Migrations
                     b.ToTable("SecurityGuard");
                 });
 
+            modelBuilder.Entity("TFCLPortal.DynamicDropdowns.SpouseFamilyOtherIncomes.SpouseFamilyOtherIncome", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SpouseFamilyOtherIncome");
+                });
+
             modelBuilder.Entity("TFCLPortal.DynamicDropdowns.SpouseStatuses.SpouseStatus", b =>
                 {
                     b.Property<int>("Id")
@@ -8245,6 +8266,8 @@ namespace TFCLPortal.Migrations
                     b.Property<string>("TotalRevenue");
 
                     b.Property<string>("WorkingCapital");
+
+                    b.Property<int>("spouseFamilyOtherIncome");
 
                     b.HasKey("Id");
 

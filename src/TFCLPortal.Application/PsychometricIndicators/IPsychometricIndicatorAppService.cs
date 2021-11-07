@@ -10,7 +10,7 @@ namespace TFCLPortal.PsychometricIndicators
     public interface IPsychometricIndicatorAppService : IApplicationService
     {
         Task<string> CreatePsychometricIndicator (CreatePsychometricIndicatorDto Input);
-        List<PsychometricIndicatorListDto> GetPsychometricIndicatorByApplicationId(int ApplicationId);
+        Task<PsychometricIndicatorListDto> GetPsychometricIndicatorByApplicationId(int ApplicationId);
         bool CheckPsychometricIndicatorByApplicationId(int ApplicationId);
     }
 }

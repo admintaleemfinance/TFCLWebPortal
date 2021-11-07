@@ -90,6 +90,7 @@ using TFCLPortal.DynamicDropdowns.HopefulFutures;
 using TFCLPortal.DynamicDropdowns.DigitalInitiatives;
 using TFCLPortal.DynamicDropdowns.TeacherTrainingDays;
 using TFCLPortal.DynamicDropdowns.ParentEngagements;
+using TFCLPortal.DynamicDropdowns.SpouseFamilyOtherIncomes;
 
 namespace TFCLPortal.DynamicDropdowns.GenericDropdowns
 {
@@ -176,6 +177,7 @@ namespace TFCLPortal.DynamicDropdowns.GenericDropdowns
         private readonly IRepository<TeacherTrainingDay> _TeacherTrainingDayRepository;
         private readonly IRepository<BankingTransaction> _bankingTransactionRepository;
         private readonly IRepository<ParentEngagement> _ParentEngagementRepository;
+        private readonly IRepository<SpouseFamilyOtherIncome> _SpouseFamilyOtherIncomeRepository;
         public GenericDropdownAppService
         (ILoanPurposeAppService loanPurposeAppService,
             IRepository<LearningAid> LearningAidRepository,
@@ -253,11 +255,13 @@ namespace TFCLPortal.DynamicDropdowns.GenericDropdowns
             IRepository<BuildingCondition> buildingConditionRepository,
             IRepository<AyasPresent> ayasPresentRepository,
             IRepository<PowerBackup> powerBackupRepository,
+            IRepository<SpouseFamilyOtherIncome> SpouseFamilyOtherIncomeRepository,
             IBankRatingAppService bankRatingAppService,
             ICreditBureauReportedAppService creditBureauReportedAppService,
             IClientBusinessClassificationAppService clientBusinessClassificationAppService,
             INatureOfBusinessAppService natureOfBusinessAppService)
         {
+            _SpouseFamilyOtherIncomeRepository = SpouseFamilyOtherIncomeRepository;
             _powerBackupRepository = powerBackupRepository;
             _CleanWaterRepository = CleanWaterRepository;
             _loanPurposeAppService = loanPurposeAppService;
@@ -662,7 +666,6 @@ namespace TFCLPortal.DynamicDropdowns.GenericDropdowns
                 genericDropdownDto.FinancialRecordRep = _FinancialRecordRepository.GetAllList();
                 genericDropdownDto.BusinessRadiusRep = _BusinessRadiusRepository.GetAllList();
                 genericDropdownDto.BankingTransactionRep = _bankingTransactionRepository.GetAllList();
-
                 genericDropdownDto.PeopleStealRep = _PeopleStealRepository.GetAllList();
                 genericDropdownDto.AvoidConflictRep = _AvoidConflictRepository.GetAllList();
                 genericDropdownDto.BiggestMotivationRep = _BiggestMotivationRepository.GetAllList();
@@ -670,6 +673,7 @@ namespace TFCLPortal.DynamicDropdowns.GenericDropdowns
                 genericDropdownDto.DigitalInitiativeRep = _DigitalInitiativeRepository.GetAllList();
                 genericDropdownDto.TeacherTrainingDayRep = _TeacherTrainingDayRepository.GetAllList();
                 genericDropdownDto.ParentEngagementRep = _ParentEngagementRepository.GetAllList();
+                genericDropdownDto.SpouseFamilyOtherIncomeRep = _SpouseFamilyOtherIncomeRepository.GetAllList();
                 //new Mobiization Dropdowns
 
 

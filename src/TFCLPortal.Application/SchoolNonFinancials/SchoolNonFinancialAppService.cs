@@ -9,18 +9,30 @@ using TFCLPortal.Applications;
 using TFCLPortal.CoApplicantDetails;
 using TFCLPortal.SchoolNonFinancials.Dto;
 using TFCLPortal.GuarantorDetails;
+using TFCLPortal.DynamicDropdowns.BuildingConditions;
+using TFCLPortal.DynamicDropdowns.FinancialRecords;
+using TFCLPortal.DynamicDropdowns.BusinessRadiuses;
+using TFCLPortal.DynamicDropdowns.BankingTransactiones;
 
 namespace TFCLPortal.SchoolNonFinancials
 {
     public class SchoolNonFinancialAppService : TFCLPortalAppServiceBase, ISchoolNonFinancialAppService
     {
         private readonly IRepository<SchoolNonFinancial, int> _SchoolNonFinancialRepository;
+        private readonly IRepository<BuildingCondition, int> _BuildingConditionRepository;
+        private readonly IRepository<FinancialRecord, int> _FinancialRecordRepository;
+        private readonly IRepository<BusinessRadius, int> _BusinessRadiusRepository;
+        private readonly IRepository<BankingTransaction, int> _BankingTransactionRepository;
         private readonly ICoApplicantDetailAppService _coApplicantDetailAppService;
         private readonly IGuarantorDetailAppService _guarantorDetailAppService;
         private readonly IApplicationAppService _applicationAppService;
 
-        public SchoolNonFinancialAppService(IRepository<SchoolNonFinancial, int> SchoolNonFinancialRepository, IApplicationAppService applicationAppService, IGuarantorDetailAppService guarantorDetailAppService, ICoApplicantDetailAppService coApplicantDetailAppService)
+        public SchoolNonFinancialAppService(IRepository<BankingTransaction, int> BankingTransactionRepository,IRepository<BusinessRadius, int> BusinessRadiusRepository,IRepository<FinancialRecord, int> FinancialRecordRepository,IRepository<BuildingCondition, int> BuildingConditionRepository,IRepository<SchoolNonFinancial, int> SchoolNonFinancialRepository, IApplicationAppService applicationAppService, IGuarantorDetailAppService guarantorDetailAppService, ICoApplicantDetailAppService coApplicantDetailAppService)
         {
+            _BankingTransactionRepository = BankingTransactionRepository;
+            _BusinessRadiusRepository = BusinessRadiusRepository;
+            _FinancialRecordRepository = FinancialRecordRepository;
+            _BuildingConditionRepository = BuildingConditionRepository;
             _SchoolNonFinancialRepository = SchoolNonFinancialRepository;
             _applicationAppService = applicationAppService;
             _coApplicantDetailAppService = coApplicantDetailAppService;
@@ -47,13 +59,32 @@ namespace TFCLPortal.SchoolNonFinancials
         }
 
 
-        public List<SchoolNonFinancialListDto> GetSchoolNonFinancialByApplicationId(int ApplicationId)
+        public async Task<SchoolNonFinancialListDto> GetSchoolNonFinancialByApplicationId(int ApplicationId)
         {
             try
             {
-                var filesList = _SchoolNonFinancialRepository.GetAllList().Where(x => x.ApplicationId == ApplicationId).ToList();
-                var files = ObjectMapper.Map<List<SchoolNonFinancialListDto>>(filesList);
+                var filesList = _SchoolNonFinancialRepository.GetAllList(x => x.ApplicationId == ApplicationId).FirstOrDefault();
+                var files = ObjectMapper.Map<SchoolNonFinancialListDto>(filesList);
 
+                if(files!=null)
+                {
+                    if(files.BuildingCondition!=0)
+                    {
+                        files.BuildingConditionName = _BuildingConditionRepository.Get(files.BuildingCondition).Name;
+                    }
+                    if (files.TransactionHistory != 0)
+                    {
+                        files.TransactionHistoryName = _BankingTransactionRepository.Get(files.TransactionHistory).Name;
+                    }
+                    if (files.FinancialRecords != 0)
+                    {
+                        files.FinancialRecordsName = _FinancialRecordRepository.Get(files.FinancialRecords).Name;
+                    }
+                    if (files.BusinessRadius != 0)
+                    {
+                        files.BusinessRadiusName = _BusinessRadiusRepository.Get(files.BusinessRadius).Name;
+                    }
+                }
 
                 return files;
             }

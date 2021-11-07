@@ -24,6 +24,7 @@ using TFCLPortal.DynamicDropdowns.HopefulFutures;
 using TFCLPortal.DynamicDropdowns.DigitalInitiatives;
 using TFCLPortal.DynamicDropdowns.TeacherTrainingDays;
 using TFCLPortal.DynamicDropdowns.ParentEngagements;
+using TFCLPortal.DynamicDropdowns.SpouseFamilyOtherIncomes;
 
 namespace TFCLPortal.DynamicDropdowns.GenericDropdowns.Dto
 {
@@ -125,6 +126,7 @@ namespace TFCLPortal.DynamicDropdowns.GenericDropdowns.Dto
         public List<DigitalInitiative> DigitalInitiativeRep { get; set; }
         public List<TeacherTrainingDay> TeacherTrainingDayRep { get; set; }
         public List<ParentEngagement> ParentEngagementRep { get; set; }
+        public List<SpouseFamilyOtherIncome> SpouseFamilyOtherIncomeRep { get; set; }
 
     }
 }

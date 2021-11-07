@@ -10,7 +10,7 @@ namespace TFCLPortal.SchoolFinancials
     public interface ISchoolFinancialAppService : IApplicationService
     {
         Task<string> CreateSchoolFinancial (CreateSchoolFinancialDto Input);
-        List<SchoolFinancialListDto> GetSchoolFinancialByApplicationId(int ApplicationId);
+        Task<SchoolFinancialListDto> GetSchoolFinancialByApplicationId(int ApplicationId);
         bool CheckSchoolFinancialByApplicationId(int ApplicationId);
     }
 }

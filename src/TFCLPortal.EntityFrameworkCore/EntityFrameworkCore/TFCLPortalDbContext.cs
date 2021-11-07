@@ -180,6 +180,7 @@ using TFCLPortal.DynamicDropdowns.HopefulFutures;
 using TFCLPortal.DynamicDropdowns.DigitalInitiatives;
 using TFCLPortal.DynamicDropdowns.TeacherTrainingDays;
 using TFCLPortal.DynamicDropdowns.ParentEngagements;
+using TFCLPortal.DynamicDropdowns.SpouseFamilyOtherIncomes;
 
 namespace TFCLPortal.EntityFrameworkCore
 {
@@ -207,6 +208,7 @@ namespace TFCLPortal.EntityFrameworkCore
         public DbSet<DeviationApproval> DeviationApprovalDbSet { get; set; }
         public DbSet<BranchManagerAction> BranchManagerActionDbSet { get; set; }
         public DbSet<TJSLoanEligibility> TJSLoanEligibilityDbSet { get; set; }
+        public DbSet<SpouseFamilyOtherIncome> SpouseFamilyOtherIncomeDbSet { get; set; }
         public DbSet<DeceasedSettlement> DeceasedSettlementDbSet { get; set; }
         public DbSet<DeceasedAuthorization> DeceasedAuthorizationDbSet { get; set; }
         public DbSet<ManagmentCommitteeDecision> ManagmentCommitteeDecisionDbSet { get; set; }

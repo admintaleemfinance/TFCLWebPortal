@@ -10,7 +10,7 @@ namespace TFCLPortal.SchoolNonFinancials
     public interface ISchoolNonFinancialAppService : IApplicationService
     {
         Task<string> CreateSchoolNonFinancial (CreateSchoolNonFinancialDto Input);
-        List<SchoolNonFinancialListDto> GetSchoolNonFinancialByApplicationId(int ApplicationId);
+        Task<SchoolNonFinancialListDto> GetSchoolNonFinancialByApplicationId(int ApplicationId);
         bool CheckSchoolNonFinancialByApplicationId(int ApplicationId);
     }
 }

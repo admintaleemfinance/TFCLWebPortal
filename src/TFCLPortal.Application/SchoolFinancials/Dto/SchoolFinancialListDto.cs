@@ -23,6 +23,7 @@ namespace TFCLPortal.SchoolFinancials.Dto
         public string TotalExpensesFromDebt { get; set; }
         public string AllOtherExpenses { get; set; }
         public string TotalProfit { get; set; }
+        public int spouseFamilyOtherIncome { get; set; }    
         public string ProfitMargin { get; set; }
         public string TotalAsset { get; set; }
         public string CurrentAsset { get; set; }
