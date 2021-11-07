@@ -85,6 +85,10 @@
                     <p class="detailHeading">Working Capital/ Fund Balance</p>
                     <p class="detailText">@(Model.WorkingCapital == null || Model.WorkingCapital == "" ? "--" : string.Format("{0:#,###}", Int32.Parse(Model.WorkingCapital)))</p>
                 </div>
+                <div class="col-md-3">
+                    <p class="detailHeading">Spouse's/Family's other income</p>
+                    <p class="detailText">@(Model.spouseFamilyOtherIncomeName == null || Model.spouseFamilyOtherIncomeName == "" ? "--" : Model.spouseFamilyOtherIncomeName)</p>
+                </div>
             </div>
 
 

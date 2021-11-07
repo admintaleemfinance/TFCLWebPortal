@@ -9,18 +9,21 @@ using TFCLPortal.Applications;
 using TFCLPortal.CoApplicantDetails;
 using TFCLPortal.SchoolFinancials.Dto;
 using TFCLPortal.GuarantorDetails;
+using TFCLPortal.DynamicDropdowns.SpouseFamilyOtherIncomes;
 
 namespace TFCLPortal.SchoolFinancials
 {
     public class SchoolFinancialAppService : TFCLPortalAppServiceBase, ISchoolFinancialAppService
     {
         private readonly IRepository<SchoolFinancial, int> _SchoolFinancialRepository;
+        private readonly IRepository<SpouseFamilyOtherIncome, int> _SpouseFamilyOtherIncomeRepository;
         private readonly ICoApplicantDetailAppService _coApplicantDetailAppService;
         private readonly IGuarantorDetailAppService _guarantorDetailAppService;
         private readonly IApplicationAppService _applicationAppService;
 
-        public SchoolFinancialAppService(IRepository<SchoolFinancial, int> SchoolFinancialRepository, IApplicationAppService applicationAppService, IGuarantorDetailAppService guarantorDetailAppService, ICoApplicantDetailAppService coApplicantDetailAppService)
+        public SchoolFinancialAppService(IRepository<SpouseFamilyOtherIncome, int> SpouseFamilyOtherIncomeRepository,IRepository<SchoolFinancial, int> SchoolFinancialRepository, IApplicationAppService applicationAppService, IGuarantorDetailAppService guarantorDetailAppService, ICoApplicantDetailAppService coApplicantDetailAppService)
         {
+            _SpouseFamilyOtherIncomeRepository = SpouseFamilyOtherIncomeRepository;
             _SchoolFinancialRepository = SchoolFinancialRepository;
             _applicationAppService = applicationAppService;
             _coApplicantDetailAppService = coApplicantDetailAppService;
@@ -53,6 +56,14 @@ namespace TFCLPortal.SchoolFinancials
             {
                 var filesList = _SchoolFinancialRepository.GetAllList(x => x.ApplicationId == ApplicationId).FirstOrDefault();
                 var files = ObjectMapper.Map<SchoolFinancialListDto>(filesList);
+
+                if(files!=null)
+                {
+                    if(files.spouseFamilyOtherIncome!=0)
+                    {
+                        files.spouseFamilyOtherIncomeName = _SpouseFamilyOtherIncomeRepository.Get(files.spouseFamilyOtherIncome).Name;
+                    }
+                }
 
                 //foreach (var file in files)
                 //{
