@@ -41,6 +41,7 @@ using TFCLPortal.TJSLoanEligibilities;
 using TFCLPortal.TaggedPortfolios;
 using Abp.Domain.Repositories;
 using TFCLPortal.Branches;
+using TFCLPortal.PsychometricIndicators;
 
 namespace TFCLPortal.AllScreensGetByAppID
 {
@@ -78,6 +79,7 @@ namespace TFCLPortal.AllScreensGetByAppID
         private readonly ITDSLoanEligibilityAppService _tDSLoanEligibilityAppService;
         private readonly IBusinessDetailsTDSAppService _businessDetailsTDSAppService;
         private readonly IDependentEducationDetailsAppService _dependentEducationDetailsAppService;
+        private readonly IPsychometricIndicatorAppService _psychometricIndicatorAppService;
 
         private readonly ISalaryDetailsAppService _salaryDetailsAppService;
         private readonly IEmploymentDetailAppService _employmentDetailAppService;
@@ -89,6 +91,7 @@ namespace TFCLPortal.AllScreensGetByAppID
         public AllScreenGetByAppIdAppService(
             IPersonalDetailAppService personalDetailAppService,
             ISalaryDetailsAppService salaryDetailsAppService,
+            IPsychometricIndicatorAppService psychometricIndicatorAppService,
             IEmploymentDetailAppService employmentDetailAppService,
             IBusinessPlanAppService businessPlanAppService,
             IContactDetailAppService contactDetailAppService,
@@ -125,6 +128,7 @@ namespace TFCLPortal.AllScreensGetByAppID
         IDependentEducationDetailsAppService dependentEducationDetailsAppService
             )
         {
+            _psychometricIndicatorAppService = psychometricIndicatorAppService;
             _personalDetailAppService = personalDetailAppService;
             _businessPlanAppService = businessPlanAppService;
             _contactDetailAppService = contactDetailAppService;
@@ -199,10 +203,29 @@ namespace TFCLPortal.AllScreensGetByAppID
                     {
                         data.Age = GetAge((DateTime)pd.BirthDate);
                     }
-                
+
+
+                    var pi = _psychometricIndicatorAppService.GetPsychometricIndicatorByApplicationId(ApplicationId).Result;
+
+                    if (pi != null)
+                    {
+                        data.PercentageToStealName = pi.PercentageToStealName;
+                        data.AvoidConflictName = pi.AvoidConflictName;
+                        data.MotivationToRunSchoolName = pi.MotivationToRunSchoolName;
+                        data.BusinessLuck = (pi.BusinessLuck == 0 ? "False" : "True");
+                        data.HopefulForFutureName = pi.HopefulForFutureName;
+                        data.DigitalInitiativesName = pi.DigitalInitiativesName;
+                        data.TeacherTrainingsName = pi.TeacherTrainingsName;
+                        data.ParentEngagementName = pi.ParentEngagementName;
+                        data.MixExpenses = pi.MixExpenses;
+                        data.ComparedFee = pi.ComparedFee;
+                    }
+
+
+
                 }
 
-                
+
 
 
                 return data;

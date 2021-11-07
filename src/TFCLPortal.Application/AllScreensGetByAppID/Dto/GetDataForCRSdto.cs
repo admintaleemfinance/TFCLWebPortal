@@ -66,5 +66,26 @@ namespace TFCLPortal.AllScreensGetByAppID.Dto
 
         //Financial Data
         public int LoanCycles { get; set; }
+
+
+        //Psychometric
+        //public int PercentageToSteal { get; set; }
+        public string PercentageToStealName { get; set; }
+        //public int AvoidConflict { get; set; }
+        public string AvoidConflictName { get; set; }
+        //public int MotivationToRunSchool { get; set; }
+        public string MotivationToRunSchoolName { get; set; }
+        public string BusinessLuck { get; set; }
+        //public int HopefulForFuture { get; set; }
+        public string HopefulForFutureName { get; set; }
+        //public int DigitalInitiatives { get; set; }
+        public string DigitalInitiativesName { get; set; }
+        //public int TeacherTrainings { get; set; }
+        public string TeacherTrainingsName { get; set; }
+        //public int ParentEngagement { get; set; }
+        public string ParentEngagementName { get; set; }
+        public string MixExpenses { get; set; }
+        public string ComparedFee { get; set; }
+
     }
 }

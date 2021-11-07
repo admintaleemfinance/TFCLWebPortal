@@ -18,6 +18,7 @@ namespace TFCLPortal.PsychometricIndicators.Dto
         public int MotivationToRunSchool { get; set; }
         public string MotivationToRunSchoolName { get; set; }
         public int BusinessLuck { get; set; }
+        public string BusinessLuckName { get; set; }
         public int HopefulForFuture { get; set; }
         public string HopefulForFutureName { get; set; }
         public int DigitalInitiatives { get; set; }
