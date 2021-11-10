@@ -503,7 +503,7 @@ namespace TFCLPortal.Web.Controllers
                                         }
                                         else
                                         {
-                                            var getLastPaidInstallment = paidInstallments.Where(x => x.ApplicationId == schedule.ApplicationId).LastOrDefault();
+                                            var getLastPaidInstallment = paidInstallments.Where(x => x.ApplicationId == schedule.ApplicationId).FirstOrDefault();
                                             if (getLastPaidInstallment != null)
                                             {
                                                 excessShort = getLastPaidInstallment.ExcessShortPayment;

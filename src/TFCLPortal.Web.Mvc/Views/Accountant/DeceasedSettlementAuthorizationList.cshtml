@@ -42,6 +42,12 @@
                         Client / School / Business Name
                     </th>
                     <th>
+                        O/S Principal
+                    </th>
+                    <th>
+                        O/S Mark-Up
+                    </th>
+                    <th>
                         total Amount Payable
                     </th>
                     <th>
@@ -68,6 +74,12 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.SchoolName)
+                    </td>
+                    <td>
+                        @(string.Format("{0:#,##0}", item.OsPrincipalAmount))
+                    </td>
+                    <td>
+                        @(string.Format("{0:#,##0}", item.OsMarkupAmount))
                     </td>
                     <td>
                         @(string.Format("{0:#,##0}", item.TotalAmountPayable))

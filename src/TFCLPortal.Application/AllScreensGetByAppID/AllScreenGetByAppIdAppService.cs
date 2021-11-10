@@ -42,6 +42,8 @@ using TFCLPortal.TaggedPortfolios;
 using Abp.Domain.Repositories;
 using TFCLPortal.Branches;
 using TFCLPortal.PsychometricIndicators;
+using TFCLPortal.SchoolFinancials;
+using TFCLPortal.SchoolNonFinancials;
 
 namespace TFCLPortal.AllScreensGetByAppID
 {
@@ -79,6 +81,8 @@ namespace TFCLPortal.AllScreensGetByAppID
         private readonly ITDSLoanEligibilityAppService _tDSLoanEligibilityAppService;
         private readonly IBusinessDetailsTDSAppService _businessDetailsTDSAppService;
         private readonly IDependentEducationDetailsAppService _dependentEducationDetailsAppService;
+        private readonly ISchoolFinancialAppService _schoolFinancialAppService;
+        private readonly ISchoolNonFinancialAppService _schoolNonFinancialAppService;
         private readonly IPsychometricIndicatorAppService _psychometricIndicatorAppService;
 
         private readonly ISalaryDetailsAppService _salaryDetailsAppService;
@@ -95,6 +99,7 @@ namespace TFCLPortal.AllScreensGetByAppID
             IEmploymentDetailAppService employmentDetailAppService,
             IBusinessPlanAppService businessPlanAppService,
             IContactDetailAppService contactDetailAppService,
+            ISchoolFinancialAppService schoolFinancialAppService,
             IRepository<Applicationz> applicationRepository,
             IBusinessDetailsAppService businessDetailAppService,
             IOtherDetailAppService otherDetailAppService,
@@ -107,6 +112,7 @@ namespace TFCLPortal.AllScreensGetByAppID
             ICoApplicantDetailAppService coApplicantDetailAppService,
             ITJSLoanEligibilityAppService tJSLoanEligibilityAppService,
             IRepository<Branch> branchRepository,
+            ISchoolNonFinancialAppService schoolNonFinancialAppService,
             IGuarantorDetailAppService guarantorDetailAppService,
               IAssociatedIncomeAppService associatedIncomeAppService,
             INonAssociatedIncomeAppService nonAssociatedIncomeAppService,
@@ -128,6 +134,8 @@ namespace TFCLPortal.AllScreensGetByAppID
         IDependentEducationDetailsAppService dependentEducationDetailsAppService
             )
         {
+            _schoolNonFinancialAppService = schoolNonFinancialAppService;
+            _schoolFinancialAppService = schoolFinancialAppService;
             _psychometricIndicatorAppService = psychometricIndicatorAppService;
             _personalDetailAppService = personalDetailAppService;
             _businessPlanAppService = businessPlanAppService;
@@ -195,18 +203,136 @@ namespace TFCLPortal.AllScreensGetByAppID
                     if (LE != null)
                     {
                         data.MarkupApplied = LE.Mark_Up;
+
+                        decimal ir = decimal.Parse(LE.InstallmentRatio);
+                        if (ir < 30)
+                        {
+                            data.InstallmentRatio = "Below 30%";
+                        }
+                        else if (ir < 40)
+                        {
+                            data.InstallmentRatio = "30% - 40%";
+                        }
+                        else if (ir < 40)
+                        {
+                            data.InstallmentRatio = "30% - 40%";
+                        }
+                        else if (ir < 50)
+                        {
+                            data.InstallmentRatio = "40% - 50%";
+                        }
+                        else if (ir < 60)
+                        {
+                            data.InstallmentRatio = "50% - 60%";
+                        }
+                        else if (ir < 10000)
+                        {
+                            data.InstallmentRatio = "Over 60%";
+                        }
+
+
                     }
 
-                    data.LoanCycles = apps.FindAll(x => x.CNICNo == currentApp.CNICNo && (x.ScreenStatus == "Disbursed" || x.ScreenStatus == "Early Settled" || x.ScreenStatus == "Settled" || x.ScreenStatus == "Deceased")).Count;
+                    bool coApp = _coApplicantDetailAppService.CheckCoApplicantDetailByApplicationId(ApplicationId);
+                    if (coApp)
+                    {
+                        data.CoApplicantAvailable = "Yes";
+                    }
+                    else
+                    {
+                        data.CoApplicantAvailable = "No";
+                    }
+
+
+                    data.LoanCycles = apps.FindAll(x => x.CNICNo == currentApp.CNICNo && (x.ScreenStatus != "Decline")).Count;
                     var pd = _personalDetailAppService.GetPersonalDetailByApplicationId(ApplicationId).Result;
                     if (pd != null)
                     {
                         data.Age = GetAge((DateTime)pd.BirthDate);
+
+                        if (pd.isActiveTaxPayer == null || pd.isActiveTaxPayer == false)
+                        {
+                            data.TaxFiler = "No";
+                        }
+                        else
+                        {
+                            data.TaxFiler = "Yes";
+                        }
+                    }
+
+                    var bd = _businessDetailAppService.GetBusinessDetailByApplicationId(ApplicationId).Result;
+                    if (bd != null)
+                    {
+                        data.expInSchoolYears = bd.TotalExperienceInEducationIndustry;
+                        if (bd.school_Branches != null)
+                        {
+                            data.YearsAtBusiness = ((DateTime.Now - (DateTime)bd.school_Branches[0].CurrentAddressSince).Days) / 365;
+                            data.SchoolYears = ((DateTime.Now - (DateTime)bd.school_Branches[0].EstablishedSince).Days) / 365;
+                            data.BusinessPlaceStatus = bd.school_Branches[0].OwnershipStatusName;
+                            data.SchoolType = bd.school_Branches[0].BusinessTypeName;
+                            data.LegalStatus = bd.school_Branches[0].LegalStatusName;
+                            data.IsSchoolRegistered = bd.school_Branches[0].RegistrationStatus;
+                            if (bd.school_Branches[0].isAcademy == null || bd.school_Branches[0].isAcademy == false)
+                            {
+                                data.EveningAcademy = "No";
+                            }
+                            else
+                            {
+                                data.EveningAcademy = "Yes";
+                            }
+                            data.SchoolLevel = bd.school_Branches[0].SchoolLevelName;
+
+
+                            if (bd.school_Branches[0].NoOfBranchAccount > 0)
+                            {
+                                data.SeperateAccountantAvailable = "Yes";
+                            }
+                            else
+                            {
+                                decimal LoanAmount = decimal.Parse(LE.LoanAmountRequried);
+
+                                if (LoanAmount <= 4000000)
+                                {
+                                    data.SeperateAccountantAvailable = "No, loan amount under 4mn";
+                                }
+                                else
+                                {
+                                    data.SeperateAccountantAvailable = "No, loan amount over 4mn";
+                                }
+                            }
+
+                            data.Classrooms = bd.school_Branches[0].ClassRooms;
+                            data.TeachingStaff = bd.school_Branches[0].TotalTeachingStaffTotal;
+                            data.NonTeachingStaff = bd.school_Branches[0].NonTeachingStaffTotal;
+
+
+
+                        }
+                    }
+
+                    var bi = _businessIncomeAppService.GetBusinessIncomeByApplicationId(ApplicationId);
+                    if (bi != null)
+                    {
+                        if (bi.businessChildLists != null)
+                        {
+                            data.TotalStudents = Int32.Parse(bi.businessChildLists[0].StudentsConsidered);
+                            data.Enrollments = Int32.Parse(bi.businessChildLists[0].StudentsConsidered);
+                            data.AvgMonthlyFee = (Int32.Parse(bi.businessChildLists[0].TotalAvgFee) / bi.businessChildLists[0].BusinessIncomeSchoolClasses.Count).ToString();
+
+                        }
+                    }
+
+                    var cd = _contactDetailAppService.GetContactDetailByApplicationId(ApplicationId).Result;
+                    if (cd != null)
+                    {
+                        data.ResidenceAccommodationType = cd.OwnershipStatusName;
+                        data.YearsAtResidence = ((DateTime.Now - (DateTime)cd.CurrentAddressSince).Days) / 365;
                     }
 
 
-                    var pi = _psychometricIndicatorAppService.GetPsychometricIndicatorByApplicationId(ApplicationId).Result;
+                    //data.LoanCycles = apps.FindAll(x => x.CNICNo == currentApp.CNICNo && (x.ScreenStatus != "Decline")).Count;
 
+                    var pi = _psychometricIndicatorAppService.GetPsychometricIndicatorByApplicationId(ApplicationId).Result;
                     if (pi != null)
                     {
                         data.PercentageToStealName = pi.PercentageToStealName;
@@ -220,6 +346,140 @@ namespace TFCLPortal.AllScreensGetByAppID
                         data.MixExpenses = pi.MixExpenses;
                         data.ComparedFee = pi.ComparedFee;
                     }
+
+                    var sf = _schoolFinancialAppService.GetSchoolFinancialByApplicationId(ApplicationId).Result;
+                    if (sf != null)
+                    {
+                        //data.BankingTransactionHistory = sf.;
+                        data.OtherBusinessIncome = sf.spouseFamilyOtherIncomeName;
+                        data.PreviousYear = sf.PreviousYear;
+                        data.NoOfClassrooms = sf.NoOfClassrooms;
+                        data.NoOfStudents = sf.NoOfStudents;
+                        data.NoOfTeachingStaff = sf.NoOfTeachingStaff;
+                        data.NoOfNonTeachingStaff = sf.NoOfNonTeachingStaff;
+                        data.TotalRevenue = sf.TotalRevenue;
+                        data.TotalExpensesFromSalary = sf.TotalExpensesFromSalary;
+                        data.TotalExpensesFromRentMortgage = sf.TotalExpensesFromRentMortgage;
+                        data.TotalExpensesFromDebt = sf.TotalExpensesFromDebt;
+                        data.AllOtherExpenses = sf.AllOtherExpenses;
+                        data.TotalProfit = sf.TotalProfit;
+                        data.spouseFamilyOtherIncomeName = sf.spouseFamilyOtherIncomeName;
+                        data.ProfitMargin = sf.ProfitMargin;
+                        data.TotalAsset = sf.TotalAsset;
+                        data.CurrentAsset = sf.CurrentAsset;
+                        data.TotalLiabilities = sf.TotalLiabilities;
+                        data.CurrentLiabilities = sf.CurrentLiabilities;
+                        data.WorkingCapital = sf.WorkingCapital;
+                        data.PrevAvgMonthlyFee = sf.AvgMonthlyFee;
+                    }
+                    var sde = _forSDEAppService.GetForSDEByApplicationId(ApplicationId).Result;
+                    if (sde != null)
+                    {
+                        data.UtillityBill = sde.utilityName;
+                    }
+
+                    var snf = _schoolNonFinancialAppService.GetSchoolNonFinancialByApplicationId(ApplicationId).Result;
+                    if (snf != null)
+                    {
+                        data.BankingTransactionHistory = snf.TransactionHistoryName;
+                        data.StructuralFinancialRecords = snf.FinancialRecordsName;
+                        data.BusinessSuccession = snf.BusinessSuccession;
+                        data.ClientBusinessRadius = snf.BusinessRadiusName;
+
+                        data.BuildingConditionName = snf.BuildingConditionName;
+                        data.PowerBackup = snf.PowerBackup;
+                        data.FirstAid = snf.FirstAid;
+                        data.AyasPresent = snf.AyasPresent;
+                        data.SeperateWashrooms = snf.SeperateWashrooms;
+                        data.ProperLighting = snf.ProperLighting;
+                        data.CleanWater = snf.CleanWater;
+                        data.FunctionalComputerLab = snf.FunctionalComputerLab;
+                        data.SchoolManagementSystem = snf.SchoolManagementSystem;
+                        data.SchoolDecor = snf.SchoolDecor;
+                        data.LearningAid = snf.LearningAid;
+                        data.TeacherTrainings = snf.TeacherTrainings;
+                        data.ChildProtection = snf.ChildProtection;
+                        data.EmergencyExits = snf.EmergencyExits;
+                        data.SecurityGuards = snf.SecurityGuards;
+                        data.HealthEnvironment = snf.HealthEnvironment;
+
+                    }
+
+                    var colD = _collateralDetailAppService.GetCollateralDetailByApplicationId(ApplicationId).Result;
+                    if (colD != null)
+                    {
+                        List<collateralListDto> collateralList = new List<collateralListDto>();
+                       foreach(var item in colD.createCollateralLandBuilding)
+                        {
+                            collateralListDto collateral = new collateralListDto();
+                            collateral.id = item.Id;
+                            collateral.title = "Land/Building : " + item.propertyTypeName;
+                            collateral.marketValue = item.LandBuildingMarketPrice;
+                            collateral.forcedSaleValue = item.AppliedLtvPercentage;
+                            collateralList.Add(collateral);
+                        }
+
+                        foreach (var item in colD.createCollateralVehicle)
+                        {
+                            collateralListDto collateral = new collateralListDto();
+                            collateral.id = item.Id;
+                            collateral.title = "Vehicle : " + item.MAKE;
+                            collateral.marketValue = item.MarketValue;
+                            collateral.forcedSaleValue = item.AppliedLtvPercentage;
+                            collateralList.Add(collateral);
+                        }
+
+                        foreach (var item in colD.createCollateralTDR)
+                        {
+                            collateralListDto collateral = new collateralListDto();
+                            collateral.id = item.Id;
+                            collateral.title = "TDR";
+                            collateral.marketValue = item.AmountTDR;
+                            collateral.forcedSaleValue = item.AppliedLtvPercentage;
+                            collateralList.Add(collateral);
+                        }
+                        data.Collaterals = collateralList;
+                    }
+
+                    if (data.Enrollments > data.NoOfStudents)
+                    {
+                        data.ChangeInStudents = "Increasing";
+                    }
+                    else if(data.Enrollments < data.NoOfStudents)
+                    {
+                        data.ChangeInStudents = "Decreasing";
+                    }
+                    else
+                    {
+                        data.ChangeInStudents = "No Change";
+                    }
+
+                    if (data.TeachingStaff > data.NoOfTeachingStaff)
+                    {
+                        data.ChangeInTeachers = "Increasing";
+                    }
+                    else if (data.TeachingStaff < data.NoOfTeachingStaff)
+                    {
+                        data.ChangeInTeachers = "Decreasing";
+                    }
+                    else
+                    {
+                        data.ChangeInTeachers = "No Change";
+                    }
+
+                    if (data.Classrooms > data.NoOfClassrooms)
+                    {
+                        data.ChangeInClassrooms = "Increasing";
+                    }
+                    else if (data.Classrooms < data.NoOfClassrooms)
+                    {
+                        data.ChangeInClassrooms = "Decreasing";
+                    }
+                    else
+                    {
+                        data.ChangeInClassrooms = "No Change";
+                    }
+
 
 
 

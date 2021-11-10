@@ -35,6 +35,9 @@ namespace TFCLPortal.SchoolNonFinancials.Dto
         public int BusinessRadius { get; set; }
         public string BusinessRadiusName { get; set; }
         public int TransactionHistory { get; set; }
+        public int DropoutStudents { get; set; }
+        public int OtherPaymentBehaviour { get; set; }
+        public string OtherPaymentBehaviourName { get; set; }
         public string TransactionHistoryName { get; set; }
 
 

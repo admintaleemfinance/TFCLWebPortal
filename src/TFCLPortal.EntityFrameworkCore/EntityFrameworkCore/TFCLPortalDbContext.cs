@@ -181,6 +181,7 @@ using TFCLPortal.DynamicDropdowns.DigitalInitiatives;
 using TFCLPortal.DynamicDropdowns.TeacherTrainingDays;
 using TFCLPortal.DynamicDropdowns.ParentEngagements;
 using TFCLPortal.DynamicDropdowns.SpouseFamilyOtherIncomes;
+using TFCLPortal.DynamicDropdowns.OtherPaymentBehaviours;
 
 namespace TFCLPortal.EntityFrameworkCore
 {
@@ -227,6 +228,7 @@ namespace TFCLPortal.EntityFrameworkCore
         public DbSet<BuildingStatus> BuildingStatusDbSet { get; set; }
         public DbSet<SchoolCategory> SchoolCategoryDbSet { get; set; }
         public DbSet<SalaryDetail> SalaryDetailDbSet { get; set; }
+        public DbSet<OtherPaymentBehaviour> OtherPaymentBehaviourDbSet { get; set; }
         public DbSet<SalaryDetailChild> SalaryDetailChildDbSet { get; set; }
         public DbSet<LoanSchedule> LoanScheduleDbSet { get; set; }
         public DbSet<McrcRecord> McrcRecordDbSet { get; set; }

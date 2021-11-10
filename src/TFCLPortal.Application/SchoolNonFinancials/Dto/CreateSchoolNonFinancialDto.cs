@@ -27,8 +27,10 @@ namespace TFCLPortal.SchoolNonFinancials.Dto
         public string SecurityGuards { get; set; }
         public string HealthEnvironment { get; set; }
         public int FinancialRecords { get; set; }
+        public int DropoutStudents { get; set; }
         public string BusinessSuccession { get; set; }
         public int BusinessRadius { get; set; }
+        public int OtherPaymentBehaviour { get; set; }
         public int TransactionHistory { get; set; }
 
     }

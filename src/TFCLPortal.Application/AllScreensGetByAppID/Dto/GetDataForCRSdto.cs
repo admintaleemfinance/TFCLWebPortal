@@ -54,38 +54,103 @@ namespace TFCLPortal.AllScreensGetByAppID.Dto
         public string MarkupApplied { get; set; }
         public string LoanAmountRequested { get; set; }
         public string Tenure { get; set; }
+        public int Classrooms { get; set; }
+        public int Enrollments { get; set; }
+        public int TeachingStaff { get; set; }
+        public int NonTeachingStaff { get; set; }
+        public string AvgMonthlyFee { get; set; }
+        public List<collateralListDto> Collaterals { get; set; }
+
 
         //Personal Data
         public int Age { get; set; }
-        public string ResidenceAccommodationType { get; set; }
         public int YearsAtResidence { get; set; }
         public string OtherBusinessIncome { get; set; }
-        public bool TaxFiler { get; set; }
-        public int expInSchoolYears { get; set; }
+        public string TaxFiler { get; set; }
+        public string expInSchoolYears { get; set; }
+        public string InstallmentRatio { get; set; }
+        public string CoApplicantAvailable { get; set; }
+        public string BankingTransactionHistory { get; set; }
+        public string ResidenceAccommodationType { get; set; }
+        public int YearsAtBusiness { get; set; }
+        public int SchoolYears { get; set; }
+        public int TotalStudents { get; set; }
+        public string BusinessPlaceStatus { get; set; }
+        public string SchoolType { get; set; }
+        public string LegalStatus { get; set; }
+        public string StructuralFinancialRecords { get; set; }
+        public string IsSchoolRegistered { get; set; }
+        public string EveningAcademy { get; set; }
+        public string ClientBusinessRadius { get; set; }
+        public string SchoolLevel { get; set; }
+        public string SeperateAccountantAvailable { get; set; }
+        public string UtillityBill { get; set; }
 
 
         //Financial Data
         public int LoanCycles { get; set; }
+        public string PreviousYear { get; set; }
+        public int NoOfClassrooms { get; set; }
+        public int NoOfStudents { get; set; }
+        public int NoOfTeachingStaff { get; set; }
+        public int NoOfNonTeachingStaff { get; set; }
+        public string TotalRevenue { get; set; }
+        public string TotalExpensesFromSalary { get; set; }
+        public string TotalExpensesFromRentMortgage { get; set; }
+        public string TotalExpensesFromDebt { get; set; }
+        public string AllOtherExpenses { get; set; }
+        public string TotalProfit { get; set; }
+        public string spouseFamilyOtherIncomeName { get; set; }
+        public string ProfitMargin { get; set; }
+        public string TotalAsset { get; set; }
+        public string CurrentAsset { get; set; }
+        public string TotalLiabilities { get; set; }
+        public string CurrentLiabilities { get; set; }
+        public string WorkingCapital { get; set; }
+        public string PrevAvgMonthlyFee { get; set; }
+        public string ChangeInClassrooms { get; set; }
+        public string ChangeInStudents { get; set; }
+        public string ChangeInTeachers { get; set; }
+
+        //Non Financial Data
+        public string BuildingConditionName { get; set; }
+        public string PowerBackup { get; set; }
+        public string FirstAid { get; set; }
+        public string AyasPresent { get; set; }
+        public string SeperateWashrooms { get; set; }
+        public string ProperLighting { get; set; }
+        public string CleanWater { get; set; }
+        public string FunctionalComputerLab { get; set; }
+        public string SchoolManagementSystem { get; set; }
+        public string SchoolDecor { get; set; }
+        public string LearningAid { get; set; }
+        public string TeacherTrainings { get; set; }
+        public string ChildProtection { get; set; }
+        public string EmergencyExits { get; set; }
+        public string SecurityGuards { get; set; }
+        public string HealthEnvironment { get; set; }
+        public string BusinessSuccession { get; set; }
 
 
         //Psychometric
-        //public int PercentageToSteal { get; set; }
         public string PercentageToStealName { get; set; }
-        //public int AvoidConflict { get; set; }
         public string AvoidConflictName { get; set; }
-        //public int MotivationToRunSchool { get; set; }
         public string MotivationToRunSchoolName { get; set; }
         public string BusinessLuck { get; set; }
-        //public int HopefulForFuture { get; set; }
         public string HopefulForFutureName { get; set; }
-        //public int DigitalInitiatives { get; set; }
         public string DigitalInitiativesName { get; set; }
-        //public int TeacherTrainings { get; set; }
         public string TeacherTrainingsName { get; set; }
-        //public int ParentEngagement { get; set; }
         public string ParentEngagementName { get; set; }
         public string MixExpenses { get; set; }
         public string ComparedFee { get; set; }
-
     }
+    public class collateralListDto
+    {
+        public int id { get; set; }
+        public string title { get; set; }
+        public string marketValue { get; set; }
+        public string forcedSaleValue { get; set; }
+    }
+
+
 }

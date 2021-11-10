@@ -35,6 +35,14 @@
                     <p class="detailText">@(Model.SeperateWashrooms == null || Model.SeperateWashrooms == "" ? "--" : Model.SeperateWashrooms)</p>
                 </div>
                 <div class="col-md-4">
+                    <p class="detailHeading">Other Payment Behaviour</p>
+                    <p class="detailText">@(Model.OtherPaymentBehaviourName == null || Model.OtherPaymentBehaviourName == "" ? "--" : Model.OtherPaymentBehaviourName)</p>
+                </div>
+                <div class="col-md-4">
+                    <p class="detailHeading">Dropout Students</p>
+                    <p class="detailText">@(Model.DropoutStudents == null || Model.DropoutStudents == 0 ? "--" : Model.DropoutStudents.ToString())</p>
+                </div>
+                <div class="col-md-4">
                     <p class="detailHeading">Classrooms have proper lighting & Ventilation</p>
                     <p class="detailText">@(Model.ProperLighting == null || Model.ProperLighting == "" ? "--" : Model.ProperLighting)</p>
                 </div>

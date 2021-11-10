@@ -91,6 +91,7 @@ using TFCLPortal.DynamicDropdowns.DigitalInitiatives;
 using TFCLPortal.DynamicDropdowns.TeacherTrainingDays;
 using TFCLPortal.DynamicDropdowns.ParentEngagements;
 using TFCLPortal.DynamicDropdowns.SpouseFamilyOtherIncomes;
+using TFCLPortal.DynamicDropdowns.OtherPaymentBehaviours;
 
 namespace TFCLPortal.DynamicDropdowns.GenericDropdowns
 {
@@ -159,6 +160,7 @@ namespace TFCLPortal.DynamicDropdowns.GenericDropdowns
         private readonly ICompanyTypeAppService _companyTypeAppService;
 
         private readonly ILoanNatureAppService _loanNatureAppService;
+        private readonly IRepository<OtherPaymentBehaviour> _OtherPaymentBehaviourRepository;
         private readonly IRepository<DropdownUpdateStatus> _dropdownUpdateStatusesRepository;
         private readonly IRepository<BuildingCondition> _buildingConditionRepository;
         private readonly IRepository<PowerBackup> _powerBackupRepository;
@@ -194,6 +196,7 @@ namespace TFCLPortal.DynamicDropdowns.GenericDropdowns
         IRepository<DigitalInitiative> DigitalInitiativeRepository,
         IRepository<TeacherTrainingDay> TeacherTrainingDayRepository,
         IRepository<ParentEngagement> ParentEngagementRepository,
+        IRepository<OtherPaymentBehaviour> OtherPaymentBehaviourRepository,
         IOwnershipAppService ownershipAppService,
             IPaymentFrequencyAppService paymentFrequencyAppService,
             IInventoryRecordMaintenanceAppService inventoryRecordMaintenanceAppService,
@@ -281,6 +284,7 @@ namespace TFCLPortal.DynamicDropdowns.GenericDropdowns
             _natureOfEmploymentAppService = natureOfEmploymentAppService;
             _maritalStatusAppService = maritalStatusAppService;
             _loanNatureAppService = loanNatureAppService;
+            _OtherPaymentBehaviourRepository = OtherPaymentBehaviourRepository;
             _applicantTypeAppService = applicantTypeAppService;
             _contactSourceAppService = contactSourceAppService;
             _occupationAppService = occupationAppService;
@@ -674,6 +678,7 @@ namespace TFCLPortal.DynamicDropdowns.GenericDropdowns
                 genericDropdownDto.TeacherTrainingDayRep = _TeacherTrainingDayRepository.GetAllList();
                 genericDropdownDto.ParentEngagementRep = _ParentEngagementRepository.GetAllList();
                 genericDropdownDto.SpouseFamilyOtherIncomeRep = _SpouseFamilyOtherIncomeRepository.GetAllList();
+                genericDropdownDto.OtherPaymentBehaviourRep = _OtherPaymentBehaviourRepository.GetAllList();
                 //new Mobiization Dropdowns
 
 
