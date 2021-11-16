@@ -231,6 +231,10 @@ namespace TFCLPortal.AllScreensGetByAppID
                         }
 
 
+                        data.CollateralCoverage = decimal.Parse(LE.ActualLTVPercentageAllCollateral);
+                        data.InstallmentIncome = decimal.Parse(LE.InstallmentRatio.Replace("%","").Replace(" ",""));
+
+
                     }
 
                     bool coApp = _coApplicantDetailAppService.CheckCoApplicantDetailByApplicationId(ApplicationId);
@@ -322,6 +326,10 @@ namespace TFCLPortal.AllScreensGetByAppID
                         }
                     }
 
+                    var be = _businessExpenseAppService.GetBusinessExpenseByApplicationId(ApplicationId).Result;
+                    var ed = _exposureDetailAppService.GetExposureDetailByApplicationId(ApplicationId).Result;
+
+
                     var cd = _contactDetailAppService.GetContactDetailByApplicationId(ApplicationId).Result;
                     if (cd != null)
                     {
@@ -357,6 +365,7 @@ namespace TFCLPortal.AllScreensGetByAppID
                         data.NoOfStudents = sf.NoOfStudents;
                         data.NoOfTeachingStaff = sf.NoOfTeachingStaff;
                         data.NoOfNonTeachingStaff = sf.NoOfNonTeachingStaff;
+
                         data.TotalRevenue = sf.TotalRevenue;
                         data.TotalExpensesFromSalary = sf.TotalExpensesFromSalary;
                         data.TotalExpensesFromRentMortgage = sf.TotalExpensesFromRentMortgage;
@@ -371,11 +380,199 @@ namespace TFCLPortal.AllScreensGetByAppID
                         data.CurrentLiabilities = sf.CurrentLiabilities;
                         data.WorkingCapital = sf.WorkingCapital;
                         data.PrevAvgMonthlyFee = sf.AvgMonthlyFee;
+
+                        //------------------------------------------------------------------------------------------------------------------------
+                        decimal totalRevenueCurr = 0;
+
+                        if (bi != null)
+                        {
+                            totalRevenueCurr += decimal.Parse(bi.nGrandTotalSchoolFeeIncome.Replace(",", "")) + decimal.Parse(bi.nGrandTotalAcademyFeeIncome.Replace(",", ""));
+                        }
+
+                        var ai = _associatedIncomeAppService.GetAssociatedIncomeDetailByApplicationId(ApplicationId);
+
+                        if (ai != null)
+                        {
+                            totalRevenueCurr += decimal.Parse(ai.GrandTotalAssociatedIncome.Replace(",", ""));
+                        }
+
+                        var nai = _nonAssociatedIncomeAppService.GetNonAssociatedIncomeDetailByApplicationId(ApplicationId);
+
+                        if (nai != null)
+                        {
+                            totalRevenueCurr += decimal.Parse(nai.TotalNonAssociatedIncome.Replace(",", ""));
+                        }
+
+                        data.CurrTotalRevenue = totalRevenueCurr.ToString();
+
+                        if (totalRevenueCurr > decimal.Parse(data.TotalRevenue))
+                        {
+                            data.ChangeInRevenue = "Increasing";
+                        }
+                        else if (totalRevenueCurr < decimal.Parse(data.TotalRevenue))
+                        {
+                            data.ChangeInRevenue = "Decreasing";
+                        }
+                        else
+                        {
+                            data.ChangeInRevenue = "No Change";
+                        }
+                        //------------------------------------------------------------------------------------------------------------------------
+
+                        decimal totalExpFromSalaryCurr = 0;
+                        if (be != null)
+                        {
+                            foreach (var school in be.businessExpenseSchool)
+                            {
+                                totalExpFromSalaryCurr += decimal.Parse(school.TeacherSalary.Replace(",", "")) + decimal.Parse(school.OtherSalary.Replace(",", ""));
+
+                                if (school.businessExpenseSchoolAcademies != null)
+                                {
+                                    foreach (var academy in school.businessExpenseSchoolAcademies)
+                                    {
+                                        totalExpFromSalaryCurr += decimal.Parse(academy.TeacherSalary.Replace(",", "")) + decimal.Parse(academy.OtherSalary.Replace(",", ""));
+                                    }
+                                }
+
+                            }
+                        }
+                        data.CurrTotalExpensesFromSalary = totalExpFromSalaryCurr.ToString();
+                        //------------------------------------------------------------------------------------------------------------------------
+                        decimal totalExpFromRentCurr = 0;
+                        if (be != null)
+                        {
+                            foreach (var school in be.businessExpenseSchool)
+                            {
+                                totalExpFromRentCurr += decimal.Parse(school.RentAmount.Replace(",", ""));
+                                if (school.businessExpenseSchoolAcademies != null)
+                                {
+                                    foreach (var academy in school.businessExpenseSchoolAcademies)
+                                    {
+                                        totalExpFromRentCurr += decimal.Parse(school.RentAmount.Replace(",", ""));
+                                    }
+                                }
+                            }
+                        }
+                        data.CurrTotalExpensesFromRentMortgage = totalExpFromRentCurr.ToString();
+                        //------------------------------------------------------------------------------------------------------------------------
+                        decimal totalExpFromDebtCurr = 0;
+                        if (ed != null)
+                        {
+                            totalExpFromDebtCurr += ed.TotalInstallmentpayment;
+                        }
+                        data.CurrTotalExpensesFromDebt = totalExpFromDebtCurr.ToString();
+                        //------------------------------------------------------------------------------------------------------------------------
+
+                        decimal AllOtherExpensesCurr = 0;
+                        if (be != null)
+                        {
+                            AllOtherExpensesCurr += decimal.Parse(be.nGrandTotalBusinessExpense.Replace(",", ""));
+                            AllOtherExpensesCurr -= (totalExpFromDebtCurr + totalExpFromRentCurr + totalExpFromSalaryCurr);
+                        }
+                        data.CurrAllOtherExpenses = AllOtherExpensesCurr.ToString();
+                        //------------------------------------------------------------------------------------------------------------------------
+
+                        decimal TotalProfitCurr = 0;
+
+                        TotalProfitCurr = totalRevenueCurr - (AllOtherExpensesCurr + totalExpFromDebtCurr + totalExpFromRentCurr + totalExpFromSalaryCurr);
+
+                        data.CurrTotalProfit = TotalProfitCurr.ToString();
+
+                        decimal AllExpensesCurr = AllOtherExpensesCurr + totalExpFromDebtCurr + totalExpFromRentCurr + totalExpFromSalaryCurr;
+                        decimal AllExpenses = decimal.Parse(data.AllOtherExpenses) + decimal.Parse(data.TotalExpensesFromDebt) + decimal.Parse(data.TotalExpensesFromRentMortgage) + decimal.Parse(data.TotalExpensesFromSalary);
+
+                        if (AllExpensesCurr > AllExpenses)
+                        {
+                            data.ChangeInTotalExpenses = "Increasing";
+                        }
+                        else if (AllExpensesCurr < AllExpenses)
+                        {
+                            data.ChangeInTotalExpenses = "Decreasing";
+                        }
+                        else
+                        {
+                            data.ChangeInTotalExpenses = "No Change";
+                        }
+
+                        //------------------------------------------------------------------------------------------------------------------------
+
+                        decimal ProfitMarginCurr = 0;
+
+                        ProfitMarginCurr = TotalProfitCurr / totalRevenueCurr * 100;
+
+                        data.CurrProfitMargin = ProfitMarginCurr.ToString();
+                        //------------------------------------------------------------------------------------------------------------------------
+
+
+                        if (ProfitMarginCurr > decimal.Parse(data.ProfitMargin))
+                        {
+                            data.ChangeInProfitMargin = "Increasing";
+                        }
+                        else if (ProfitMarginCurr < decimal.Parse(data.ProfitMargin))
+                        {
+                            data.ChangeInProfitMargin = "Decreasing";
+                        }
+                        else
+                        {
+                            data.ChangeInProfitMargin = "No Change";
+                        }
+
+                        //------------------------------------------------------------------------------------------------------------------------
+
+                        var ald = _createAssetLiabilityAppService.GetAssetLiabilityDetailByApplicationId(ApplicationId).Result;
+                        if (ald != null)
+                        {
+                            data.CurrTotalAsset = ald.TotalBusinessAsset.ToString();
+                            data.CurrCurrentAsset = ald.CurrTotalCurrentAssets;
+                            data.CurrTotalLiabilities = ald.TotalBusinessLiability.ToString();
+                            data.CurrCurrentLiabilities = ald.CurrTotalCurrentLiabilities;
+
+                            //------------------------------------------------------------------------------------------------------------------------
+
+
+                            if (decimal.Parse(data.CurrTotalAsset) > decimal.Parse(data.TotalAsset))
+                            {
+                                data.ChangeInAsset = "Increasing";
+                            }
+                            else if (decimal.Parse(data.CurrTotalAsset) < decimal.Parse(data.TotalAsset))
+                            {
+                                data.ChangeInAsset = "Decreasing";
+                            }
+                            else
+                            {
+                                data.ChangeInAsset = "No Change";
+                            }
+
+                            //------------------------------------------------------------------------------------------------------------------------
+
+
+                            if (decimal.Parse(data.CurrTotalProfit) > decimal.Parse(data.TotalProfit))
+                            {
+                                data.ChangeInTotalProfit = "Increasing";
+                            }
+                            else if (decimal.Parse(data.CurrTotalProfit) < decimal.Parse(data.TotalProfit))
+                            {
+                                data.ChangeInTotalProfit = "Decreasing";
+                            }
+                            else
+                            {
+                                data.ChangeInTotalProfit = "No Change";
+                            }
+                        }
+
+                        //------------------------------------------------------------------------------------------------------------------------
+
+
                     }
                     var sde = _forSDEAppService.GetForSDEByApplicationId(ApplicationId).Result;
                     if (sde != null)
                     {
                         data.UtillityBill = sde.utilityName;
+                    }
+                    var lrd = _businessPlanAppService.GetBusinessPlanByApplicationId(ApplicationId).Result;
+                    if (lrd != null)
+                    {
+                        data.CurrWorkingCapital = lrd.AmountWorkingCapital;
                     }
 
                     var snf = _schoolNonFinancialAppService.GetSchoolNonFinancialByApplicationId(ApplicationId).Result;
@@ -402,6 +599,26 @@ namespace TFCLPortal.AllScreensGetByAppID
                         data.EmergencyExits = snf.EmergencyExits;
                         data.SecurityGuards = snf.SecurityGuards;
                         data.HealthEnvironment = snf.HealthEnvironment;
+                        data.otherPaymentBehaviour = snf.OtherPaymentBehaviourName;
+                        data.DropoutStudents = snf.DropoutStudents;
+
+                        if (data.TotalStudents != 0 && snf.DropoutStudents != 0)
+                        {
+                            data.DropoutStudentsRatio = snf.DropoutStudents / data.TotalStudents * 100;
+                        }
+                        else
+                        {
+                            data.DropoutStudentsRatio = 0;
+                        }
+
+                        if (data.TotalStudents != 0 && data.TeachingStaff != 0)
+                        {
+                            data.StudentTeacherRatio = data.TotalStudents / data.TeachingStaff * 100;
+                        }
+                        else
+                        {
+                            data.StudentTeacherRatio = 0;
+                        }
 
                     }
 
@@ -409,7 +626,7 @@ namespace TFCLPortal.AllScreensGetByAppID
                     if (colD != null)
                     {
                         List<collateralListDto> collateralList = new List<collateralListDto>();
-                       foreach(var item in colD.createCollateralLandBuilding)
+                        foreach (var item in colD.createCollateralLandBuilding)
                         {
                             collateralListDto collateral = new collateralListDto();
                             collateral.id = item.Id;
@@ -445,7 +662,7 @@ namespace TFCLPortal.AllScreensGetByAppID
                     {
                         data.ChangeInStudents = "Increasing";
                     }
-                    else if(data.Enrollments < data.NoOfStudents)
+                    else if (data.Enrollments < data.NoOfStudents)
                     {
                         data.ChangeInStudents = "Decreasing";
                     }
@@ -480,8 +697,18 @@ namespace TFCLPortal.AllScreensGetByAppID
                         data.ChangeInClassrooms = "No Change";
                     }
 
+                    // FINANCIAL RISK SCORE
 
+                    if ((data.CurrCurrentAsset != "0" && data.CurrCurrentAsset != "" && data.CurrCurrentAsset != null) && (data.CurrCurrentLiabilities != "0" && data.CurrCurrentLiabilities != "" && data.CurrCurrentLiabilities != null))
+                    {
+                        data.CurrentALDRatio = decimal.Parse(data.CurrCurrentAsset) / decimal.Parse(data.CurrCurrentLiabilities) * 100;
+                    }
+                    else
+                    {
+                        data.CurrentALDRatio = 0;
+                    }
 
+                    
 
                 }
 

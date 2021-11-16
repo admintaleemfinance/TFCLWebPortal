@@ -107,6 +107,21 @@ namespace TFCLPortal.AllScreensGetByAppID.Dto
         public string TotalLiabilities { get; set; }
         public string CurrentLiabilities { get; set; }
         public string WorkingCapital { get; set; }
+
+        public string CurrTotalRevenue { get; set; }
+        public string CurrTotalExpensesFromSalary { get; set; }
+        public string CurrTotalExpensesFromRentMortgage { get; set; }
+        public string CurrTotalExpensesFromDebt { get; set; }
+        public string CurrAllOtherExpenses { get; set; }
+        public string CurrTotalProfit { get; set; }
+        public string CurrspouseFamilyOtherIncomeName { get; set; }
+        public string CurrProfitMargin { get; set; }
+        public string CurrTotalAsset { get; set; }
+        public string CurrCurrentAsset { get; set; }
+        public string CurrTotalLiabilities { get; set; }
+        public string CurrCurrentLiabilities { get; set; }
+        public string CurrWorkingCapital { get; set; }
+
         public string PrevAvgMonthlyFee { get; set; }
         public string ChangeInClassrooms { get; set; }
         public string ChangeInStudents { get; set; }
@@ -130,6 +145,20 @@ namespace TFCLPortal.AllScreensGetByAppID.Dto
         public string SecurityGuards { get; set; }
         public string HealthEnvironment { get; set; }
         public string BusinessSuccession { get; set; }
+        public string otherPaymentBehaviour { get; set; }
+        public int DropoutStudents { get; set; }
+        public decimal DropoutStudentsRatio { get; set; }
+        public decimal StudentTeacherRatio { get; set; }
+        public decimal CollateralCoverage { get; set; }
+
+        public decimal CurrentALDRatio { get; set; }
+        public string ChangeInProfitMargin { get; set; }        
+        public string ChangeInAsset { get; set; }        
+        public string ChangeInRevenue { get; set; }        
+        public string ChangeInTotalExpenses { get; set; }        
+        public string ChangeInTotalProfit { get; set; }        
+        public decimal InstallmentIncome { get; set; }        
+
 
 
         //Psychometric

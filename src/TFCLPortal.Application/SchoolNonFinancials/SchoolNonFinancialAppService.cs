@@ -13,6 +13,7 @@ using TFCLPortal.DynamicDropdowns.BuildingConditions;
 using TFCLPortal.DynamicDropdowns.FinancialRecords;
 using TFCLPortal.DynamicDropdowns.BusinessRadiuses;
 using TFCLPortal.DynamicDropdowns.BankingTransactiones;
+using TFCLPortal.DynamicDropdowns.OtherPaymentBehaviours;
 
 namespace TFCLPortal.SchoolNonFinancials
 {
@@ -23,12 +24,14 @@ namespace TFCLPortal.SchoolNonFinancials
         private readonly IRepository<FinancialRecord, int> _FinancialRecordRepository;
         private readonly IRepository<BusinessRadius, int> _BusinessRadiusRepository;
         private readonly IRepository<BankingTransaction, int> _BankingTransactionRepository;
+        private readonly IRepository<OtherPaymentBehaviour, int> _OtherPaymentBehaviourRepository;
         private readonly ICoApplicantDetailAppService _coApplicantDetailAppService;
         private readonly IGuarantorDetailAppService _guarantorDetailAppService;
         private readonly IApplicationAppService _applicationAppService;
 
-        public SchoolNonFinancialAppService(IRepository<BankingTransaction, int> BankingTransactionRepository,IRepository<BusinessRadius, int> BusinessRadiusRepository,IRepository<FinancialRecord, int> FinancialRecordRepository,IRepository<BuildingCondition, int> BuildingConditionRepository,IRepository<SchoolNonFinancial, int> SchoolNonFinancialRepository, IApplicationAppService applicationAppService, IGuarantorDetailAppService guarantorDetailAppService, ICoApplicantDetailAppService coApplicantDetailAppService)
+        public SchoolNonFinancialAppService(IRepository<OtherPaymentBehaviour, int> OtherPaymentBehaviourRepository,IRepository<BankingTransaction, int> BankingTransactionRepository,IRepository<BusinessRadius, int> BusinessRadiusRepository,IRepository<FinancialRecord, int> FinancialRecordRepository,IRepository<BuildingCondition, int> BuildingConditionRepository,IRepository<SchoolNonFinancial, int> SchoolNonFinancialRepository, IApplicationAppService applicationAppService, IGuarantorDetailAppService guarantorDetailAppService, ICoApplicantDetailAppService coApplicantDetailAppService)
         {
+            _OtherPaymentBehaviourRepository = OtherPaymentBehaviourRepository;
             _BankingTransactionRepository = BankingTransactionRepository;
             _BusinessRadiusRepository = BusinessRadiusRepository;
             _FinancialRecordRepository = FinancialRecordRepository;
@@ -83,6 +86,10 @@ namespace TFCLPortal.SchoolNonFinancials
                     if (files.BusinessRadius != 0)
                     {
                         files.BusinessRadiusName = _BusinessRadiusRepository.Get(files.BusinessRadius).Name;
+                    }
+                    if (files.OtherPaymentBehaviour != 0)
+                    {
+                        files.OtherPaymentBehaviourName = _OtherPaymentBehaviourRepository.Get(files.OtherPaymentBehaviour).Name;
                     }
                 }
 
