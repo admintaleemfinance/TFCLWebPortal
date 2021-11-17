@@ -5,8 +5,9 @@ using System.Text;
 
 namespace TFCLPortal.Mobilizations
 {
-    public class GetMobilizationListDto : FullAuditedEntity<Int32>
+    public class GetMobilizationListDto //: FullAuditedEntity<Int32>
     {
+        public int Id { get; set; }
         public string ClientName { get; set; }
         public string MobileNo { get; set; }
         public string LandLineNo { get; set; }
