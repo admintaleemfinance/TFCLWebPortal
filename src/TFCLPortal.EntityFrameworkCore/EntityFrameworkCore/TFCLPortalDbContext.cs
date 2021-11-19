@@ -182,6 +182,7 @@ using TFCLPortal.DynamicDropdowns.TeacherTrainingDays;
 using TFCLPortal.DynamicDropdowns.ParentEngagements;
 using TFCLPortal.DynamicDropdowns.SpouseFamilyOtherIncomes;
 using TFCLPortal.DynamicDropdowns.OtherPaymentBehaviours;
+using TFCLPortal.LiabilityTypes;
 
 namespace TFCLPortal.EntityFrameworkCore
 {
@@ -226,6 +227,7 @@ namespace TFCLPortal.EntityFrameworkCore
         public DbSet<AcademicSession> AcademicSessionDbSet { get; set; }
         public DbSet<OtherSourceOfIncome> OtherSourceOfIncomeDbSet { get; set; }
         public DbSet<BuildingStatus> BuildingStatusDbSet { get; set; }
+        public DbSet<LiabilityType> LiabilityTypeDbSet { get; set; }
         public DbSet<SchoolCategory> SchoolCategoryDbSet { get; set; }
         public DbSet<SalaryDetail> SalaryDetailDbSet { get; set; }
         public DbSet<OtherPaymentBehaviour> OtherPaymentBehaviourDbSet { get; set; }

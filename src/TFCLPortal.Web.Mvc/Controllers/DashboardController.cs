@@ -1074,7 +1074,22 @@ namespace TFCLPortal.Web.Mvc.Controllers
                     }
 
                     var data = _exposureDetailAppService.GetExposureDetailByApplicationId(ApplicationId);
-                    return PartialView("_exposuredetails", data.Result);
+
+                    if (data != null)
+                    {
+                        if (data.Result.isNew)
+                        {
+                            return PartialView("_exposuredetailsNew", data.Result);
+                        }
+                        else
+                        {
+                            return PartialView("_exposuredetails", data.Result);
+                        }
+                    }
+                    else
+                    {
+                        return PartialView("_exposuredetails", data.Result);
+                    }
                 }
                 else if (viewName == "INVENTORY DETAILS")
                 {

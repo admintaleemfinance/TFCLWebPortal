@@ -62,8 +62,8 @@
                         <td>@(Model.qtyAssetCashInHandAtBank == "" || Model.qtyAssetCashInHandAtBank == null  ? "--" : Model.qtyAssetCashInHandAtBank)</td>
                         <td>@(Model.AssetCashInHandAtBank == 0 ? "--" : string.Format("{0:#,###}", Model.AssetCashInHandAtBank))</td>
                         <td>Loans Payable - Bank</td>
-                        <td>@(Model.detailsCurrLoanPayableBanks == "0" || Model.detailsCurrLoanPayableBanks == null  ? "--" : Model.detailsCurrLoanPayableBanks)</td>
                         <td>@(Model.qtyCurrLoanPayableBanks == "" || Model.qtyCurrLoanPayableBanks == null ? "--" : string.Format("{0:#,###}", Model.qtyCurrLoanPayableBanks))</td>
+                        <td>@(Model.detailsCurrLoanPayableBanks == "0" || Model.detailsCurrLoanPayableBanks == null  ? "--" : Model.detailsCurrLoanPayableBanks)</td>
                     </tr>
                     <tr>
                         <td>
@@ -74,28 +74,28 @@
                         <td>
                             ACCOUNT PAYABLES
                         </td>
-                        <td>@(Model.detailsCurrAccountPayable == "0" || Model.detailsCurrAccountPayable == null  ? "--" : Model.detailsCurrAccountPayable)</td>
                         <td>@(Model.qtyCurrAccountPayable == "" || Model.qtyCurrAccountPayable == null ? "--" : string.Format("{0:#,###}", Model.qtyCurrAccountPayable))</td>
+                        <td>@(Model.detailsCurrAccountPayable == "0" || Model.detailsCurrAccountPayable == null  ? "--" : Model.detailsCurrAccountPayable)</td>
                     </tr>
                     <tr>
                         <td>
                             Account Receivables
                         </td>
-                        <td>@(Model.detailsCurrAccountRecievable == "0" || Model.detailsCurrAccountRecievable == null  ? "--" : Model.detailsCurrAccountRecievable)</td>
                         <td>@(Model.qtyCurrAccountRecievable == "" || Model.qtyCurrAccountRecievable == null ? "--" : string.Format("{0:#,###}", Model.qtyCurrAccountRecievable))</td>
+                        <td>@(Model.detailsCurrAccountRecievable == "0" || Model.detailsCurrAccountRecievable == null  ? "--" : Model.detailsCurrAccountRecievable)</td>
                         <td>Committee</td>
-                        <td>@(Model.detailsCurrCommitteeLiabilities == "0" || Model.detailsCurrCommitteeLiabilities == null  ? "--" : Model.detailsCurrCommitteeLiabilities)</td>
                         <td>@(Model.qtyCurrCommitteeLiabilities == "" || Model.qtyCurrCommitteeLiabilities == null ? "--" : string.Format("{0:#,###}", Model.qtyCurrCommitteeLiabilities))</td>
+                        <td>@(Model.detailsCurrCommitteeLiabilities == "0" || Model.detailsCurrCommitteeLiabilities == null  ? "--" : Model.detailsCurrCommitteeLiabilities)</td>
                     </tr>
                     <tr>
                         <td>
                             Committee
                         </td>
-                        <td>@(Model.detailsCurrCommittee == "0" || Model.detailsCurrCommittee == null  ? "--" : Model.detailsCurrCommittee)</td>
                         <td>@(Model.qtyCurrCommittee == "" || Model.qtyCurrCommittee == null ? "--" : string.Format("{0:#,###}", Model.qtyCurrCommittee))</td>
+                        <td>@(Model.detailsCurrCommittee == "0" || Model.detailsCurrCommittee == null  ? "--" : Model.detailsCurrCommittee)</td>
                         <td>Advance Received</td>
-                        <td>@(Model.detailsCurrAdvanceReceived == "0" || Model.detailsCurrAdvanceReceived == null  ? "--" : Model.detailsCurrAdvanceReceived)</td>
                         <td>@(Model.qtyCurrAdvanceReceived == "" || Model.qtyCurrAdvanceReceived == null ? "--" : string.Format("{0:#,###}", Model.qtyCurrAdvanceReceived))</td>
+                        <td>@(Model.detailsCurrAdvanceReceived == "0" || Model.detailsCurrAdvanceReceived == null  ? "--" : Model.detailsCurrAdvanceReceived)</td>
                     </tr>
                     <tr>
                         <td colspan="2"><b>Total Current Assets</b></td>
@@ -117,9 +117,9 @@
                         </td>
                         <td>@(Model.qtyAssetAccountReceivable == "" || Model.qtyAssetAccountReceivable == null  ? "--" : Model.qtyAssetAccountReceivable)</td>
                         <td>@(Model.AssetAccountReceivable == 0 ? "--" : string.Format("{0:#,###}", Model.AssetAccountReceivable))</td>
-                        <td>Advance Received</td>
-                        <td>@(Model.detailsAdvanceReceived == "" || Model.detailsAdvanceReceived == null  ? "--" : Model.detailsAdvanceReceived)</td>
-                        <td>@(Model.LiablityAdvanceReceived == 0 ? "--" : string.Format("{0:#,###}", Model.LiablityAdvanceReceived))</td>
+                        <td>Loan Payable - Banks</td>
+                        <td>@(Model.detailsLoanPayableBank == "" || Model.detailsLoanPayableBank == null  ? "--" : Model.detailsLoanPayableBank)</td>
+                        <td>@(Model.LiablityLoanPayebleBank == 0 ? "--" : string.Format("{0:#,###}", Model.LiablityLoanPayebleBank))</td>
                     </tr>
                     <tr>
                         <td>
@@ -127,21 +127,11 @@
                         </td>
                         <td>@(Model.qtyAssetGirviAmount == "" || Model.qtyAssetGirviAmount == null  ? "--" : Model.qtyAssetGirviAmount)</td>
                         <td>@(Model.AssetGirviAmount == 0 ? "--" : string.Format("{0:#,###}", Model.AssetGirviAmount))</td>
-                        <td>Other Liabilities</td>
-                        <td>@(Model.detailsOtherLiabilities == "" || Model.detailsOtherLiabilities == null  ? "--" : Model.detailsOtherLiabilities)</td>
-                        <td>@(Model.OtherLiablity == 0 ? "--" : string.Format("{0:#,###}", Model.OtherLiablity))</td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            Franchise Fee (Advances)
-                        </td>
-                        <td>@(Model.qtyAssetFranchiseFee == "" || Model.qtyAssetFranchiseFee == null  ? "--" : Model.qtyAssetFranchiseFee)</td>
-                        <td>@(Model.AssetFranchiseFee == 0 ? "--" : string.Format("{0:#,###}", Model.AssetFranchiseFee))</td>
                         <td>Account Payables</td>
                         <td>@(Model.detailsAccountPayable == "" || Model.detailsAccountPayable == null  ? "--" : Model.detailsAccountPayable)</td>
                         <td>@(Model.LiablityAccountPayable == 0 ? "--" : string.Format("{0:#,###}", Model.LiablityAccountPayable))</td>
                     </tr>
+
                     <tr>
                         <td>
                             Committee
@@ -155,13 +145,26 @@
 
                     <tr>
                         <td>
+                            Franchise Fee (Advances)
+                        </td>
+                        <td>@(Model.qtyAssetFranchiseFee == "" || Model.qtyAssetFranchiseFee == null  ? "--" : Model.qtyAssetFranchiseFee)</td>
+                        <td>@(Model.AssetFranchiseFee == 0 ? "--" : string.Format("{0:#,###}", Model.AssetFranchiseFee))</td>
+                        <td>Advance Received</td>
+                        <td>@(Model.detailsAdvanceReceived == "" || Model.detailsAdvanceReceived == null  ? "--" : Model.detailsAdvanceReceived)</td>
+                        <td>@(Model.LiablityAdvanceReceived == 0 ? "--" : string.Format("{0:#,###}", Model.LiablityAdvanceReceived))</td>
+                    </tr>
+
+                    <tr>
+                        <td>
                             Furniture & Fixtures
                         </td>
                         <td>@(Model.qtyAssetFurnitureFixture == "" || Model.qtyAssetFurnitureFixture == null  ? "--" : Model.qtyAssetFurnitureFixture)</td>
                         <td>@(Model.AssetFurnitureFixture == 0 ? "--" : string.Format("{0:#,###}", Model.AssetFurnitureFixture))</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>
+                            Student Security Deposit
+                        </td>
+                        <td>@(Model.detailsStudentSecurityDeposit == "" || Model.detailsStudentSecurityDeposit == null  ? "--" : Model.detailsStudentSecurityDeposit)</td>
+                        <td>@(Model.LiablityStudentSecurityDeposit == 0 ? "--" : string.Format("{0:#,###}", Model.LiablityStudentSecurityDeposit))</td>
                     </tr>
                     <tr>
                         <td>
@@ -169,9 +172,11 @@
                         </td>
                         <td>@(Model.qtyAssetVehicle == "" || Model.qtyAssetVehicle == null  ? "--" : Model.qtyAssetVehicle)</td>
                         <td>@(Model.AssetVehicle == 0 ? "--" : string.Format("{0:#,###}", Model.AssetVehicle))</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>
+                            Other Liabilities
+                        </td>
+                        <td>@(Model.detailsOtherLiabilities == "" || Model.detailsOtherLiabilities == null  ? "--" : Model.detailsOtherLiabilities)</td>
+                        <td>@(Model.OtherLiablity == 0 ? "--" : string.Format("{0:#,###}", Model.OtherLiablity))</td>
                     </tr>
                     <tr>
                         <td>
@@ -244,6 +249,12 @@
                         <td></td>
                         <td></td>
                         <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><b>Total Fixed Assets</b></td>
+                        <td style="text-align: right;"><b>@(Model.TotalFixedAssets == "" ? "--" : string.Format("{0:#,###}", Model.TotalFixedAssets))</b></td>
+                        <td colspan="2" style="text-align: right;"><b>Total long Term Liabilities</b></td>
+                        <td style="text-align: right;"><b>@(Model.TotalLongTermLiabilities == "" ? "--" : string.Format("{0:#,###}", Model.TotalLongTermLiabilities))</b></td>
                     </tr>
                     <tr>
                         <td colspan="2"><b>Total Business Assets</b></td>

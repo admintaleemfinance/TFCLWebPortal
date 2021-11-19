@@ -92,6 +92,7 @@ using TFCLPortal.DynamicDropdowns.TeacherTrainingDays;
 using TFCLPortal.DynamicDropdowns.ParentEngagements;
 using TFCLPortal.DynamicDropdowns.SpouseFamilyOtherIncomes;
 using TFCLPortal.DynamicDropdowns.OtherPaymentBehaviours;
+using TFCLPortal.LiabilityTypes;
 
 namespace TFCLPortal.DynamicDropdowns.GenericDropdowns
 {
@@ -160,6 +161,7 @@ namespace TFCLPortal.DynamicDropdowns.GenericDropdowns
         private readonly ICompanyTypeAppService _companyTypeAppService;
 
         private readonly ILoanNatureAppService _loanNatureAppService;
+        private readonly IRepository<LiabilityType> _LiabilityTypeRepository;
         private readonly IRepository<OtherPaymentBehaviour> _OtherPaymentBehaviourRepository;
         private readonly IRepository<DropdownUpdateStatus> _dropdownUpdateStatusesRepository;
         private readonly IRepository<BuildingCondition> _buildingConditionRepository;
@@ -195,6 +197,7 @@ namespace TFCLPortal.DynamicDropdowns.GenericDropdowns
         IRepository<HopefulFuture> HopefulFutureRepository,
         IRepository<DigitalInitiative> DigitalInitiativeRepository,
         IRepository<TeacherTrainingDay> TeacherTrainingDayRepository,
+        IRepository<LiabilityType> LiabilityTypeRepository,
         IRepository<ParentEngagement> ParentEngagementRepository,
         IRepository<OtherPaymentBehaviour> OtherPaymentBehaviourRepository,
         IOwnershipAppService ownershipAppService,
@@ -285,6 +288,7 @@ namespace TFCLPortal.DynamicDropdowns.GenericDropdowns
             _maritalStatusAppService = maritalStatusAppService;
             _loanNatureAppService = loanNatureAppService;
             _OtherPaymentBehaviourRepository = OtherPaymentBehaviourRepository;
+            _LiabilityTypeRepository = LiabilityTypeRepository;
             _applicantTypeAppService = applicantTypeAppService;
             _contactSourceAppService = contactSourceAppService;
             _occupationAppService = occupationAppService;
@@ -679,6 +683,7 @@ namespace TFCLPortal.DynamicDropdowns.GenericDropdowns
                 genericDropdownDto.ParentEngagementRep = _ParentEngagementRepository.GetAllList();
                 genericDropdownDto.SpouseFamilyOtherIncomeRep = _SpouseFamilyOtherIncomeRepository.GetAllList();
                 genericDropdownDto.OtherPaymentBehaviourRep = _OtherPaymentBehaviourRepository.GetAllList();
+                genericDropdownDto.LiabilityTypeRep = _LiabilityTypeRepository.GetAllList();
                 //new Mobiization Dropdowns
 
 
