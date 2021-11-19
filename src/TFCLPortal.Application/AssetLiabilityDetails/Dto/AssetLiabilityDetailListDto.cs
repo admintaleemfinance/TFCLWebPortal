@@ -9,6 +9,7 @@ namespace TFCLPortal.AssetLiabilityDetails.Dto
     [AutoMapFrom(typeof(AssetLiabilityDetail))]
     public class AssetLiabilityDetailListDto : EntityDto
     {
+        public bool isNew { get; set; }
         public int ApplicationId { get; set; }
         public decimal AssetLandBuliding { get; set; }
         public decimal AssetFurnitureFixture { get; set; }

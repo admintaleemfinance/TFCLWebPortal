@@ -15,6 +15,7 @@ namespace TFCLPortal.AssetLiabilityDetails.Dto
         public decimal AssetCashInHandAtBank { get; set; }
         public decimal AssetVehicle { get; set; }
         public decimal AssetEquipment { get; set; }
+        public bool isNew { get; set; }
         public decimal AssetCommittee { get; set; }
         public decimal OtherAssets { get; set; }
         public decimal TotalBusinessAsset { get; set; }

@@ -31,6 +31,7 @@ namespace TFCLPortal.AssetLiabilityDetails
         public decimal TotalHouseholdLiability { get; set; }
         public decimal BorrowerNetWorthLiability { get; set; }
         public string ScreenStatus { get; set; }
+        public bool isNew { get; set; }
         public string Comments { get; set; }
 
         //NEW

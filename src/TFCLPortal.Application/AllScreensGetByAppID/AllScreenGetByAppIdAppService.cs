@@ -708,6 +708,47 @@ namespace TFCLPortal.AllScreensGetByAppID
                         data.CurrentALDRatio = 0;
                     }
 
+                    if(data.LoanCycles>1)
+                    {
+                        data.CreditHistoryAvailable = "Yes";
+                    }
+                    else
+                    {
+                        if(ed!=null)
+                        {
+                            if(ed.ExistingBankExposure=="YES")
+                            {
+                                data.CreditHistoryAvailable = "Yes";
+                            }
+                            else if (ed.ExistingBankExposure == "NO")
+                            {
+                                data.CreditHistoryAvailable = "No";
+                            }
+                        }
+                        else
+                        {
+                            data.CreditHistoryAvailable = "No";
+                        }
+                    }
+
+                    if(lrd!=null)
+                    {
+                        if(lrd.OverDues==true)
+                        {
+                            data.AdvanceAccounts = "None";
+                        }
+                        else
+                        {
+                            if(lrd.CreditBureauCheckName== "NTF"|| lrd.CreditBureauCheckName == "Zero Delays" || lrd.CreditBureauCheckName == "Good Repayment History")
+                            {
+                                data.AdvanceAccounts = "Less than 30 days";
+                            }
+                            else if (lrd.CreditBureauCheckName == "Delays in Payment" || lrd.CreditBureauCheckName == "Write-Off")
+                            {
+                                data.AdvanceAccounts = "More than 30 days";
+                            }
+                        }
+                    }
                     
 
                 }

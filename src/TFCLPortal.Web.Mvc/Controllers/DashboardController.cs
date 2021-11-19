@@ -1430,7 +1430,22 @@ namespace TFCLPortal.Web.Mvc.Controllers
                     }
 
                     var data = _AssetLiabilityAppService.GetAssetLiabilityDetailByApplicationId(ApplicationId);
-                    return PartialView("_AssetLiablity", data.Result);
+
+                    if(data!=null)
+                    {
+                        if(data.Result.isNew)
+                        {
+                            return PartialView("_AssetLiablityNew", data.Result);
+                        }
+                        else
+                        {
+                            return PartialView("_AssetLiablity", data.Result);
+                        }
+                    }
+                    else
+                    {
+                        return PartialView("_AssetLiablity", data.Result);
+                    }
                 }
                 else if (viewName == "LOAN REQUISITION DETAILS")
                 {

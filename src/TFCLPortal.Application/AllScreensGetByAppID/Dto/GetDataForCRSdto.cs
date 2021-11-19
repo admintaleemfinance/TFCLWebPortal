@@ -84,6 +84,7 @@ namespace TFCLPortal.AllScreensGetByAppID.Dto
         public string ClientBusinessRadius { get; set; }
         public string SchoolLevel { get; set; }
         public string SeperateAccountantAvailable { get; set; }
+        public string AdvanceAccounts { get; set; }
         public string UtillityBill { get; set; }
 
 
@@ -126,6 +127,7 @@ namespace TFCLPortal.AllScreensGetByAppID.Dto
         public string ChangeInClassrooms { get; set; }
         public string ChangeInStudents { get; set; }
         public string ChangeInTeachers { get; set; }
+        public string CreditHistoryAvailable { get; set; }
 
         //Non Financial Data
         public string BuildingConditionName { get; set; }
