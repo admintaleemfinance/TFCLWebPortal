@@ -23,7 +23,7 @@ namespace TFCLPortal.Web.Host.Startup
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        private const string _defaultCorsPolicyName = "http://116.58.43.11:8095/";
+        private const string _defaultCorsPolicyName = "localhost";
 
         private readonly IConfigurationRoot _appConfiguration;
 
@@ -34,8 +34,6 @@ namespace TFCLPortal.Web.Host.Startup
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-
-            services.AddCors();
             // MVC
             services.AddMvc(
                 options => options.Filters.Add(new CorsAuthorizationFilterFactory(_defaultCorsPolicyName))
