@@ -379,6 +379,26 @@ namespace TFCLPortal.Web.Controllers
 
             return View(schedules);
         }
+
+        public IActionResult getEarlySettlement(int ApplicationId)
+        {
+
+            var earlysettlements = _earlySettlementRepository.GetAllList(x => x.ApplicationId == ApplicationId);
+
+            if(earlysettlements!=null)
+            {
+                int eid = earlysettlements.FirstOrDefault().Id;
+            return RedirectToAction("earlysettlementauthorization", "Accountant", new { id = eid });
+            }
+
+            else
+            {
+                return RedirectToAction("earlysettlementauthorization", "Accountant", new { id = 0 });
+            }
+
+        }
+
+
         public IActionResult InstallmentPaymentList(int? filterType, int? branchFilter, int? day, int? month, int? year)
         {
             List<ScheduleInstallmenttListDto> scheduleInstallments = new List<ScheduleInstallmenttListDto>();
