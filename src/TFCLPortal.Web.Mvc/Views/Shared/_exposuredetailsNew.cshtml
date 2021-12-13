@@ -125,8 +125,8 @@
                                 <tr>
                                     <td>@(item.BankNameString == null || item.BankNameString == "" ? "--" : item.BankNameString)</td>
                                     <td>@(item.Others == null || item.Others == "" ? "--" : item.Others)</td>
-                                    <td>@(item.CreditBureauReported == null || item.CreditBureauReported == "" ? "--" : item.CreditBureauReported)</td>
                                     <td>@(item.LiabilityTypeName == null || item.LiabilityTypeName == "" ? "--" : item.LiabilityTypeName)</td>
+                                    <td>@(item.CreditBureauReported == null || item.CreditBureauReported == "" ? "--" : item.CreditBureauReported)</td>
                                     <td>@(item.TypeOfFacilityTE == null || item.TypeOfFacilityTE == "" ? "--" : item.TypeOfFacilityTE)</td>
                                     <td>@(item.ExpiryDate == null ? "--" : string.Format("{0:dd MMM yyyy}", item.ExpiryDate))</td>
                                     <td>@(item.LoanAmount == 0 ? "0" : string.Format("{0:#,##0}", item.LoanAmount))</td>
@@ -138,21 +138,21 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="6" class="text-right">
+                                <td colspan="7" class="text-right">
                                     Total (Current Liabilities)
                                 </td>
-                                <td>@(Model.CurrentTotalAmount == null || Model.CurrentTotalAmount == "" ? "0" : string.Format("{0:#,##0}", Int32.Parse((Model.CurrentTotalAmount).Replace(",", ""))))</td>
-                                <td>@( Model.CurrentTotalInstallmentpayment == "" ? "0" : string.Format("{0:#,##0}", Model.CurrentTotalInstallmentpayment))</td>
+                                <td>@(Model.CurrentTotalAmount == null || Model.CurrentTotalAmount == "" ? "0" : string.Format("{0:#,##0}", Int32.Parse(Model.CurrentTotalAmount.Replace(",", ""))))</td>
+                                <td>@(Model.CurrentTotalInstallmentpayment == null|| Model.CurrentTotalInstallmentpayment == "" ? "0" : string.Format("{0:#,##0}", Model.CurrentTotalInstallmentpayment))</td>
                             </tr>
                             <tr>
-                                <td colspan="6" class="text-right">
+                                <td colspan="7" class="text-right">
                                     Total (Long-Term Liabilities)
                                 </td>
-                                <td>@(Model.LongtermTotalAmount == null || Model.LongtermTotalAmount == "" ? "0" : string.Format("{0:#,##0}", Int32.Parse((Model.LongtermTotalAmount).Replace(",", ""))))</td>
-                                <td>@( Model.LongtermInstallmentpayment == "" ? "0" : string.Format("{0:#,##0}", Model.LongtermInstallmentpayment))</td>
+                                <td>@(Model.LongtermTotalAmount == null || Model.LongtermTotalAmount == "" ? "0" : string.Format("{0:#,##0}", Int32.Parse(Model.LongtermTotalAmount.Replace(",", ""))))</td>
+                                <td>@(Model.LongtermInstallmentpayment == null|| Model.LongtermInstallmentpayment == "" ? "0" : string.Format("{0:#,##0}", Model.LongtermInstallmentpayment))</td>
                             </tr>
                             <tr>
-                                <td colspan="6" class="text-right">
+                                <td colspan="7" class="text-right">
                                     Total
                                 </td>
                                 <td>@(Model.TotalAmount == null || Model.TotalAmount=="" ? "0" : string.Format("{0:#,##0}", Int32.Parse((Model.TotalAmount).Replace(",", ""))))</td>

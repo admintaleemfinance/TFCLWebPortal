@@ -5793,6 +5793,10 @@ namespace TFCLPortal.Migrations
 
                     b.Property<DateTime?>("CreditBureauGeneration");
 
+                    b.Property<string>("CurrentTotalAmount");
+
+                    b.Property<string>("CurrentTotalInstallmentpayment");
+
                     b.Property<long?>("DeleterUserId");
 
                     b.Property<DateTime?>("DeletionTime");
@@ -5813,6 +5817,10 @@ namespace TFCLPortal.Migrations
 
                     b.Property<long?>("LastModifierUserId");
 
+                    b.Property<string>("LongtermInstallmentpayment");
+
+                    b.Property<string>("LongtermTotalAmount");
+
                     b.Property<string>("ScreenStatus");
 
                     b.Property<string>("TotalAmount");
@@ -5820,6 +5828,8 @@ namespace TFCLPortal.Migrations
                     b.Property<decimal>("TotalInstallmentpayment");
 
                     b.Property<string>("guaranteedAmountFI");
+
+                    b.Property<bool>("isNew");
 
                     b.HasKey("Id");
 

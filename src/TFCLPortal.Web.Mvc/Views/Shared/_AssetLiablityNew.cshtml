@@ -252,9 +252,9 @@
                     </tr>
                     <tr>
                         <td colspan="2"><b>Total Fixed Assets</b></td>
-                        <td style="text-align: right;"><b>@(Model.TotalFixedAssets == "" ? "--" : string.Format("{0:#,###}", Model.TotalFixedAssets))</b></td>
+                        <td style="text-align: right;"><b>@(Model.TotalFixedAssets == "" || Model.TotalFixedAssets == null ? "--" : string.Format("{0:#,###}", Model.TotalFixedAssets))</b></td>
                         <td colspan="2" style="text-align: right;"><b>Total long Term Liabilities</b></td>
-                        <td style="text-align: right;"><b>@(Model.TotalLongTermLiabilities == "" ? "--" : string.Format("{0:#,###}", Model.TotalLongTermLiabilities))</b></td>
+                        <td style="text-align: right;"><b>@(Model.TotalLongTermLiabilities == "" || Model.TotalLongTermLiabilities == null ? "--" : string.Format("{0:#,###}", Model.TotalLongTermLiabilities))</b></td>
                     </tr>
                     <tr>
                         <td colspan="2"><b>Total Business Assets</b></td>
