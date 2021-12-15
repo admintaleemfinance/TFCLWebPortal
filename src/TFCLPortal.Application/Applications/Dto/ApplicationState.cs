@@ -28,7 +28,7 @@ namespace TFCLPortal.Applications.Dto
         public static string InProcess = "In Process";
         public static string Submitted = "Submitted";
         public static string Screened = "Screened";
-        public static string Decline = "Decline";
+        public static string Decline = "decline";
         public static string BCCReview = "BCC Review";
         public static string BCCReviewed = "BCC Reviewed";
         public static string MCRCReview = "MCRC Review";
