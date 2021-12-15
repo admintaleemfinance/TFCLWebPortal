@@ -131,6 +131,45 @@ namespace TFCLPortal.Applications
             _taleemDostSahulatAppService = taleemDostSahulatAppService;
         }
 
+        public async Task<CnicCheckResponse> CheckCNIC(string cnic)
+        {
+            CnicCheckResponse response = new CnicCheckResponse();
+
+            var cnicList = _applicationRepository.GetAllList().Where(x => x.CNICNo.Trim() == cnic.Trim() && x.ScreenStatus != "decline" ).ToList();
+
+            if(cnicList.Count>0)
+            {
+                var latestApplication = cnicList.Where(x=>x.Id==cnicList.Max(y=>y.Id)).FirstOrDefault();
+                response.previousApplicationId = latestApplication.Id;
+                response.previousProductType = latestApplication.ProductType;
+
+                if(latestApplication.ScreenStatus==ApplicationState.Disbursed)
+                {
+                    response.status = 2;//Application Exists in Disbursed Status
+                    response.MessageToShow="CNIC already associated with Client ID : "+latestApplication.ClientID+". Application is Currently Disbursed.";
+                }
+                else if(latestApplication.ScreenStatus == ApplicationState.Settled|| latestApplication.ScreenStatus == ApplicationState.EarlySettled)
+                {
+                    response.status = 3;//Application Exists in Settled Or Early Settled
+                    response.MessageToShow = "CNIC already associated with Client ID : " + latestApplication.ClientID + ". Application is Settled.";
+                }
+                else
+                {
+                    response.status = 4;//Application Exist. But not yet Disbursed
+                    response.MessageToShow = "CNIC already associated with Client ID : " + latestApplication.ClientID + ". Application is currently in "+latestApplication.ScreenStatus+" state.";
+                }
+            }
+            else
+            {
+                response.status = 1;//applications does not exist. New Customer
+                response.previousApplicationId = -1;
+                response.previousProductType = -1;
+                response.MessageToShow = "";
+            }
+
+            return response;
+        }
+
         public async Task<ApplicationResponse> CreateApplication(CreateApplicationDto input)
         {
             CreateApiCallLogDto callLog = new CreateApiCallLogDto();
@@ -144,14 +183,12 @@ namespace TFCLPortal.Applications
             if (input.MobilizationStatus == 4)
             {
 
-                var cnicList = _applicationRepository.GetAllList().Where(x => x.CNICNo.Trim() == input.CNICNo.Trim() && x.ScreenStatus != ApplicationState.Decline && x.ScreenStatus != "decline" && x.ScreenStatus != ApplicationState.Closed && x.ScreenStatus != ApplicationState.EarlySettled).FirstOrDefault();
+                //var cnicList = _applicationRepository.GetAllList().Where(x => x.CNICNo.Trim() == input.CNICNo.Trim() && x.ScreenStatus != ApplicationState.Decline && x.ScreenStatus != "decline" && x.ScreenStatus != ApplicationState.Closed && x.ScreenStatus != ApplicationState.EarlySettled).FirstOrDefault();
 
                 GuarantorDetail guarantor = null;
-                if (cnicList == null)
-                {
+             
                     guarantor = _guarantorDetailAppService.GetAllList().Where(x => x.CNICNumber != null && x.CNICNumber.Trim() == input.CNICNo.Trim()).FirstOrDefault();
 
-                }
                 CoApplicantDetail coApplicant = null;
                 if (guarantor == null)
                 {
@@ -161,16 +198,16 @@ namespace TFCLPortal.Applications
                 try
                 {
 
-                    if (cnicList != null)
-                    {
+                    //if (cnicList != null)
+                    //{
 
 
-                        Response.ApplicationId = 0;
-                        Response.CreatedDateTime = DateTime.Now.ToString("yyyy-mm-dd");
-                        Response.Message = "This CNIC (" + cnicList.CNICNo + ") has already been associated with Application No. " + cnicList.Id;
-                        throw new UserFriendlyException(Response.Message);
-                    }
-                    else if (guarantor != null)
+                    //    Response.ApplicationId = 0;
+                    //    Response.CreatedDateTime = DateTime.Now.ToString("yyyy-mm-dd");
+                    //    Response.Message = "This CNIC (" + cnicList.CNICNo + ") has already been associated with Application No. " + cnicList.Id;
+                    //    throw new UserFriendlyException(Response.Message);
+                    //}
+                    if (guarantor != null)
                     {
                         var cnic = _applicationRepository.GetAllList().Where(x => x.Id == guarantor.ApplicationId).FirstOrDefault();
                         if (cnic != null)
