@@ -54,6 +54,7 @@ using TFCLPortal.DeceasedAuthorizations;
 using TFCLPortal.DeceasedAuthorizations.Dto;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using TFCLPortal.Customs;
 
 namespace TFCLPortal.Web.Controllers
 {
@@ -89,6 +90,7 @@ namespace TFCLPortal.Web.Controllers
         private readonly IRepository<DeceasedSettlement, int> _deceasedSettlementRepository;
         private readonly IDeceasedAuthorizationAppService _deceasedAuthorizationAppService;
         private readonly IRepository<DeceasedAuthorization, int> _deceasedAuthorizationRepository;
+        private readonly ICustomAppService _customAppService;
 
         private readonly IRepository<Holiday, int> _holidayRepository;
         private readonly IRepository<GuarantorDetail, int> _GuarantorRepository;
@@ -101,8 +103,9 @@ namespace TFCLPortal.Web.Controllers
 
         private readonly INotificationLogAppService _notificationLogAppService;
 
-        public AccountantController(IRepository<DeceasedAuthorization, int> deceasedAuthorizationRepository, IDeceasedAuthorizationAppService deceasedAuthorizationAppService, ITDSLoanEligibilityAppService tDSLoanEligibilityAppService, IRepository<CoApplicantDetail, int> CoApplicantRepository, IRepository<GuarantorDetail, int> GuarantorRepository, IRepository<Applicationz, Int32> applicationRepository, IRepository<ScheduleTemp, int> scheduleTempRepository, IRepository<DeceasedSettlement, int> deceasedSettlementRepository, IDeceasedSettlementAppService deceasedSettlementAppService, IRepository<WriteOff, int> writeOffRepository, IWriteOffAppService writeOffAppService, IRepository<EarlySettlement, int> earlySettlementRepository, IEarlySettlementAppService earlySettlementAppService, IRepository<AuthorizeInstallmentPayment, int> authorizeInstallmentPaymentRepository, IAuthorizeInstallmentPaymentAppService authorizeInstallmentPaymentAppService, IRepository<InstallmentPayment, int> installmentPaymentRepository, IRepository<Holiday, int> holidayRepository, IRepository<ScheduleInstallment, int> scheduleInstallmentRepository, IInstallmentPaymentAppService installmentPaymentAppService, IRepository<NatureOfPayment, int> natureOfPaymentRepository, IRepository<CompanyBankAccount, int> companyBankAccountRepository, IBADataCheckAppService IBADataCheckAppService, INotificationLogAppService notificationLogAppService, IScheduleTempAppService scheduleTempAppService, UserManager userManager, IRepository<Schedule, int> scheduleRepository, IScheduleAppService scheduleAppService, ICoApplicantDetailAppService coApplicantDetailAppService, IGuarantorDetailAppService guarantorDetailAppService, IBranchDetailAppService branchDetailAppService, IBankAccountAppService bankAccountAppService, ILoanEligibilityAppService loanEligibilityAppService, IBusinessPlanAppService businessPlanAppService, IBccDecisionAppService bccDecisionAppService, IApplicationAppService applicationAppService, IUserAppService userAppService, IFinalWorkflowAppService finalWorkflowAppService)
+        public AccountantController(IRepository<DeceasedAuthorization, int> deceasedAuthorizationRepository, ICustomAppService customAppService, IDeceasedAuthorizationAppService deceasedAuthorizationAppService, ITDSLoanEligibilityAppService tDSLoanEligibilityAppService, IRepository<CoApplicantDetail, int> CoApplicantRepository, IRepository<GuarantorDetail, int> GuarantorRepository, IRepository<Applicationz, Int32> applicationRepository, IRepository<ScheduleTemp, int> scheduleTempRepository, IRepository<DeceasedSettlement, int> deceasedSettlementRepository, IDeceasedSettlementAppService deceasedSettlementAppService, IRepository<WriteOff, int> writeOffRepository, IWriteOffAppService writeOffAppService, IRepository<EarlySettlement, int> earlySettlementRepository, IEarlySettlementAppService earlySettlementAppService, IRepository<AuthorizeInstallmentPayment, int> authorizeInstallmentPaymentRepository, IAuthorizeInstallmentPaymentAppService authorizeInstallmentPaymentAppService, IRepository<InstallmentPayment, int> installmentPaymentRepository, IRepository<Holiday, int> holidayRepository, IRepository<ScheduleInstallment, int> scheduleInstallmentRepository, IInstallmentPaymentAppService installmentPaymentAppService, IRepository<NatureOfPayment, int> natureOfPaymentRepository, IRepository<CompanyBankAccount, int> companyBankAccountRepository, IBADataCheckAppService IBADataCheckAppService, INotificationLogAppService notificationLogAppService, IScheduleTempAppService scheduleTempAppService, UserManager userManager, IRepository<Schedule, int> scheduleRepository, IScheduleAppService scheduleAppService, ICoApplicantDetailAppService coApplicantDetailAppService, IGuarantorDetailAppService guarantorDetailAppService, IBranchDetailAppService branchDetailAppService, IBankAccountAppService bankAccountAppService, ILoanEligibilityAppService loanEligibilityAppService, IBusinessPlanAppService businessPlanAppService, IBccDecisionAppService bccDecisionAppService, IApplicationAppService applicationAppService, IUserAppService userAppService, IFinalWorkflowAppService finalWorkflowAppService)
         {
+            _customAppService = customAppService;
             _deceasedAuthorizationRepository = deceasedAuthorizationRepository;
             _deceasedAuthorizationAppService = deceasedAuthorizationAppService;
             _tDSLoanEligibilityAppService = tDSLoanEligibilityAppService;
@@ -234,14 +237,17 @@ namespace TFCLPortal.Web.Controllers
 
         public ActionResult CheckAMLCFT()
         {
-            ViewBag.JsonData = GetJson().Result;
+            //ViewBag.JsonData = GetJson().Result;
+            ViewBag.JsonData = _customAppService.getProscribedPersonList();
             return View();
         }
 
 
         public ActionResult CheckAMLCFTByCNIC()
         {
-            ViewBag.JsonData = GetJson().Result;
+            //ViewBag.JsonData = GetJson().Result;
+            ViewBag.JsonData = _customAppService.getProscribedPersonList();
+
             return View();
         }
 

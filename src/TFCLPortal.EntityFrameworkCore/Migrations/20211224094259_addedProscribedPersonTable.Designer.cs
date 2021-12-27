@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TFCLPortal.EntityFrameworkCore;
 
 namespace TFCLPortal.Migrations
 {
     [DbContext(typeof(TFCLPortalDbContext))]
-    partial class TFCLPortalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211224094259_addedProscribedPersonTable")]
+    partial class addedProscribedPersonTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -7548,6 +7550,8 @@ namespace TFCLPortal.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("CNIC");
+
                     b.Property<DateTime>("CreationTime");
 
                     b.Property<long?>("CreatorUserId");
@@ -7556,21 +7560,19 @@ namespace TFCLPortal.Migrations
 
                     b.Property<DateTime?>("DeletionTime");
 
+                    b.Property<string>("District");
+
+                    b.Property<string>("FatherName");
+
                     b.Property<bool>("IsDeleted");
 
                     b.Property<DateTime?>("LastModificationTime");
 
                     b.Property<long?>("LastModifierUserId");
 
-                    b.Property<string>("cnic");
+                    b.Property<string>("Name");
 
-                    b.Property<string>("district");
-
-                    b.Property<string>("fatherName");
-
-                    b.Property<string>("name");
-
-                    b.Property<string>("province");
+                    b.Property<string>("Province");
 
                     b.HasKey("Id");
 

@@ -183,6 +183,7 @@ using TFCLPortal.DynamicDropdowns.ParentEngagements;
 using TFCLPortal.DynamicDropdowns.SpouseFamilyOtherIncomes;
 using TFCLPortal.DynamicDropdowns.OtherPaymentBehaviours;
 using TFCLPortal.LiabilityTypes;
+using TFCLPortal.ProscribedPersons;
 
 namespace TFCLPortal.EntityFrameworkCore
 {
@@ -248,6 +249,7 @@ namespace TFCLPortal.EntityFrameworkCore
         public DbSet<SchoolFinancial> SchoolFinancialDbSet { get; set; }
         public DbSet<Province> ProvinceDbSet { get; set; }
         public DbSet<District> DistrictDbSet { get; set; }
+        public DbSet<ProscribedPerson> ProscribedPersonDbSet { get; set; }
         public DbSet<FileType> FileTypeDbSet { get; set; }
         public DbSet<SchoolType> SchoolTypeDbSet { get; set; }
         public DbSet<Holiday> HolidayDbSet { get; set; }
