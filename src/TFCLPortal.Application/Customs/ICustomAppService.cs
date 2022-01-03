@@ -19,5 +19,8 @@ namespace TFCLPortal.Customs
         Task<List<GetMobilizationListDto>> getMobilizationListBySP();
         List<ProscribedPerson> getProscribedPersonList();
         string getNactaData();
+
+
+
     }
 }

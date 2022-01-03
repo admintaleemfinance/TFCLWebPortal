@@ -12,6 +12,7 @@ using TFCLPortal.ApplicationWorkFlows.BccStates.Dto;
 using TFCLPortal.EntityFrameworkCore.Repositories;
 using TFCLPortal.Mobilizations;
 using TFCLPortal.ProscribedPersons;
+using TFCLPortal.Schedules;
 using TFCLPortal.WorkFlows;
 
 namespace TFCLPortal.Customs
@@ -109,7 +110,6 @@ namespace TFCLPortal.Customs
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage response = client.GetAsync(url).Result;
 
-            string yourPrompt = "test";
             if (response.IsSuccessStatusCode)
             {
                 var result = response.Content.ReadAsStringAsync().Result;
@@ -122,5 +122,6 @@ namespace TFCLPortal.Customs
             }
 
         }
+
     }
 }

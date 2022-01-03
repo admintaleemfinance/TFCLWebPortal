@@ -44,6 +44,10 @@ using TFCLPortal.Branches;
 using TFCLPortal.PsychometricIndicators;
 using TFCLPortal.SchoolFinancials;
 using TFCLPortal.SchoolNonFinancials;
+using TFCLPortal.Schedules;
+using TFCLPortal.InstallmentPayments;
+using System.Linq;
+using TFCLPortal.InstallmentPayments.Dto;
 
 namespace TFCLPortal.AllScreensGetByAppID
 {
@@ -90,11 +94,14 @@ namespace TFCLPortal.AllScreensGetByAppID
         private readonly IRepository<TaggedPortfolio> _taggedPortfolioRepository;
         private readonly IRepository<Applicationz> _applicationRepository;
         private readonly IRepository<Branch> _branchRepository;
+        private static IScheduleAppService _scheduleAppService;
+        private readonly IInstallmentPaymentAppService _installmentPaymentAppService;
 
 
         public AllScreenGetByAppIdAppService(
             IPersonalDetailAppService personalDetailAppService,
             ISalaryDetailsAppService salaryDetailsAppService,
+            IInstallmentPaymentAppService installmentPaymentAppService,
             IPsychometricIndicatorAppService psychometricIndicatorAppService,
             IEmploymentDetailAppService employmentDetailAppService,
             IBusinessPlanAppService businessPlanAppService,
@@ -110,6 +117,7 @@ namespace TFCLPortal.AllScreensGetByAppID
             IBusinessExpenseAppService businessExpenseAppService,
             IHouseholdIncomeAppService householdIncomeAppService,
             ICoApplicantDetailAppService coApplicantDetailAppService,
+            IScheduleAppService scheduleAppService,
             ITJSLoanEligibilityAppService tJSLoanEligibilityAppService,
             IRepository<Branch> branchRepository,
             ISchoolNonFinancialAppService schoolNonFinancialAppService,
@@ -134,6 +142,8 @@ namespace TFCLPortal.AllScreensGetByAppID
         IDependentEducationDetailsAppService dependentEducationDetailsAppService
             )
         {
+            _installmentPaymentAppService = installmentPaymentAppService;
+            _scheduleAppService = scheduleAppService;
             _schoolNonFinancialAppService = schoolNonFinancialAppService;
             _schoolFinancialAppService = schoolFinancialAppService;
             _psychometricIndicatorAppService = psychometricIndicatorAppService;
@@ -232,7 +242,7 @@ namespace TFCLPortal.AllScreensGetByAppID
 
 
                         data.CollateralCoverage = decimal.Parse(LE.ActualLTVPercentageAllCollateral);
-                        data.InstallmentIncome = decimal.Parse(LE.InstallmentRatio.Replace("%","").Replace(" ",""));
+                        data.InstallmentIncome = decimal.Parse(LE.InstallmentRatio.Replace("%", "").Replace(" ", ""));
 
 
                     }
@@ -708,15 +718,15 @@ namespace TFCLPortal.AllScreensGetByAppID
                         data.CurrentALDRatio = 0;
                     }
 
-                    if(data.LoanCycles>1)
+                    if (data.LoanCycles > 1)
                     {
                         data.CreditHistoryAvailable = "Yes";
                     }
                     else
                     {
-                        if(ed!=null)
+                        if (ed != null)
                         {
-                            if(ed.ExistingBankExposure=="YES")
+                            if (ed.ExistingBankExposure == "YES")
                             {
                                 data.CreditHistoryAvailable = "Yes";
                             }
@@ -731,15 +741,15 @@ namespace TFCLPortal.AllScreensGetByAppID
                         }
                     }
 
-                    if(lrd!=null)
+                    if (lrd != null)
                     {
-                        if(lrd.OverDues==true)
+                        if (lrd.OverDues == true)
                         {
                             data.AdvanceAccounts = "None";
                         }
                         else
                         {
-                            if(lrd.CreditBureauCheckName== "NTF"|| lrd.CreditBureauCheckName == "Zero Delays" || lrd.CreditBureauCheckName == "Good Repayment History")
+                            if (lrd.CreditBureauCheckName == "NTF" || lrd.CreditBureauCheckName == "Zero Delays" || lrd.CreditBureauCheckName == "Good Repayment History")
                             {
                                 data.AdvanceAccounts = "Less than 30 days";
                             }
@@ -749,7 +759,7 @@ namespace TFCLPortal.AllScreensGetByAppID
                             }
                         }
                     }
-                    
+
 
                 }
 
@@ -1123,5 +1133,239 @@ namespace TFCLPortal.AllScreensGetByAppID
                 throw new UserFriendlyException(L("GetMethodError{0}", "All Screens by (SDE ID =" + SDE_Id + " )"));
             }
         }
+
+
+        public async Task<List<LoanStatus>> getUpdatedStatus()
+        {
+            List<LoanStatus> list = new List<LoanStatus>();
+
+            try
+            {
+                var s = await _scheduleAppService.GetScheduleList();
+                var allInstallmentspaid = _installmentPaymentAppService.GetAllInstallmentPayments();
+
+
+
+                foreach (var schedule in s)
+                {
+                    LoanStatus ls = new LoanStatus();
+
+
+                    ls.ApplicationId = schedule.ApplicationId;
+                    ls.Tenure = Int32.Parse(schedule.Tenure);
+                    var unpaidInstallments = schedule.installmentList.FindAll(x => x.isPaid != true);
+                    var Installmentspaid = allInstallmentspaid.Result.Where(x => x.ApplicationId == schedule.ApplicationId).ToList();
+
+                    //Unpaid Installment Details
+
+                    if (unpaidInstallments.Count != 0)
+                    {
+                        var latestInstallment = unpaidInstallments[0];
+                        ls.CurrentInstallmentNo = latestInstallment.InstNumber;
+                        ls.CurrentInstallmentPrincipal = ConvertToDecimal(latestInstallment.principal);
+                        ls.CurrentInstallmentMarkup = ConvertToDecimal(latestInstallment.markup);
+                        ls.CurrentInstallmentAmount = ConvertToDecimal(latestInstallment.installmentAmount);
+                        ls.CurrentOutstandingPrincipal = ConvertToDecimal(latestInstallment.OsPrincipal_Closing);
+
+                        if (latestInstallment.InstNumber != "G*")
+                        {
+                            ls.CurrentInstallmentDueDate = DateTime.Parse(latestInstallment.InstallmentDueDate);
+                            ls.CurrentLateDays = (DateTime.Now - ls.CurrentInstallmentDueDate).Days < 0 ? 0 : (DateTime.Now - ls.CurrentInstallmentDueDate).Days;
+                        }
+
+                        //Unpaid Installment Payment Details
+                        if (latestInstallment.InstNumber != "0")
+                        {
+                            var paidInstByInstNo = Installmentspaid.Where(x => x.NoOfInstallment.ToString() == latestInstallment.InstNumber);
+
+                            decimal sumOfAmountsPerInstallment = 0;
+                            decimal excessShort = 0;
+                            foreach (var paidInstallment in paidInstByInstNo)
+                            {
+                                sumOfAmountsPerInstallment += paidInstallment.Amount;
+                                excessShort = paidInstallment.ExcessShortPayment;
+                            }
+                            ls.CurrentPaidAmount = sumOfAmountsPerInstallment;
+                            ls.CurrentExcessShort = excessShort;
+
+                            sumOfAmountsPerInstallment = 0;
+                        }
+                        else
+                        {
+
+                            var AllDefferedInstallments = schedule.installmentList.Where(x => x.InstNumber == latestInstallment.InstNumber).ToList();
+                            var indexOfThisInstallment = AllDefferedInstallments.IndexOf(latestInstallment);
+
+                            var paidDeferredInstallments = Installmentspaid.Where(x => x.NoOfInstallment.ToString() == "0").ToList();
+                            try
+                            {
+                                IGrouping<DateTime, InstallmentPaymentListDto> lastInstallmentDate;
+
+                                lastInstallmentDate = Installmentspaid.Where(x => x.isAuthorized == true).GroupBy(x => x.InstallmentDueDate).OrderBy(x => x.Key).LastOrDefault();
+
+                                if (lastInstallmentDate != null)
+                                {
+                                    var requiredPayments = Installmentspaid.Where(x => x.InstallmentDueDate == lastInstallmentDate.Key).ToList();
+
+                                    decimal sumOfAmountsPerInstallment = 0;
+                                    decimal excessShort = 0;
+
+                                    int appid = schedule.ApplicationId;
+
+                                    foreach (var payment in requiredPayments)
+                                    {
+                                        if (latestInstallment.isPaid == true)
+                                        {
+                                            sumOfAmountsPerInstallment += payment.Amount;
+                                            excessShort += payment.ExcessShortPayment;
+                                        }
+                                        else
+                                        {
+                                            excessShort = payment.ExcessShortPayment;
+
+                                        }
+                                        //lastpaidInstallment.LastPaymentDate = payment.DepositDate;
+                                    }
+
+                                    ls.CurrentPaidAmount = sumOfAmountsPerInstallment;
+                                    ls.CurrentExcessShort = excessShort;
+                                }
+
+                                //var paidDeferredInstallmentOnThisIndex = paidDeferredInstallments[indexOfThisInstallment];
+                                //installment.PaidAmount = paidDeferredInstallmentOnThisIndex.Amount.ToString();
+                                //installment.ExcessShort = paidDeferredInstallmentOnThisIndex.ExcessShortPayment.ToString();
+
+                            }
+                            catch
+                            {
+
+                            }
+
+                        }
+
+                    }
+
+                    //Paid Installment Details
+
+                    var paidInstallments = schedule.installmentList.FindAll(x => x.isPaid == true);
+
+                    if (paidInstallments.Count != 0)
+                    {
+                        var lastpaidInstallment = paidInstallments[paidInstallments.Count - 1];
+                        ls.LastInstallmentNo = lastpaidInstallment.InstNumber;
+                        ls.LastInstallmentPrincipal = ConvertToDecimal(lastpaidInstallment.principal);
+                        ls.LastInstallmentMarkup = ConvertToDecimal(lastpaidInstallment.markup);
+                        ls.LastInstallmentAmount = ConvertToDecimal(lastpaidInstallment.installmentAmount);
+                        ls.LastPaidDate = (DateTime)lastpaidInstallment.PaymentDate;
+                        ls.LastOutstandingPrincipal = ConvertToDecimal(lastpaidInstallment.OsPrincipal_Closing);
+                        if (lastpaidInstallment.InstNumber != "G*")
+                        {
+                            ls.LastInstallmentDueDate = DateTime.Parse(lastpaidInstallment.InstallmentDueDate);
+                            ls.LastLateDays = (ls.LastPaidDate - ls.LastInstallmentDueDate).Days < 0 ? 0 : (ls.LastPaidDate - ls.LastInstallmentDueDate).Days;
+                        }
+
+                        //Paid Installment Payment Details
+
+                        if (lastpaidInstallment.InstNumber != "0")
+                        {
+                            var paidInstByInstNo = Installmentspaid.Where(x => x.NoOfInstallment.ToString() == lastpaidInstallment.InstNumber);
+
+                            decimal sumOfAmountsPerInstallment = 0;
+                            decimal excessShort = 0;
+                            foreach (var paidInstallment in paidInstByInstNo)
+                            {
+                                sumOfAmountsPerInstallment += paidInstallment.Amount;
+                                excessShort = paidInstallment.ExcessShortPayment;
+                            }
+                            ls.LastPaidAmount = sumOfAmountsPerInstallment;
+                            ls.LastExcessShort = excessShort;
+
+                            sumOfAmountsPerInstallment = 0;
+                        }
+                        else
+                        {
+
+                            var AllDefferedInstallments = schedule.installmentList.Where(x => x.InstNumber == lastpaidInstallment.InstNumber).ToList();
+                            var indexOfThisInstallment = AllDefferedInstallments.IndexOf(lastpaidInstallment);
+
+                            var paidDeferredInstallments = Installmentspaid.Where(x => x.NoOfInstallment.ToString() == "0").ToList();
+                            try
+                            {
+                                IGrouping<DateTime, InstallmentPaymentListDto> lastInstallmentDate;
+                              
+                                    lastInstallmentDate = Installmentspaid.Where(x => x.isAuthorized == true).GroupBy(x => x.InstallmentDueDate).OrderBy(x => x.Key).LastOrDefault();
+
+                                if (lastInstallmentDate != null)
+                                {
+                                    var requiredPayments = Installmentspaid.Where(x => x.InstallmentDueDate == lastInstallmentDate.Key).ToList();
+
+                                    decimal sumOfAmountsPerInstallment = 0;
+                                    decimal excessShort = 0;
+
+                                    int appid = schedule.ApplicationId;
+
+                                    foreach (var payment in requiredPayments)
+                                    {
+                                        if (lastpaidInstallment.isPaid == true)
+                                        {
+                                            sumOfAmountsPerInstallment += payment.Amount;
+                                            excessShort += payment.ExcessShortPayment;
+                                        }
+                                        else
+                                        {
+                                            excessShort = payment.ExcessShortPayment;
+
+                                        }
+                                        //lastpaidInstallment.LastPaymentDate = payment.DepositDate;
+                                    }
+
+                                    ls.LastPaidAmount = sumOfAmountsPerInstallment;
+                                    ls.LastExcessShort = excessShort;
+                                }
+
+                                //var paidDeferredInstallmentOnThisIndex = paidDeferredInstallments[indexOfThisInstallment];
+                                //installment.PaidAmount = paidDeferredInstallmentOnThisIndex.Amount.ToString();
+                                //installment.ExcessShort = paidDeferredInstallmentOnThisIndex.ExcessShortPayment.ToString();
+
+                            }
+                            catch
+                            {
+
+                            }
+
+                        }
+
+                    }
+
+
+
+                    list.Add(ls);
+
+
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                string s = ex.ToString();
+            }
+
+
+            return list;
+        }
+
+        public decimal ConvertToDecimal(string str)
+        {
+            if (str != ""&& str!="--")
+            {
+                return decimal.Parse(str.Replace(",", ""));
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
     }
 }
