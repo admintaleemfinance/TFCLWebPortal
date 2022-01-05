@@ -334,6 +334,8 @@ namespace TFCLPortal.EntityFrameworkCore.Repositories
                             obj.AppDate = Convert.ToDateTime(dataReader["CreationTime"]);
                             obj.Id = Convert.ToInt32(dataReader["AppzId"]);
                             obj.branchId = Convert.ToInt32(dataReader["branchId"]);
+                            obj.FundingSource = Convert.ToInt32(dataReader["FundingSource"]);
+                            obj.FundingSourceName = dataReader["FundingSourceName"].ToString();
                             obj.Comments = dataReader["Comments"].ToString();
                             obj.LastScreen = Convert.ToString(dataReader["LastScreen"]);
                             obj.Transferred = Convert.ToString(dataReader["transferred"]);

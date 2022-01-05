@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TFCLPortal.EntityFrameworkCore;
 
 namespace TFCLPortal.Migrations
 {
     [DbContext(typeof(TFCLPortalDbContext))]
-    partial class TFCLPortalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220103075309_addedLoanStatusTable")]
+    partial class addedLoanStatusTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1080,8 +1082,6 @@ namespace TFCLPortal.Migrations
                     b.Property<int?>("FK_branchid");
 
                     b.Property<string>("FranchiserName");
-
-                    b.Property<int>("FundingSource");
 
                     b.Property<string>("InterestOtherProvider");
 
@@ -6027,33 +6027,6 @@ namespace TFCLPortal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ForSDE");
-                });
-
-            modelBuilder.Entity("TFCLPortal.FundingSources.FundingSource", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreationTime");
-
-                    b.Property<long?>("CreatorUserId");
-
-                    b.Property<long?>("DeleterUserId");
-
-                    b.Property<DateTime?>("DeletionTime");
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<DateTime?>("LastModificationTime");
-
-                    b.Property<long?>("LastModifierUserId");
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FundingSource");
                 });
 
             modelBuilder.Entity("TFCLPortal.GuarantorDetails.GuarantorDetail", b =>

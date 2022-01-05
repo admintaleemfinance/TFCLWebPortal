@@ -184,6 +184,8 @@ using TFCLPortal.DynamicDropdowns.SpouseFamilyOtherIncomes;
 using TFCLPortal.DynamicDropdowns.OtherPaymentBehaviours;
 using TFCLPortal.LiabilityTypes;
 using TFCLPortal.ProscribedPersons;
+using TFCLPortal.LoanStatuses;
+using TFCLPortal.FundingSources;
 
 namespace TFCLPortal.EntityFrameworkCore
 {
@@ -224,6 +226,7 @@ namespace TFCLPortal.EntityFrameworkCore
         //NEW DROPDOWN API ADDITION START
         public DbSet<RespondantDesignation> RespondantDesignationDbSet { get; set; }
         public DbSet<ApplicantSource> ApplicantSourceDbSet { get; set; }
+        public DbSet<FundingSource> FundingSourceDbSet { get; set; }
         public DbSet<ReasonForNotBeingInterested> ReasonForNotBeingInterestedDbSet { get; set; }
         public DbSet<AcademicSession> AcademicSessionDbSet { get; set; }
         public DbSet<OtherSourceOfIncome> OtherSourceOfIncomeDbSet { get; set; }
@@ -336,6 +339,7 @@ namespace TFCLPortal.EntityFrameworkCore
         public DbSet<DropdownUpdateStatus> DropdownUpdateStatusDbSet { get; set; }
         public DbSet<BankAccountChildDetail> BankAccountChildDetailDbSet { get; set; }
         public DbSet<FilesUpload> FilesUploadDbSet { get; set; }
+        public DbSet<LoanStatus> LoanStatusDbSet { get; set; }
         public DbSet<Mobilization> MobilizationDbSet { get; set; }
         public DbSet<MobilizationsLog> MobilizationLogDbSet { get; set; }
         public DbSet<TDSBusinessNature> TdsBusinessNatureDbSet { get; set; }

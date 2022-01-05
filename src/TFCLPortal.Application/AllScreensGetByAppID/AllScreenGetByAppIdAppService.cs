@@ -48,6 +48,7 @@ using TFCLPortal.Schedules;
 using TFCLPortal.InstallmentPayments;
 using System.Linq;
 using TFCLPortal.InstallmentPayments.Dto;
+using TFCLPortal.LoanStatuses;
 
 namespace TFCLPortal.AllScreensGetByAppID
 {
@@ -93,6 +94,7 @@ namespace TFCLPortal.AllScreensGetByAppID
         private readonly IEmploymentDetailAppService _employmentDetailAppService;
         private readonly IRepository<TaggedPortfolio> _taggedPortfolioRepository;
         private readonly IRepository<Applicationz> _applicationRepository;
+        private readonly IRepository<LoanStatus> _loanStatusRepository;
         private readonly IRepository<Branch> _branchRepository;
         private static IScheduleAppService _scheduleAppService;
         private readonly IInstallmentPaymentAppService _installmentPaymentAppService;
@@ -111,6 +113,7 @@ namespace TFCLPortal.AllScreensGetByAppID
             IBusinessDetailsAppService businessDetailAppService,
             IOtherDetailAppService otherDetailAppService,
             ICollateralDetailAppService collateralDetailAppService,
+            IRepository<LoanStatus> loanStatusRepository,
             IExposureDetailAppService exposureDetailAppService,
             IAssetLiabilityDetailAppService assetLiabilityDetailAppService,
             IBusinessIncomeAppService businessIncomeAppService,
@@ -144,6 +147,7 @@ namespace TFCLPortal.AllScreensGetByAppID
         {
             _installmentPaymentAppService = installmentPaymentAppService;
             _scheduleAppService = scheduleAppService;
+            _loanStatusRepository = loanStatusRepository;
             _schoolNonFinancialAppService = schoolNonFinancialAppService;
             _schoolFinancialAppService = schoolFinancialAppService;
             _psychometricIndicatorAppService = psychometricIndicatorAppService;
@@ -1135,9 +1139,9 @@ namespace TFCLPortal.AllScreensGetByAppID
         }
 
 
-        public async Task<List<LoanStatus>> getUpdatedStatus()
+        public async Task<List<LoanStatusDto>> getUpdatedStatus()
         {
-            List<LoanStatus> list = new List<LoanStatus>();
+            List<LoanStatusDto> list = new List<LoanStatusDto>();
 
             try
             {
@@ -1148,7 +1152,7 @@ namespace TFCLPortal.AllScreensGetByAppID
 
                 foreach (var schedule in s)
                 {
-                    LoanStatus ls = new LoanStatus();
+                    LoanStatusDto ls = new LoanStatusDto();
 
 
                     ls.ApplicationId = schedule.ApplicationId;
@@ -1353,6 +1357,43 @@ namespace TFCLPortal.AllScreensGetByAppID
 
 
             return list;
+        }
+
+
+        public async Task<string> getUpdatedStatusAndInsert()
+        {
+
+            try
+            {
+                List<LoanStatusDto> statuses = await getUpdatedStatus();
+                if (statuses.Count > 0)
+                {
+                    var ExistingStatus = _loanStatusRepository.GetAllList();
+
+                    foreach(var existing in ExistingStatus)
+                    {
+                        await _loanStatusRepository.DeleteAsync(existing);
+                    }
+                    
+                    CurrentUnitOfWork.SaveChanges();
+
+                    foreach (var status in statuses)
+                    {
+                        LoanStatus ls = new LoanStatus();
+
+                        ls = ObjectMapper.Map<LoanStatus>(status);
+
+                        await _loanStatusRepository.InsertAsync(ls);
+
+                    }
+
+                }
+                return "Success. " + statuses.Count + " Loan(s) status updated";
+            }
+            catch (Exception ex)
+            {
+                return "Error. "+ex.ToString();
+            }
         }
 
         public decimal ConvertToDecimal(string str)

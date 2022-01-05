@@ -17,6 +17,7 @@ namespace TFCLPortal.AllScreensGetByAppID
         Task<GetDataForCRSdto> getDataForCRS(int ApplicationId);
 
 
-        Task<List<LoanStatus>> getUpdatedStatus();
+        Task<List<LoanStatusDto>> getUpdatedStatus();
+        Task<string> getUpdatedStatusAndInsert();
     }
 }

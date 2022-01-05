@@ -55,6 +55,7 @@ using TFCLPortal.DeceasedAuthorizations.Dto;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using TFCLPortal.Customs;
+using TFCLPortal.FundingSources;
 
 namespace TFCLPortal.Web.Controllers
 {
@@ -93,6 +94,7 @@ namespace TFCLPortal.Web.Controllers
         private readonly ICustomAppService _customAppService;
 
         private readonly IRepository<Holiday, int> _holidayRepository;
+        private readonly IRepository<FundingSource, int> _fundingSourceRepository;
         private readonly IRepository<GuarantorDetail, int> _GuarantorRepository;
         private readonly IRepository<CoApplicantDetail, int> _CoApplicantRepository;
 
@@ -103,8 +105,9 @@ namespace TFCLPortal.Web.Controllers
 
         private readonly INotificationLogAppService _notificationLogAppService;
 
-        public AccountantController(IRepository<DeceasedAuthorization, int> deceasedAuthorizationRepository, ICustomAppService customAppService, IDeceasedAuthorizationAppService deceasedAuthorizationAppService, ITDSLoanEligibilityAppService tDSLoanEligibilityAppService, IRepository<CoApplicantDetail, int> CoApplicantRepository, IRepository<GuarantorDetail, int> GuarantorRepository, IRepository<Applicationz, Int32> applicationRepository, IRepository<ScheduleTemp, int> scheduleTempRepository, IRepository<DeceasedSettlement, int> deceasedSettlementRepository, IDeceasedSettlementAppService deceasedSettlementAppService, IRepository<WriteOff, int> writeOffRepository, IWriteOffAppService writeOffAppService, IRepository<EarlySettlement, int> earlySettlementRepository, IEarlySettlementAppService earlySettlementAppService, IRepository<AuthorizeInstallmentPayment, int> authorizeInstallmentPaymentRepository, IAuthorizeInstallmentPaymentAppService authorizeInstallmentPaymentAppService, IRepository<InstallmentPayment, int> installmentPaymentRepository, IRepository<Holiday, int> holidayRepository, IRepository<ScheduleInstallment, int> scheduleInstallmentRepository, IInstallmentPaymentAppService installmentPaymentAppService, IRepository<NatureOfPayment, int> natureOfPaymentRepository, IRepository<CompanyBankAccount, int> companyBankAccountRepository, IBADataCheckAppService IBADataCheckAppService, INotificationLogAppService notificationLogAppService, IScheduleTempAppService scheduleTempAppService, UserManager userManager, IRepository<Schedule, int> scheduleRepository, IScheduleAppService scheduleAppService, ICoApplicantDetailAppService coApplicantDetailAppService, IGuarantorDetailAppService guarantorDetailAppService, IBranchDetailAppService branchDetailAppService, IBankAccountAppService bankAccountAppService, ILoanEligibilityAppService loanEligibilityAppService, IBusinessPlanAppService businessPlanAppService, IBccDecisionAppService bccDecisionAppService, IApplicationAppService applicationAppService, IUserAppService userAppService, IFinalWorkflowAppService finalWorkflowAppService)
+        public AccountantController(IRepository<FundingSource, int> fundingSourceRepository,IRepository<DeceasedAuthorization, int> deceasedAuthorizationRepository, ICustomAppService customAppService, IDeceasedAuthorizationAppService deceasedAuthorizationAppService, ITDSLoanEligibilityAppService tDSLoanEligibilityAppService, IRepository<CoApplicantDetail, int> CoApplicantRepository, IRepository<GuarantorDetail, int> GuarantorRepository, IRepository<Applicationz, Int32> applicationRepository, IRepository<ScheduleTemp, int> scheduleTempRepository, IRepository<DeceasedSettlement, int> deceasedSettlementRepository, IDeceasedSettlementAppService deceasedSettlementAppService, IRepository<WriteOff, int> writeOffRepository, IWriteOffAppService writeOffAppService, IRepository<EarlySettlement, int> earlySettlementRepository, IEarlySettlementAppService earlySettlementAppService, IRepository<AuthorizeInstallmentPayment, int> authorizeInstallmentPaymentRepository, IAuthorizeInstallmentPaymentAppService authorizeInstallmentPaymentAppService, IRepository<InstallmentPayment, int> installmentPaymentRepository, IRepository<Holiday, int> holidayRepository, IRepository<ScheduleInstallment, int> scheduleInstallmentRepository, IInstallmentPaymentAppService installmentPaymentAppService, IRepository<NatureOfPayment, int> natureOfPaymentRepository, IRepository<CompanyBankAccount, int> companyBankAccountRepository, IBADataCheckAppService IBADataCheckAppService, INotificationLogAppService notificationLogAppService, IScheduleTempAppService scheduleTempAppService, UserManager userManager, IRepository<Schedule, int> scheduleRepository, IScheduleAppService scheduleAppService, ICoApplicantDetailAppService coApplicantDetailAppService, IGuarantorDetailAppService guarantorDetailAppService, IBranchDetailAppService branchDetailAppService, IBankAccountAppService bankAccountAppService, ILoanEligibilityAppService loanEligibilityAppService, IBusinessPlanAppService businessPlanAppService, IBccDecisionAppService bccDecisionAppService, IApplicationAppService applicationAppService, IUserAppService userAppService, IFinalWorkflowAppService finalWorkflowAppService)
         {
+            _fundingSourceRepository = fundingSourceRepository;
             _customAppService = customAppService;
             _deceasedAuthorizationRepository = deceasedAuthorizationRepository;
             _deceasedAuthorizationAppService = deceasedAuthorizationAppService;
@@ -241,8 +244,7 @@ namespace TFCLPortal.Web.Controllers
             ViewBag.JsonData = _customAppService.getProscribedPersonList();
             return View();
         }
-
-
+        
         public ActionResult CheckAMLCFTByCNIC()
         {
             //ViewBag.JsonData = GetJson().Result;
@@ -391,10 +393,10 @@ namespace TFCLPortal.Web.Controllers
 
             var earlysettlements = _earlySettlementRepository.GetAllList(x => x.ApplicationId == ApplicationId);
 
-            if(earlysettlements!=null)
+            if (earlysettlements != null)
             {
                 int eid = earlysettlements.FirstOrDefault().Id;
-            return RedirectToAction("earlysettlementauthorization", "Accountant", new { id = eid });
+                return RedirectToAction("earlysettlementauthorization", "Accountant", new { id = eid });
             }
 
             else
@@ -1379,10 +1381,10 @@ namespace TFCLPortal.Web.Controllers
                 CurrentUnitOfWork.SaveChanges();
 
                 var allUnpaidInstallments = _scheduleInstallmentRepository.GetAllList(x => x.FK_ScheduleId == schedule.Id && (x.isPaid == false || x.isPaid == null));
-                if(allUnpaidInstallments.Count<1)
+                if (allUnpaidInstallments.Count < 1)
                 {
                     _applicationAppService.ChangeApplicationState(ApplicationState.Settled, payment.ApplicationId, "All Installments Paid");
-                    
+
                     CreateFinalWorkflowDto fWobj = new CreateFinalWorkflowDto();
                     fWobj.ApplicationId = payment.ApplicationId;
                     fWobj.Action = "All Installments Paid";
@@ -1966,6 +1968,37 @@ namespace TFCLPortal.Web.Controllers
             return View(mobilizationList);
         }
 
+        public ActionResult FundingSource()
+        {
+
+            var sources = _fundingSourceRepository.GetAllList();
+
+            ViewBag.sourcesList = new SelectList(sources, "Id", "Name");
+
+            var mobilizationList = _applicationAppService.GetApplicationList(ApplicationState.Disbursed, 0, true);
+            return View(mobilizationList);
+        }
+        [HttpPost]
+        public async Task<JsonResult> SaveFundingSource(int ApplicationId, int fsource)
+        {
+            string response = "";
+            try
+            {
+                var appData = _applicationRepository.Get(ApplicationId);
+                appData.FundingSource = fsource;
+                _applicationRepository.Update(appData);
+                CurrentUnitOfWork.SaveChanges();
+
+                response = "Funding Source Updated";
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return Json(response);
+
+        }
+
         //Early Settlement Module Start
         public IActionResult EarlySettlement(int ApplicationId)
         {
@@ -2434,7 +2467,7 @@ namespace TFCLPortal.Web.Controllers
         {
             var entry = _deceasedSettlementRepository.Get(Id);
 
-          
+
 
             if (Decision == "Authorize")
             {
@@ -2463,7 +2496,7 @@ namespace TFCLPortal.Web.Controllers
             _deceasedSettlementRepository.Update(entry);
             CurrentUnitOfWork.SaveChanges();
 
-         
+
 
 
             return Json("");

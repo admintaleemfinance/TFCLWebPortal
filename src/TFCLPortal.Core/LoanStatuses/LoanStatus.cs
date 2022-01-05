@@ -1,14 +1,13 @@
-﻿using Abp.AutoMapper;
-using Abp.Domain.Entities.Auditing;
+﻿using Abp.Domain.Entities.Auditing;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
-using TFCLPortal.LoanStatuses;
 
-namespace TFCLPortal.AllScreensGetByAppID.Dto
+namespace TFCLPortal.LoanStatuses
 {
-    [AutoMapTo(typeof(LoanStatus))]
-    public class LoanStatusDto  : FullAuditedEntity<int>
+    [Table("LoanStatus")]
+   public class LoanStatus : FullAuditedEntity<int>
     {
         public int ApplicationId { get; set; }
         public int Tenure { get; set; }

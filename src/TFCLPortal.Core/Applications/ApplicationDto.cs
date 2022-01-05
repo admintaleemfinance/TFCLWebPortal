@@ -26,5 +26,7 @@ namespace TFCLPortal.Applications
         public DateTime AppDate { get; set; }
         public bool isDeceased { get; set; }//New
 
+        public int FundingSource { get; set; } // New Dropdown
+        public string FundingSourceName { get; set; }
     }
 }

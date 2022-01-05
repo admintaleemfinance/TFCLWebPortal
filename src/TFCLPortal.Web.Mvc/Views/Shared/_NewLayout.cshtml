@@ -710,79 +710,68 @@
                                 <span class="title">Accountant Operations<i class="fa fa-caret-down"></i></span>
                             </a>
                             <ul id="BAO" class="collapse sidebar-menua">
-                                <li class="nav-item dropdown">
-                                    <a href="~/Accountant/Index" class="dropdown-toggle">
-                                        <span class="icon-holder">
-                                            <i class="fa fa-list"></i>
-                                        </span>
-                                        <h6>MC Authorized Applications</h6>
-                                    </a>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a href="~/Accountant/DisbursedApplications" class="dropdown-toggle">
-                                        <span class="icon-holder">
-                                            <i class="fa fa-edit"></i>
-                                        </span>
-                                        <h6>Defer Schedule</h6>
-                                    </a>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a href="~/RescheduleApplication/Index" class="dropdown-toggle">
-                                        <span class="icon-holder">
-                                            <i class="fa fa-edit"></i>
-                                        </span>
-                                        <h6>Re-Schedule</h6>
-                                    </a>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a href="~/Dashboard/BADocumentsList">
-                                        <span class="icon-holder">
-                                            <i class="fa fa-upload"></i>
-                                        </span>
-                                        <h6>Upload Credit Bureau files</h6>
-                                    </a>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a href="~/Accountant/ActiveSchedules">
-                                        <span class="icon-holder">
-                                            <i class="fa fa-credit-card"></i>
-                                        </span>
-                                        <h6>Loan Repayment Module</h6>
-                                    </a>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a href="~/Accountant/InstallmentPaymentList">
-                                        <span class="icon-holder">
-                                            <i class="fa fa-list"></i>
-                                        </span>
-                                        <h6>Loan Installments</h6>
-                                    </a>
-                                </li>
-                                @* <li class="nav-item dropdown">
-                                                    <a href="~/Accountant/InstallmentPaymentList">
-                                                        <span class="icon-holder">
-                                                            <i class="fa fa-list"></i>
-                                                        </span>
-                                                        <h6>Loan Installments</h6>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item dropdown">
-                                        <a href="~/accountant/CheckAMLCFT">
+
+                                @if (User.Identity.Name == "nabeel")
+                                {
+                                    <li class="nav-item dropdown">
+                                        <a href="~/Accountant/FundingSource" class="dropdown-toggle">
                                             <span class="icon-holder">
-                                                <i class="fa fa-check-circle"></i>
+                                                <i class="fa fa-money"></i>
                                             </span>
-                                            <h6>AML CFT Check</h6>
+                                            <h6>Funding Source</h6>
+                                        </a>
+                                    </li>
+                                }
+                                    <li class="nav-item dropdown">
+                                        <a href="~/Accountant/Index" class="dropdown-toggle">
+                                            <span class="icon-holder">
+                                                <i class="fa fa-list"></i>
+                                            </span>
+                                            <h6>MC Authorized Applications</h6>
                                         </a>
                                     </li>
                                     <li class="nav-item dropdown">
-                                        <a href="~/accountant/CheckAMLCFTByCNIC">
+                                        <a href="~/Accountant/DisbursedApplications" class="dropdown-toggle">
                                             <span class="icon-holder">
-                                                <i class="fa fa-check-circle"></i>
+                                                <i class="fa fa-edit"></i>
                                             </span>
-                                            <h6>AML CFT Check By CNIC</h6>
+                                            <h6>Defer Schedule</h6>
                                         </a>
-                                    </li>*@
-                            </ul>
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <a href="~/RescheduleApplication/Index" class="dropdown-toggle">
+                                            <span class="icon-holder">
+                                                <i class="fa fa-edit"></i>
+                                            </span>
+                                            <h6>Re-Schedule</h6>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <a href="~/Dashboard/BADocumentsList">
+                                            <span class="icon-holder">
+                                                <i class="fa fa-upload"></i>
+                                            </span>
+                                            <h6>Upload Credit Bureau files</h6>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <a href="~/Accountant/ActiveSchedules">
+                                            <span class="icon-holder">
+                                                <i class="fa fa-credit-card"></i>
+                                            </span>
+                                            <h6>Loan Repayment Module</h6>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <a href="~/Accountant/InstallmentPaymentList">
+                                            <span class="icon-holder">
+                                                <i class="fa fa-list"></i>
+                                            </span>
+                                            <h6>Loan Installments</h6>
+                                        </a>
+                                    </li>
+                              
+                                </ul>
 
                         </li>
 
@@ -819,7 +808,6 @@
                                     </a>
                                 </li>
                             </ul>
-
                         </li>
                     }
 

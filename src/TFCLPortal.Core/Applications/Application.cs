@@ -62,6 +62,8 @@ namespace TFCLPortal.Applications
         public int SchoolCategory { get; set; } // New Dropdown
 
         public bool isDeceased { get; set; }//New
+        public int FundingSource { get; set; } // New Dropdown
+
     }
 
 
