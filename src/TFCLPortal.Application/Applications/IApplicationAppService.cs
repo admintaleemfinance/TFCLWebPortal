@@ -13,6 +13,7 @@ namespace TFCLPortal.Applications
     {
         ApplicationListDto GetApplicationById(int Id);
         Task<ApplicationResponse> CreateApplication(CreateApplicationDto input);
+        Task<ApplicationResponse> MigrateEnhancementApplication(int OldApplicationId);
         Task<string> UpdateApplication(UpdateApplicationDto input);
         ApplicationListDto GetApplicationByApplicationId(int ApplicationId);
         List<ApplicationDto> GetApplicationList(string applicationState, int? branchId, bool showAll = false,bool IsAdmin=false);

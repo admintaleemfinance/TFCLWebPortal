@@ -43,6 +43,7 @@ using TFCLPortal.TaleemTeacherSahulats;
 using TFCLPortal.TaleemTeacherSahulats.Dto;
 using TFCLPortal.NotificationLogs;
 using TFCLPortal.Branches;
+using TFCLPortal.EnhancementRequests;
 
 namespace TFCLPortal.Applications
 {
@@ -75,6 +76,7 @@ namespace TFCLPortal.Applications
         private readonly IBccStateAppService _bccStateAppService;
         private readonly INotificationLogAppService _notificationLogAppService;
         private readonly IRepository<Branch> _branchRepository;
+        private readonly IRepository<EnhancementRequest> _enhancementRequestRepository;
 
 
 
@@ -94,6 +96,7 @@ namespace TFCLPortal.Applications
                IRepository<CoApplicantDetail> CoApplicantDetailsrepo,
                INotificationLogAppService notificationLogAppService,
                IApiCallLogAppService apiCallLogAppService,
+               IRepository<EnhancementRequest> enhancementRequestRepository,
             ITaleemSchoolAsasahAppService taleemSchoolAsasahAppService,
             ITaleemSchoolSarmayaAppService taleemSchoolSarmayaAppService,
             ICustomRepository customRepository,
@@ -106,6 +109,7 @@ namespace TFCLPortal.Applications
         {
             _notificationLogAppService = notificationLogAppService;
             _applicationRepository = applicationRepository;
+            _enhancementRequestRepository = enhancementRequestRepository;
             _branchRepository = branchRepository;
             _mobilizationStatusRepository = mobilizationStatusRepository;
             _productTypeRepository = ProductTyperepo;
@@ -135,20 +139,20 @@ namespace TFCLPortal.Applications
         {
             CnicCheckResponse response = new CnicCheckResponse();
 
-            var cnicList = _applicationRepository.GetAllList().Where(x => x.CNICNo.Trim() == cnic.Trim() && x.ScreenStatus != "decline" ).ToList();
+            var cnicList = _applicationRepository.GetAllList().Where(x => x.CNICNo.Trim() == cnic.Trim() && x.ScreenStatus != "decline").ToList();
 
-            if(cnicList.Count>0)
+            if (cnicList.Count > 0)
             {
-                var latestApplication = cnicList.Where(x=>x.Id==cnicList.Max(y=>y.Id)).FirstOrDefault();
+                var latestApplication = cnicList.Where(x => x.Id == cnicList.Max(y => y.Id)).FirstOrDefault();
                 response.previousApplicationId = latestApplication.Id;
                 response.previousProductType = latestApplication.ProductType;
 
-                if(latestApplication.ScreenStatus==ApplicationState.Disbursed)
+                if (latestApplication.ScreenStatus == ApplicationState.Disbursed)
                 {
                     response.status = 2;//Application Exists in Disbursed Status
-                    response.MessageToShow="CNIC already associated with Client ID : "+latestApplication.ClientID+". Application is Currently Disbursed.";
+                    response.MessageToShow = "CNIC already associated with Client ID : " + latestApplication.ClientID + ". Application is Currently Disbursed.";
                 }
-                else if(latestApplication.ScreenStatus == ApplicationState.Settled|| latestApplication.ScreenStatus == ApplicationState.EarlySettled)
+                else if (latestApplication.ScreenStatus == ApplicationState.Settled || latestApplication.ScreenStatus == ApplicationState.EarlySettled)
                 {
                     response.status = 3;//Application Exists in Settled Or Early Settled
                     response.MessageToShow = "CNIC already associated with Client ID : " + latestApplication.ClientID + ". Application is Settled.";
@@ -156,7 +160,7 @@ namespace TFCLPortal.Applications
                 else
                 {
                     response.status = 4;//Application Exist. But not yet Disbursed
-                    response.MessageToShow = "CNIC already associated with Client ID : " + latestApplication.ClientID + ". Application is currently in "+latestApplication.ScreenStatus+" state.";
+                    response.MessageToShow = "CNIC already associated with Client ID : " + latestApplication.ClientID + ". Application is currently in " + latestApplication.ScreenStatus + " state.";
                 }
             }
             else
@@ -186,8 +190,8 @@ namespace TFCLPortal.Applications
                 //var cnicList = _applicationRepository.GetAllList().Where(x => x.CNICNo.Trim() == input.CNICNo.Trim() && x.ScreenStatus != ApplicationState.Decline && x.ScreenStatus != "decline" && x.ScreenStatus != ApplicationState.Closed && x.ScreenStatus != ApplicationState.EarlySettled).FirstOrDefault();
 
                 GuarantorDetail guarantor = null;
-             
-                    guarantor = _guarantorDetailAppService.GetAllList().Where(x => x.CNICNumber != null && x.CNICNumber.Trim() == input.CNICNo.Trim()).FirstOrDefault();
+
+                guarantor = _guarantorDetailAppService.GetAllList().Where(x => x.CNICNumber != null && x.CNICNumber.Trim() == input.CNICNo.Trim()).FirstOrDefault();
 
                 CoApplicantDetail coApplicant = null;
                 if (guarantor == null)
@@ -487,6 +491,176 @@ namespace TFCLPortal.Applications
                     {
                         throw new UserFriendlyException(L("CreateMethodError{0}", application));
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(L("CreateMethodError{0}", application));
+            }
+        }
+
+        public async Task<ApplicationResponse> MigrateEnhancementApplication(int OldApplicationId)
+        {
+            CreateApiCallLogDto callLog = new CreateApiCallLogDto();
+            callLog.FunctionName = "MigrateEnhancementApplication";
+            callLog.Input = JsonConvert.SerializeObject("ApplicationID : " + OldApplicationId);
+            var returnStr = _apiCallLogAppService.CreateApplication(callLog);
+
+            ApplicationResponse Response = new ApplicationResponse();
+            ApplicationResponse applicationResponse = new ApplicationResponse();
+            try
+            {
+                var enhancement = _enhancementRequestRepository.GetAllList(x => x.ApplicationId == OldApplicationId).FirstOrDefault();
+
+                if (enhancement.RequestState == 1)//isApproved
+                {
+
+
+                    var OldApp = _applicationRepository.Get(OldApplicationId);
+
+                    Applicationz NewApplication = new Applicationz();
+
+                    NewApplication.ApplicationId = OldApp.ApplicationId;
+                    NewApplication.ClientName = OldApp.ClientName;
+                    NewApplication.MobileNo = OldApp.MobileNo;
+                    NewApplication.LandLineNo = OldApp.LandLineNo;
+                    NewApplication.CNICNo = OldApp.CNICNo;
+                    NewApplication.Address = OldApp.Address;
+                    NewApplication.SchoolName = OldApp.SchoolName;
+                    NewApplication.MobilizationStatus = OldApp.MobilizationStatus;
+                    NewApplication.ProductType = OldApp.ProductType;
+                    NewApplication.NextMeeting = OldApp.NextMeeting;
+                    NewApplication.ScreenStatus = OldApp.ScreenStatus;
+                    NewApplication.Comments = OldApp.Comments;
+                    NewApplication.BranchCode = OldApp.BranchCode;
+                    NewApplication.CreatorUserId = OldApp.CreatorUserId;
+                    NewApplication.FK_branchid = OldApp.FK_branchid;
+                    NewApplication.Remarks = OldApp.Remarks;
+                    NewApplication.AverageFee = OldApp.AverageFee;
+                    NewApplication.PrefixLable = OldApp.PrefixLable;
+                    NewApplication.RespondantDesignation = OldApp.RespondantDesignation;
+                    NewApplication.PersonNotInterested = OldApp.PersonNotInterested;
+                    NewApplication.MentionProviderInterest = OldApp.MentionProviderInterest;
+                    NewApplication.DecesionMonth = OldApp.DecesionMonth;
+                    NewApplication.NoOfStudent = OldApp.NoOfStudent;
+                    NewApplication.NoOfStaff = OldApp.NoOfStaff;
+                    NewApplication.BuildingStatus = OldApp.BuildingStatus;
+                    NewApplication.AreaOfSchoolMarla = OldApp.AreaOfSchoolMarla;
+                    NewApplication.AcademicSession = OldApp.AcademicSession;
+                    NewApplication.FranchiserName = OldApp.FranchiserName;
+                    NewApplication.isFranchise = OldApp.isFranchise;
+                    NewApplication.Longitude = OldApp.Longitude;
+                    NewApplication.Latitude = OldApp.Latitude;
+                    NewApplication.SchoolCategory = OldApp.SchoolCategory;
+                    NewApplication.ApplicantType = OldApp.ApplicantType;
+
+
+                    NewApplication.PrevApplicationId = OldApplicationId;
+                    NewApplication.isEnhancementApplication = true;
+
+                    var NewApplicationId = _applicationRepository.InsertAndGetId(NewApplication);
+
+                    enhancement.RequestState = 3;
+                    _enhancementRequestRepository.Update(enhancement);
+
+                    if (NewApplicationId != 0)
+                    {
+                        //Getting Current Deviation Matrix Values
+                        var DeviationMatrixObj = _deviationMatrixAppService.GetDeviationMatrixByProductId(NewApplication.ProductType);
+
+                        //Assignment of Deviation Matrix Values to ApplicationWise Model
+                        CreateApplicationWiseDeviationVariableDto obj = new CreateApplicationWiseDeviationVariableDto();
+                        obj.ApplicationId = NewApplicationId;
+                        obj.fk_ProductId = DeviationMatrixObj.Result.fk_ProductId;
+                        obj.MinLimitForUnsecuredLoan = DeviationMatrixObj.Result.MinLimitForUnsecuredLoan;
+                        obj.MaxLimitForUnsecuredLoan = DeviationMatrixObj.Result.MaxLimitForUnsecuredLoan;
+                        obj.ApplicantMinAge = DeviationMatrixObj.Result.ApplicantMinAge;
+                        obj.ApplicantMaxAge = DeviationMatrixObj.Result.ApplicantMaxAge;
+                        obj.BusinessAgeYears = DeviationMatrixObj.Result.BusinessAgeYears;
+                        obj.BusinessAgeAtCurrentPlaceYears = DeviationMatrixObj.Result.BusinessAgeAtCurrentPlaceYears;
+                        obj.MinPercentageOfSAexpAgainstSAincome = DeviationMatrixObj.Result.MinPercentageOfSAexpAgainstSAincome;
+                        obj.MaxPercentageOfNAItotalSchoolRevenue = DeviationMatrixObj.Result.MaxPercentageOfNAItotalSchoolRevenue;
+                        obj.MinPercentageOfHHEtotalSchoolRevenue = DeviationMatrixObj.Result.MinPercentageOfHHEtotalSchoolRevenue;
+                        obj.MaxLimitForInstallmentRatio = DeviationMatrixObj.Result.MaxLimitForInstallmentRatio;
+                        obj.GuarantorMinAge = DeviationMatrixObj.Result.GuarantorMinAge;
+                        obj.GuarantorMaxAge = DeviationMatrixObj.Result.GuarantorMaxAge;
+
+                        obj.LTVForResidentialBuilding = DeviationMatrixObj.Result.LTVForResidentialBuilding;
+                        obj.LTVForResidentialLand = DeviationMatrixObj.Result.LTVForResidentialLand;
+                        obj.LTVForCommercialBuilding = DeviationMatrixObj.Result.LTVForCommercialBuilding;
+                        obj.LTVForCommercialLand = DeviationMatrixObj.Result.LTVForCommercialLand;
+                        obj.LTVForAgriculturalLand = DeviationMatrixObj.Result.LTVForAgriculturalLand;
+                        obj.LTVForVehicleLessThanOneYear = DeviationMatrixObj.Result.LTVForVehicleLessThanOneYear;
+                        obj.LTVForVehicleLessThanFiveYear = DeviationMatrixObj.Result.LTVForVehicleLessThanFiveYear;
+                        obj.LTVForVehicleMoreThanFiveYear = DeviationMatrixObj.Result.LTVForVehicleMoreThanFiveYear;
+                        obj.LTVForTDRratedA = DeviationMatrixObj.Result.LTVForTDRratedA;
+                        obj.LTVForTDRratedB = DeviationMatrixObj.Result.LTVForTDRratedB;
+                        obj.LTVForFranchiseAgreement = DeviationMatrixObj.Result.LTVForFranchiseAgreement;
+                        obj.LTVForGold = DeviationMatrixObj.Result.LTVForGold;
+                        obj.MinStudentEnrolled = DeviationMatrixObj.Result.MinStudentEnrolled;
+
+                        //Saving of Deviation Matrix Values to ApplicationWise Model
+                        await _applicationWiseDeviationVariableAppService.CreateApplicationWiseDeviationVariable(obj);
+
+
+
+                        CreateFinalWorkflowDto fWobj = new CreateFinalWorkflowDto();
+                        fWobj.ApplicationId = NewApplicationId;
+                        fWobj.Action = "Customer Enhancement Approved";
+                        fWobj.ActionBy = (int)NewApplication.CreatorUserId;
+                        fWobj.ApplicationState = "Created";
+                        fWobj.isActive = true;
+
+                        await _finalWorkflowAppService.CreateFinalWorkflow(fWobj);
+
+                        //Sending Notifications to BA
+                        await _notificationLogAppService.SendNotification(63, NewApplication.ClientID, "Customer has been Acquired.");
+
+                        applicationResponse.ApplicationId = NewApplicationId;
+                        applicationResponse.CreatedDateTime = DateTime.Now.ToString("yyyy-mm-dd");
+                        applicationResponse.ClientId = NewApplication.ClientID;
+
+                        //Returning of Deviation Matrix per this application
+                        applicationResponse.ApplicationId = obj.ApplicationId;
+                        applicationResponse.fk_ProductId = obj.fk_ProductId;
+                        applicationResponse.MinLimitForUnsecuredLoan = obj.MinLimitForUnsecuredLoan;
+                        applicationResponse.MaxLimitForUnsecuredLoan = obj.MaxLimitForUnsecuredLoan;
+                        applicationResponse.ApplicantMinAge = obj.ApplicantMinAge;
+                        applicationResponse.ApplicantMaxAge = obj.ApplicantMaxAge;
+                        applicationResponse.BusinessAgeYears = obj.BusinessAgeYears;
+                        applicationResponse.BusinessAgeAtCurrentPlaceYears = obj.BusinessAgeAtCurrentPlaceYears;
+                        applicationResponse.MinPercentageOfSAexpAgainstSAincome = obj.MinPercentageOfSAexpAgainstSAincome;
+                        applicationResponse.MaxPercentageOfNAItotalSchoolRevenue = obj.MaxPercentageOfNAItotalSchoolRevenue;
+                        applicationResponse.MinPercentageOfHHEtotalSchoolRevenue = obj.MinPercentageOfHHEtotalSchoolRevenue;
+                        applicationResponse.MaxLimitForInstallmentRatio = obj.MaxLimitForInstallmentRatio;
+                        applicationResponse.GuarantorMinAge = obj.GuarantorMinAge;
+                        applicationResponse.GuarantorMaxAge = obj.GuarantorMaxAge;
+
+                        applicationResponse.LTVForResidentialBuilding = obj.LTVForResidentialBuilding;
+                        applicationResponse.LTVForResidentialLand = obj.LTVForResidentialLand;
+                        applicationResponse.LTVForCommercialBuilding = obj.LTVForCommercialBuilding;
+                        applicationResponse.LTVForCommercialLand = obj.LTVForCommercialLand;
+                        applicationResponse.LTVForAgriculturalLand = obj.LTVForAgriculturalLand;
+                        applicationResponse.LTVForVehicleLessThanOneYear = obj.LTVForVehicleLessThanOneYear;
+                        applicationResponse.LTVForVehicleLessThanFiveYear = obj.LTVForVehicleLessThanFiveYear;
+                        applicationResponse.LTVForVehicleMoreThanFiveYear = obj.LTVForVehicleMoreThanFiveYear;
+                        applicationResponse.LTVForTDRratedA = obj.LTVForTDRratedA;
+                        applicationResponse.LTVForTDRratedB = obj.LTVForTDRratedB;
+                        applicationResponse.LTVForFranchiseAgreement = obj.LTVForFranchiseAgreement;
+                        applicationResponse.LTVForGold = obj.LTVForGold;
+                        applicationResponse.MinStudentEnrolled = obj.MinStudentEnrolled;
+
+                        return applicationResponse;
+                    }
+
+                    else
+                    {
+                        throw new UserFriendlyException(L("CreateMethodError{0}", application));
+                    }
+                }
+                else
+                {
+                    throw new UserFriendlyException(L("CreateMethodError{0}", application));
                 }
             }
             catch (Exception ex)
@@ -822,7 +996,7 @@ namespace TFCLPortal.Applications
                 {
                     app.ProductTypeName = products.Where(x => x.Id == app.ProductType).FirstOrDefault().Name;
                     app.ProductTypeShortCode = products.Where(x => x.Id == app.ProductType).FirstOrDefault().ShortCode;
-                    app.BranchCode=branches.Where(x => x.Id == app.FK_branchid).FirstOrDefault().BranchCode;
+                    app.BranchCode = branches.Where(x => x.Id == app.FK_branchid).FirstOrDefault().BranchCode;
                 }
 
                 return appsList;
@@ -838,7 +1012,7 @@ namespace TFCLPortal.Applications
         {
             try
             {
-                var apps = _applicationRepository.GetAllList(x=>x.ProductType==1|| x.ProductType == 2|| x.ProductType == 6|| x.ProductType == 7).ToList();
+                var apps = _applicationRepository.GetAllList(x => x.ProductType == 1 || x.ProductType == 2 || x.ProductType == 6 || x.ProductType == 7).ToList();
 
                 var appsList = ObjectMapper.Map<List<ApplicationListCrsDto>>(apps);
 

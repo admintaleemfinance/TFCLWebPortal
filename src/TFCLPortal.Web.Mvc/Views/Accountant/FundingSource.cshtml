@@ -146,7 +146,60 @@
             </div>
 
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card p-10 mB-20">
+                    @*<p>
+                <a asp-action="Create">Create New</a>
+            </p>*@
+                    <table id="dataTable" class="table table-striped table-bordered  table-scrollable" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Sr
+                                </th>
+                                <th>
+                                    CLIENT ID
+                                </th>
+                                <th>
+                                    APPLICANT / RESPONDENT NAME
+                                </th>
+                                <th>
+                                    Client / School / Business Name
+                                </th>   <th>
+    Funding Source
+</th>
 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                            <tr>
+                                <td> @{i = i + 1;} @i</td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ClientID)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ApplicantName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SchoolName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FundingSourceName)
+                                </td>
+                               
+                                @*<td>
+            <a asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-list"></i> Details</a>
+        </td>*@
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Modal -->

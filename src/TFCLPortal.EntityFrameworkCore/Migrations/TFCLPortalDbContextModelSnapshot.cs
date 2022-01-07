@@ -1115,6 +1115,8 @@ namespace TFCLPortal.Migrations
 
                     b.Property<string>("PrefixLable");
 
+                    b.Property<int>("PrevApplicationId");
+
                     b.Property<string>("ProductCode");
 
                     b.Property<int>("ProductType");
@@ -1130,6 +1132,8 @@ namespace TFCLPortal.Migrations
                     b.Property<string>("ScreenStatus");
 
                     b.Property<bool>("isDeceased");
+
+                    b.Property<bool>("isEnhancementApplication");
 
                     b.Property<bool>("isFranchise");
 
@@ -5728,6 +5732,39 @@ namespace TFCLPortal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EmploymentDetails");
+                });
+
+            modelBuilder.Entity("TFCLPortal.EnhancementRequests.EnhancementRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ApplicationId");
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<long?>("DeleterUserId");
+
+                    b.Property<DateTime?>("DeletionTime");
+
+                    b.Property<string>("Details");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<int>("RequestState");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EnhancementRequests");
                 });
 
             modelBuilder.Entity("TFCLPortal.ExposureDetailChilds.ExposureDetailChild", b =>

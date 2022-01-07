@@ -186,6 +186,7 @@ using TFCLPortal.LiabilityTypes;
 using TFCLPortal.ProscribedPersons;
 using TFCLPortal.LoanStatuses;
 using TFCLPortal.FundingSources;
+using TFCLPortal.EnhancementRequests;
 
 namespace TFCLPortal.EntityFrameworkCore
 {
@@ -220,6 +221,7 @@ namespace TFCLPortal.EntityFrameworkCore
         public DbSet<LoanNature> LoanNatureDbSet { get; set; }
         public DbSet<BccDecision> BccDecisionDbSet { get; set; }
         public DbSet<EmploymentDetail> EmploymentDetailDbSet { get; set; }
+        public DbSet<EnhancementRequest> EnhancementRequestDbSet { get; set; }
         public DbSet<McrcDecision> McrcDecisionDbSet { get; set; }
         public DbSet<ApplicationWiseDeviationVariable> ApplicationWiseDeviationVariableDbSet { get; set; }
 

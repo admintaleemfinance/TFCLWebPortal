@@ -78,4 +78,5 @@ namespace TFCLPortal.Applications.Dto
         public int SchoolGoingDependants { get; set; }
 
     }
+
 }
