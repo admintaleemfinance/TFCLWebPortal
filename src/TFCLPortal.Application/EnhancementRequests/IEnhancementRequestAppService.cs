@@ -15,6 +15,7 @@ namespace TFCLPortal.EnhancementRequests
 
         Task<EnhancementRequestListDto> GetEnhancementRequestById(int Id);
         Task<List<EnhancementRequestListDto>> GetAllEnhancementRequests(int ApplicationId);
+        List<EnhancementRequestListDto> GetAllEnhancementRequestsBySdeId(int SDEID);
         Task<EnhancementRequestListDto> GetEnhancementRequestByApplicationId(int ApplicationId);
     }
 }

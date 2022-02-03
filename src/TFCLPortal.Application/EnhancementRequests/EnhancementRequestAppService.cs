@@ -245,6 +245,33 @@ namespace TFCLPortal.EnhancementRequests
 
         }
 
+        public List<EnhancementRequestListDto> GetAllEnhancementRequestsBySdeId(int SDEID)
+        {
+            try
+            {
+                var EnhancementRequests = _EnhancementRequestRepository.GetAllList(x => x.UserId == SDEID).ToList();
+                //var Applicationz = _applicationsRepository.GetAllList();
+                var EnhancementRequestz = ObjectMapper.Map<List<EnhancementRequestListDto>>(EnhancementRequests);
+
+                foreach(var req in EnhancementRequestz)
+                {
+                    if (req.ApplicationId != 0)
+                    {
+                        var App = _applicationsRepository.Get(req.ApplicationId);
+                        req.ClientId = App.ClientID;
+                        req.ClientName = App.ClientName;
+                        req.ClientBusiness = App.SchoolName;
+                    }
+                }
+                   
+                return EnhancementRequestz;
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(L("GetMethodError{0}", EnhancementRequest));
+            }
+        }
+
 
         //public bool CheckEnhancementRequestByApplicationId(int ApplicationId)
         //{
