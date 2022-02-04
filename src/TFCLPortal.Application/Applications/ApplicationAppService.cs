@@ -650,6 +650,11 @@ namespace TFCLPortal.Applications
                         applicationResponse.LTVForGold = obj.LTVForGold;
                         applicationResponse.MinStudentEnrolled = obj.MinStudentEnrolled;
 
+
+                        applicationResponse.OldApplication = GetApplicationById(OldApplicationId);
+                        applicationResponse.NewApplication = GetApplicationById(NewApplicationId);
+
+
                         return applicationResponse;
                     }
 
