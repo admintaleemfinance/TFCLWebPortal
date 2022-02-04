@@ -652,7 +652,7 @@ namespace TFCLPortal.Applications
 
 
                         applicationResponse.OldApplication = GetApplicationById(OldApplicationId);
-                        applicationResponse.NewApplication = GetApplicationById(NewApplicationId);
+                        //applicationResponse.NewApplication = GetApplicationById(NewApplicationId);
 
 
                         return applicationResponse;

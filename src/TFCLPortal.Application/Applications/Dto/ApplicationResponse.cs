@@ -41,7 +41,7 @@ namespace TFCLPortal.Applications.Dto
         public string MinStudentEnrolled { get; set; }
 
         public ApplicationListDto OldApplication { get; set; }
-        public ApplicationListDto NewApplication { get; set; }
+        //public ApplicationListDto NewApplication { get; set; }
         //New Fields End
     }
     public class CnicCheckResponse
