@@ -993,6 +993,9 @@ namespace TFCLPortal.Web.Controllers
             var Application = _applicationAppService.GetApplicationById(ApplicationId);
             if (Application != null)
             {
+                ViewBag.LoanCycles = _applicationRepository.GetAllListAsync().Result.FindAll(x => x.CNICNo == Application.CNICNo && (x.ScreenStatus != "Decline")).Count;
+
+
                 ViewBag.ApplicantName = Application.ClientName;
                 ViewBag.SchoolName = Application.SchoolName;
                 ViewBag.ScreenStatus = Application.ScreenStatus;
@@ -1483,8 +1486,10 @@ namespace TFCLPortal.Web.Controllers
                     ViewBag.Decision = decision;
                 }
 
-                ViewBag.BranchManager = _userAppService.GetUserById((long)decision.CreatorUserId).Result.FullName;
-                ViewBag.BranchManagerId = (long)decision.CreatorUserId;
+                var branch = _branchDetailAppService.GetBranchDetailById(application.FK_branchid);
+
+                ViewBag.BranchManager = branch.ContactPerson; // _userAppService.GetUserById((long)decision.CreatorUserId).Result.FullName;
+                ViewBag.BranchManagerId = (long)branch.FK_BMid;
                 ViewBag.SdeName = _userAppService.GetUserById((long)application.CreatorUserId).Result.FullName;
                 ViewBag.SdeId = (long)application.CreatorUserId;
             }

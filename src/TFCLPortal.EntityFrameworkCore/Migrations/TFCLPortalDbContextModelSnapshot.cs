@@ -1926,6 +1926,8 @@ namespace TFCLPortal.Migrations
 
                     b.Property<string>("Email");
 
+                    b.Property<int>("FK_BMid");
+
                     b.Property<int>("FK_companyid");
 
                     b.Property<bool>("IsDeleted");

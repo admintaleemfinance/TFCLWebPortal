@@ -220,7 +220,7 @@ namespace TFCLPortal.Applications
                             Response.ApplicationId = 0;
                             Response.CreatedDateTime = DateTime.Now.ToString("yyyy-mm-dd");
                             applicationResponse.Message = "This CNIC (" + guarantor.CNICNumber + ") is Gurantor in the Application (" + guarantor.ApplicationId + ") against the Applicant Cnic (" + cnic.CNICNo + ")";
-                            //throw new UserFriendlyException(Response.Message);
+                            throw new UserFriendlyException(Response.Message);
                         }
 
                     }
@@ -869,12 +869,12 @@ namespace TFCLPortal.Applications
             {
                 if (branchId == null || branchId == 0)
                 {
-                    return _applicationRepository.GetAllList(x => x.ScreenStatus == applicationState).ToList();
+                    return _applicationRepository.GetAllList(x => x.ScreenStatus == applicationState && x.isEnhancementApplication==false).ToList();
                 }
                 else
                 {
                     int branch = (int)branchId;
-                    return _applicationRepository.GetAllList(x => x.ScreenStatus == applicationState && x.FK_branchid == branch).ToList();
+                    return _applicationRepository.GetAllList(x => x.ScreenStatus == applicationState && x.FK_branchid == branch && x.isEnhancementApplication == false).ToList();
                 }
             }
             catch (Exception ex)

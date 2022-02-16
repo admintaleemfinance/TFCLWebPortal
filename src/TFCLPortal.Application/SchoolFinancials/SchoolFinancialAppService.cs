@@ -35,6 +35,15 @@ namespace TFCLPortal.SchoolFinancials
         {
             try
             {
+                var existing = _SchoolFinancialRepository.GetAllList(x => x.ApplicationId == Input.ApplicationId).ToList();
+                if(existing.Count>0)
+                {
+                    foreach(var sf in existing)
+                    {
+                        _SchoolFinancialRepository.Delete(sf);
+                    }
+                }
+
                 var filUpload = ObjectMapper.Map<SchoolFinancial>(Input);
                 await _SchoolFinancialRepository.InsertAsync(filUpload);
                 CurrentUnitOfWork.SaveChanges();
