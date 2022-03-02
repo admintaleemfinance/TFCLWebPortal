@@ -8826,7 +8826,13 @@ namespace TFCLPortal.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("ActualLtvPercentage");
+
+                    b.Property<string>("AllowedLtvPercentage");
+
                     b.Property<int>("ApplicationId");
+
+                    b.Property<string>("CollateralValue");
 
                     b.Property<DateTime>("CreationTime");
 
@@ -8851,6 +8857,8 @@ namespace TFCLPortal.Migrations
                     b.Property<string>("LoanTenureRequested");
 
                     b.Property<string>("Mark_Up");
+
+                    b.Property<string>("MaxFinancingAllowedLTV");
 
                     b.Property<string>("MaxIncomeForTfclPayment");
 

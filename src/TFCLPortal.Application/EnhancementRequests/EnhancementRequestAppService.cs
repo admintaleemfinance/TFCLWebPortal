@@ -185,6 +185,7 @@ namespace TFCLPortal.EnhancementRequests
                         EnhancementRequestz.ClientId = App.ClientID;
                         EnhancementRequestz.ClientName = App.ClientName;
                         EnhancementRequestz.ClientBusiness = App.SchoolName;
+                        EnhancementRequestz.OldApplicationId = App.PrevApplicationId;
                     }
                 }
                 return EnhancementRequestz;
@@ -194,7 +195,7 @@ namespace TFCLPortal.EnhancementRequests
                 throw new UserFriendlyException(L("GetMethodError{0}", EnhancementRequest));
             }
         }
-        public async Task<List<EnhancementRequestListDto>> GetAllEnhancementRequests(int ApplicationId)
+        public async Task<List<EnhancementRequestListDto>> GetAllEnhancementRequests()
         {
             try
             {

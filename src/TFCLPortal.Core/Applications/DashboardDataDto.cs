@@ -38,6 +38,8 @@ namespace TFCLPortal.Applications
         public int EarlySettledfileAmount { get; set; }
         public int DeceasedfileCount { get; set; }
         public int DeceasedfileAmount { get; set; }
+        public int EnhancementfileCount { get; set; }
+        public int EnhancedfileCount { get; set; }
 
 
     }

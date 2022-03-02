@@ -56,6 +56,8 @@
                     <td> @{i = i + 1;} @i</td>
                     <td>
                         @Html.DisplayFor(modelItem => item.ClientID)
+
+                        @(item.isEnhancementApplication==true ? " (E)" : "")
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.ClientName)
@@ -71,7 +73,7 @@
                     @if (item.Remarks == "OK")
                     {
                         <td colspan="2">
-                            <a href="/Accountant/Schedule?ApplicationId=@item.Id"><i class="fa fa-calendar"></i> Create Schedule</a>
+                            <a href="@(item.isEnhancementApplication==true ? "/Accountant/ScheduleEnhancement?ApplicationId="+@item.Id : "/Accountant/Schedule?ApplicationId="+@item.Id) "><i class="fa fa-calendar"></i> @(item.isEnhancementApplication==true ? "Enhance": "Create") Schedule</a>
                         </td>
                     }
                     else if (item.Remarks == "Waiting")

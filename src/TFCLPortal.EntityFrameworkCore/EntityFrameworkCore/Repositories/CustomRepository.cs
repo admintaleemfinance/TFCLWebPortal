@@ -284,12 +284,12 @@ namespace TFCLPortal.EntityFrameworkCore.Repositories
             }
         }
 
-        public List<ApplicationDto> GetAllApplicationList(string applicationState, int branchId, bool showAll = false, bool IsAdmin = false)
+        public List<ApplicationDto> GetAllApplicationList(string applicationState, int branchId, bool showAll = false, bool IsAdmin = false, bool IsEnhancement = false)
         {
             List<ApplicationDto> AppList = new List<ApplicationDto>();
             EnsureConnectionOpen();
             // bool IsApproved = false;
-            SqlParameter[] parameter = new SqlParameter[4];
+            SqlParameter[] parameter = new SqlParameter[5];
             parameter[0] = new SqlParameter();
             parameter[0].SqlDbType = SqlDbType.VarChar;
             parameter[0].ParameterName = "@ApplicationState";
@@ -309,6 +309,11 @@ namespace TFCLPortal.EntityFrameworkCore.Repositories
             parameter[3].SqlDbType = SqlDbType.Bit;
             parameter[3].ParameterName = "@IsAdmin";
             parameter[3].Value = IsAdmin;
+
+            parameter[4] = new SqlParameter();
+            parameter[4].SqlDbType = SqlDbType.Bit;
+            parameter[4].ParameterName = "@IsEnhancement";
+            parameter[4].Value = IsEnhancement;
 
             using (var command = CreateCommand("SP_GetAllApplications", CommandType.StoredProcedure, parameter))
             {
@@ -402,6 +407,8 @@ namespace TFCLPortal.EntityFrameworkCore.Repositories
 
                         dashboard.DeceasedfileAmount = Convert.ToInt32(dataReader["DeceasedfileAmount"]);
                         dashboard.DeceasedfileCount = Convert.ToInt32(dataReader["DeceasedfileCount"]);
+                        dashboard.EnhancementfileCount = Convert.ToInt32(dataReader["EnhancementfileCount"]);
+                        dashboard.EnhancedfileCount = Convert.ToInt32(dataReader["EnhancedfileCount"]);
 
 
 

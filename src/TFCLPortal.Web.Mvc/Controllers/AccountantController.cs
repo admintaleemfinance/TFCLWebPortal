@@ -56,6 +56,7 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using TFCLPortal.Customs;
 using TFCLPortal.FundingSources;
+using TFCLPortal.EnhancementRequests;
 
 namespace TFCLPortal.Web.Controllers
 {
@@ -67,6 +68,7 @@ namespace TFCLPortal.Web.Controllers
         private readonly UserManager _userManager;
         private readonly IBccDecisionAppService _bccDecisionAppService;
         private readonly IBusinessPlanAppService _businessPlanAppService;
+        private readonly IEnhancementRequestAppService _enhancementRequestAppService;
         private readonly ILoanEligibilityAppService _loanEligibilityAppService;
         private readonly ITDSLoanEligibilityAppService _tDSLoanEligibilityAppService;
         private readonly IBankAccountAppService _bankAccountAppService;
@@ -76,6 +78,7 @@ namespace TFCLPortal.Web.Controllers
         private readonly IScheduleAppService _scheduleAppService;
         private readonly IScheduleTempAppService _scheduleTempAppService;
         private readonly IRepository<NatureOfPayment, int> _natureOfPaymentRepository;
+        private readonly IRepository<EnhancementRequest, int> _enhancementRequestRepository;
         private readonly IRepository<CompanyBankAccount, int> _companyBankAccountRepository;
         private readonly IRepository<Schedule, int> _scheduleRepository;
         private readonly IRepository<ScheduleInstallment, int> _scheduleInstallmentRepository;
@@ -105,8 +108,9 @@ namespace TFCLPortal.Web.Controllers
 
         private readonly INotificationLogAppService _notificationLogAppService;
 
-        public AccountantController(IRepository<FundingSource, int> fundingSourceRepository,IRepository<DeceasedAuthorization, int> deceasedAuthorizationRepository, ICustomAppService customAppService, IDeceasedAuthorizationAppService deceasedAuthorizationAppService, ITDSLoanEligibilityAppService tDSLoanEligibilityAppService, IRepository<CoApplicantDetail, int> CoApplicantRepository, IRepository<GuarantorDetail, int> GuarantorRepository, IRepository<Applicationz, Int32> applicationRepository, IRepository<ScheduleTemp, int> scheduleTempRepository, IRepository<DeceasedSettlement, int> deceasedSettlementRepository, IDeceasedSettlementAppService deceasedSettlementAppService, IRepository<WriteOff, int> writeOffRepository, IWriteOffAppService writeOffAppService, IRepository<EarlySettlement, int> earlySettlementRepository, IEarlySettlementAppService earlySettlementAppService, IRepository<AuthorizeInstallmentPayment, int> authorizeInstallmentPaymentRepository, IAuthorizeInstallmentPaymentAppService authorizeInstallmentPaymentAppService, IRepository<InstallmentPayment, int> installmentPaymentRepository, IRepository<Holiday, int> holidayRepository, IRepository<ScheduleInstallment, int> scheduleInstallmentRepository, IInstallmentPaymentAppService installmentPaymentAppService, IRepository<NatureOfPayment, int> natureOfPaymentRepository, IRepository<CompanyBankAccount, int> companyBankAccountRepository, IBADataCheckAppService IBADataCheckAppService, INotificationLogAppService notificationLogAppService, IScheduleTempAppService scheduleTempAppService, UserManager userManager, IRepository<Schedule, int> scheduleRepository, IScheduleAppService scheduleAppService, ICoApplicantDetailAppService coApplicantDetailAppService, IGuarantorDetailAppService guarantorDetailAppService, IBranchDetailAppService branchDetailAppService, IBankAccountAppService bankAccountAppService, ILoanEligibilityAppService loanEligibilityAppService, IBusinessPlanAppService businessPlanAppService, IBccDecisionAppService bccDecisionAppService, IApplicationAppService applicationAppService, IUserAppService userAppService, IFinalWorkflowAppService finalWorkflowAppService)
+        public AccountantController(IRepository<EnhancementRequest, int> enhancementRequestRepository, IEnhancementRequestAppService enhancementRequestAppService, IRepository<FundingSource, int> fundingSourceRepository, IRepository<DeceasedAuthorization, int> deceasedAuthorizationRepository, ICustomAppService customAppService, IDeceasedAuthorizationAppService deceasedAuthorizationAppService, ITDSLoanEligibilityAppService tDSLoanEligibilityAppService, IRepository<CoApplicantDetail, int> CoApplicantRepository, IRepository<GuarantorDetail, int> GuarantorRepository, IRepository<Applicationz, Int32> applicationRepository, IRepository<ScheduleTemp, int> scheduleTempRepository, IRepository<DeceasedSettlement, int> deceasedSettlementRepository, IDeceasedSettlementAppService deceasedSettlementAppService, IRepository<WriteOff, int> writeOffRepository, IWriteOffAppService writeOffAppService, IRepository<EarlySettlement, int> earlySettlementRepository, IEarlySettlementAppService earlySettlementAppService, IRepository<AuthorizeInstallmentPayment, int> authorizeInstallmentPaymentRepository, IAuthorizeInstallmentPaymentAppService authorizeInstallmentPaymentAppService, IRepository<InstallmentPayment, int> installmentPaymentRepository, IRepository<Holiday, int> holidayRepository, IRepository<ScheduleInstallment, int> scheduleInstallmentRepository, IInstallmentPaymentAppService installmentPaymentAppService, IRepository<NatureOfPayment, int> natureOfPaymentRepository, IRepository<CompanyBankAccount, int> companyBankAccountRepository, IBADataCheckAppService IBADataCheckAppService, INotificationLogAppService notificationLogAppService, IScheduleTempAppService scheduleTempAppService, UserManager userManager, IRepository<Schedule, int> scheduleRepository, IScheduleAppService scheduleAppService, ICoApplicantDetailAppService coApplicantDetailAppService, IGuarantorDetailAppService guarantorDetailAppService, IBranchDetailAppService branchDetailAppService, IBankAccountAppService bankAccountAppService, ILoanEligibilityAppService loanEligibilityAppService, IBusinessPlanAppService businessPlanAppService, IBccDecisionAppService bccDecisionAppService, IApplicationAppService applicationAppService, IUserAppService userAppService, IFinalWorkflowAppService finalWorkflowAppService)
         {
+            _enhancementRequestRepository = enhancementRequestRepository;
             _fundingSourceRepository = fundingSourceRepository;
             _customAppService = customAppService;
             _deceasedAuthorizationRepository = deceasedAuthorizationRepository;
@@ -115,6 +119,7 @@ namespace TFCLPortal.Web.Controllers
             _GuarantorRepository = GuarantorRepository;
             _CoApplicantRepository = CoApplicantRepository;
             _applicationRepository = applicationRepository;
+            _enhancementRequestAppService = enhancementRequestAppService;
             _applicationAppService = applicationAppService;
             _natureOfPaymentRepository = natureOfPaymentRepository;
             _notificationLogAppService = notificationLogAppService;
@@ -244,7 +249,7 @@ namespace TFCLPortal.Web.Controllers
             ViewBag.JsonData = _customAppService.getProscribedPersonList();
             return View();
         }
-        
+
         public ActionResult CheckAMLCFTByCNIC()
         {
             //ViewBag.JsonData = GetJson().Result;
@@ -371,6 +376,33 @@ namespace TFCLPortal.Web.Controllers
             return View(apps);
         }
 
+
+
+        public IActionResult EnhancementRequestList()
+        {
+            var reqs = _enhancementRequestAppService.GetAllEnhancementRequests().Result;
+            return View(reqs);
+        }
+        [HttpGet]
+        [DisableValidation]
+        public ActionResult ApproveEnhancement(int id, bool approve)
+        {
+            var req = _enhancementRequestRepository.Get(id);
+            if (approve)
+            {
+                req.RequestState = 1;
+            }
+            else
+            {
+                req.RequestState = 2;
+            }
+            _enhancementRequestRepository.Update(req);
+
+
+
+            return RedirectToAction("EnhancementRequestList", "Accountant");
+        }
+
         public IActionResult AuthorizationInstallmentPayment()
         {
             int branch = Branchid();
@@ -391,7 +423,7 @@ namespace TFCLPortal.Web.Controllers
         public IActionResult getEarlySettlement(int ApplicationId)
         {
 
-            var earlysettlements = _earlySettlementRepository.GetAllList(x => x.ApplicationId == ApplicationId);
+            var earlysettlements = _earlySettlementRepository.GetAllList(x => x.ApplicationId == ApplicationId && x.isAuthorized == true);
 
             if (earlysettlements != null)
             {
@@ -841,74 +873,96 @@ namespace TFCLPortal.Web.Controllers
             String response = "";
             try
             {
-                var getSchedule = _scheduleTempAppService.GetScheduleTempByApplicationId(ApplicationId).Result;
-                if (getSchedule != null)
+                var app = _applicationAppService.GetApplicationById(ApplicationId);
+                if (app != null)
                 {
-                    var schedule = _scheduleTempRepository.GetAllList(x => x.Id == getSchedule.Id).FirstOrDefault();
-                    schedule.isAuthorizedByBM = Recommendation;
-                    schedule.Reason = Reason;
-                    _scheduleTempRepository.Update(schedule);
-                    CurrentUnitOfWork.SaveChanges();
 
-                    if (Recommendation == true)
+                    var getSchedule = _scheduleTempAppService.GetScheduleTempByApplicationId(ApplicationId).Result;
+                    if (getSchedule != null)
                     {
-                        CreateScheduleDto CreateSchedule = new CreateScheduleDto();
-                        CreateSchedule.AccountTitle = getSchedule.AccountTitle;
-                        CreateSchedule.ApplicationId = getSchedule.ApplicationId;
-                        CreateSchedule.ClientId = getSchedule.ClientId;
-                        CreateSchedule.ScheduleType = getSchedule.ScheduleType;
-                        CreateSchedule.LoanAmount = getSchedule.LoanAmount;
-                        CreateSchedule.Tenure = getSchedule.Tenure;
-                        CreateSchedule.Markup = getSchedule.Markup;
-                        CreateSchedule.DisbursmentDate = getSchedule.DisbursmentDate;
-                        CreateSchedule.GraceDays = getSchedule.GraceDays;
-                        CreateSchedule.Deferment = getSchedule.Deferment;
-                        CreateSchedule.RepaymentACnumber = getSchedule.RepaymentACnumber;
-                        CreateSchedule.BankBranchName = getSchedule.BankBranchName;
-                        CreateSchedule.TFCL_Branch = getSchedule.TFCL_Branch;
-                        CreateSchedule.BranchManager = getSchedule.BranchManager;
-                        CreateSchedule.SDE = getSchedule.SDE;
-                        CreateSchedule.DeffermentStartDate = getSchedule.DeffermentStartDate;
-                        CreateSchedule.DeffermentEndDate = getSchedule.DeffermentEndDate;
-                        CreateSchedule.IRR = getSchedule.IRR;
-                        CreateSchedule.Installment = getSchedule.Installment;
-                        CreateSchedule.LoanStartDate = getSchedule.LoanStartDate;
-                        CreateSchedule.LastInstallmentDate = getSchedule.LastInstallmentDate;
-                        CreateSchedule.YearlyMarkup = getSchedule.YearlyMarkup;
-                        CreateSchedule.PerDayMarkup = getSchedule.PerDayMarkup;
-                        CreateSchedule.isAuthorizedByBM = true;
-                        CreateSchedule.Reason = getSchedule.Reason;
+                        var schedule = _scheduleTempRepository.GetAllList(x => x.Id == getSchedule.Id).FirstOrDefault();
+                        schedule.isAuthorizedByBM = Recommendation;
+                        schedule.Reason = Reason;
+                        _scheduleTempRepository.Update(schedule);
+                        CurrentUnitOfWork.SaveChanges();
 
-                        List<CreateScheduleInstallmentDto> listInstallments = new List<CreateScheduleInstallmentDto>();
-                        foreach (var installment in getSchedule.installmentList)
+                        if (Recommendation == true)
                         {
-                            CreateScheduleInstallmentDto installmentDto = new CreateScheduleInstallmentDto();
-                            installmentDto.InstNumber = installment.InstNumber;
-                            installmentDto.BalInst = installment.BalInst;
-                            installmentDto.InstallmentDueDate = installment.InstallmentDueDate;
-                            installmentDto.OsPrincipal_op = installment.OsPrincipal_op;
-                            installmentDto.AdditionalTranche = installment.AdditionalTranche;
-                            installmentDto.OsPrincipal_Opening = installment.OsPrincipal_Opening;
-                            installmentDto.markup = installment.markup;
-                            installmentDto.principal = installment.principal;
-                            installmentDto.installmentAmount = installment.installmentAmount;
-                            installmentDto.OsPrincipal_Closing = installment.OsPrincipal_Closing;
-                            installmentDto.isPaid = installment.isPaid;
-                            installmentDto.PaymentDate = installment.PaymentDate;
+                            CreateScheduleDto CreateSchedule = new CreateScheduleDto();
+                            CreateSchedule.AccountTitle = getSchedule.AccountTitle;
+                            CreateSchedule.ApplicationId = getSchedule.ApplicationId;
+                            CreateSchedule.ClientId = getSchedule.ClientId;
+                            CreateSchedule.ScheduleType = getSchedule.ScheduleType;
+                            CreateSchedule.LoanAmount = getSchedule.LoanAmount;
+                            CreateSchedule.Tenure = getSchedule.Tenure;
+                            CreateSchedule.Markup = getSchedule.Markup;
+                            CreateSchedule.DisbursmentDate = getSchedule.DisbursmentDate;
+                            CreateSchedule.GraceDays = getSchedule.GraceDays;
+                            CreateSchedule.Deferment = getSchedule.Deferment;
+                            CreateSchedule.RepaymentACnumber = getSchedule.RepaymentACnumber;
+                            CreateSchedule.BankBranchName = getSchedule.BankBranchName;
+                            CreateSchedule.TFCL_Branch = getSchedule.TFCL_Branch;
+                            CreateSchedule.BranchManager = getSchedule.BranchManager;
+                            CreateSchedule.SDE = getSchedule.SDE;
+                            CreateSchedule.DeffermentStartDate = getSchedule.DeffermentStartDate;
+                            CreateSchedule.DeffermentEndDate = getSchedule.DeffermentEndDate;
+                            CreateSchedule.IRR = getSchedule.IRR;
+                            CreateSchedule.Installment = getSchedule.Installment;
+                            CreateSchedule.LoanStartDate = getSchedule.LoanStartDate;
+                            CreateSchedule.LastInstallmentDate = getSchedule.LastInstallmentDate;
+                            CreateSchedule.YearlyMarkup = getSchedule.YearlyMarkup;
+                            CreateSchedule.PerDayMarkup = getSchedule.PerDayMarkup;
+                            CreateSchedule.isAuthorizedByBM = true;
+                            CreateSchedule.Reason = getSchedule.Reason;
 
-                            listInstallments.Add(installmentDto);
+                            List<CreateScheduleInstallmentDto> listInstallments = new List<CreateScheduleInstallmentDto>();
+                            foreach (var installment in getSchedule.installmentList)
+                            {
+                                CreateScheduleInstallmentDto installmentDto = new CreateScheduleInstallmentDto();
+                                installmentDto.InstNumber = installment.InstNumber;
+                                installmentDto.BalInst = installment.BalInst;
+                                installmentDto.InstallmentDueDate = installment.InstallmentDueDate;
+                                installmentDto.OsPrincipal_op = installment.OsPrincipal_op;
+                                installmentDto.AdditionalTranche = installment.AdditionalTranche;
+                                installmentDto.OsPrincipal_Opening = installment.OsPrincipal_Opening;
+                                installmentDto.markup = installment.markup;
+                                installmentDto.principal = installment.principal;
+                                installmentDto.installmentAmount = installment.installmentAmount;
+                                installmentDto.OsPrincipal_Closing = installment.OsPrincipal_Closing;
+                                installmentDto.isPaid = installment.isPaid;
+                                installmentDto.PaymentDate = installment.PaymentDate;
+
+                                listInstallments.Add(installmentDto);
+
+                            }
+
+                            CreateSchedule.installmentList = listInstallments;
+
+
+                            _scheduleAppService.CreateSchedule(CreateSchedule);
 
                         }
 
-                        CreateSchedule.installmentList = listInstallments;
+                        if (app.isEnhancementApplication)
+                        {
+                            var oldApp = _applicationAppService.GetApplicationById(app.PrevApplicationId);
 
+                            _applicationAppService.ChangeApplicationState(ApplicationState.Enhanced, oldApp.Id, "Application Enhanced");
+                           
+                            CreateFinalWorkflowDto fWobj = new CreateFinalWorkflowDto();
+                            fWobj.ApplicationId = oldApp.Id;
+                            fWobj.Action = "Application Enhanced";
+                            fWobj.ActionBy = (int)AbpSession.UserId;
+                            fWobj.ApplicationState = ApplicationState.Enhanced;
+                            fWobj.isActive = true;
 
-                        _scheduleAppService.CreateSchedule(CreateSchedule);
+                            _finalWorkflowAppService.CreateFinalWorkflow(fWobj);
 
-                    }
-
-
-
+                                var currApp = _applicationRepository.Get(ApplicationId);
+                            currApp.isEnhancementApplication = false;
+                            _applicationRepository.Update(currApp);
+                        }
+                }
                 }
 
             }
@@ -993,7 +1047,7 @@ namespace TFCLPortal.Web.Controllers
             var Application = _applicationAppService.GetApplicationById(ApplicationId);
             if (Application != null)
             {
-                ViewBag.LoanCycles = _applicationRepository.GetAllListAsync().Result.FindAll(x => x.CNICNo == Application.CNICNo && (x.ScreenStatus != "Decline")).Count;
+                ViewBag.LoanCycles = _applicationRepository.GetAllListAsync().Result.FindAll(x => x.CNICNo == Application.CNICNo && (x.ScreenStatus != "decline")).Count;
 
 
                 ViewBag.ApplicantName = Application.ClientName;
@@ -1517,6 +1571,125 @@ namespace TFCLPortal.Web.Controllers
             return View();
         }
 
+        public IActionResult ScheduleEnhancement(int ApplicationId)
+        {
+            ViewBag.ApplicationId = ApplicationId;
+            double markup = 0.00;
+            int tenure = 0;
+            int LoanAmount = 0;
+            var application = _applicationAppService.GetApplicationById(ApplicationId);
+            if (application != null)
+            {
+                ViewBag.OldApplicationId = application.PrevApplicationId;
+                var getLRD = _businessPlanAppService.GetBusinessPlanByApplicationId(ApplicationId).Result;
+                if (getLRD != null)
+                {
+                    ViewBag.LoanRequisitionDetails = getLRD;
+                    tenure = Int32.Parse(getLRD.LoanTenureRequestedName);
+                    LoanAmount = Int32.Parse(getLRD.LoanAmountRecommended.Replace(",", ""));
+                }
+                var getBranch = _branchDetailAppService.GetBranchDetailById(application.FK_branchid);
+                if (getLRD != null)
+                {
+                    ViewBag.Branch = getBranch;
+                }
+                if (application.ProductType == 1 || application.ProductType == 2)
+                {
+                    var getLE = _loanEligibilityAppService.GetLoanEligibilityListByApplicationId(ApplicationId);
+                    if (getLE != null)
+                    {
+                        ViewBag.LoanEligibility = getLE.Result;
+                        markup = double.Parse(getLE.Result.Mark_Up);
+                    }
+
+                    var getLEold = _loanEligibilityAppService.GetLoanEligibilityListByApplicationId(application.PrevApplicationId).Result;
+                    if (getLEold != null)
+                    {
+                        ViewBag.LoanEligibilityOld = getLEold;
+                    }
+                }
+                else if (application.ProductType == 8 || application.ProductType == 9)
+                {
+                    var getLE = _tDSLoanEligibilityAppService.GetTDSLoanEligibilityListByApplicationId(ApplicationId);
+                    if (getLE != null)
+                    {
+                        ViewBag.LoanEligibility = getLE.Result;
+                        markup = double.Parse(getLE.Result.Mark_Up);
+                    }
+                    var getLEold = _tDSLoanEligibilityAppService.GetTDSLoanEligibilityListByApplicationId(application.PrevApplicationId).Result;
+                    if (getLEold != null)
+                    {
+                        ViewBag.LoanEligibilityOld = getLEold;
+                    }
+                }
+                var getLRDold = _businessPlanAppService.GetBusinessPlanByApplicationId(application.PrevApplicationId).Result;
+                if (getLRDold != null)
+                {
+                    ViewBag.LoanRequisitionDetailsOld = getLRDold;
+                }
+
+                var getUnpaidIstallmentLastSchedule = _scheduleAppService.GetScheduleByApplicationId(application.PrevApplicationId);
+                if (getUnpaidIstallmentLastSchedule != null)
+                {
+                    var unpaidInstallment = getUnpaidIstallmentLastSchedule.Result.installmentList.Where(x => x.isPaid != true && x.InstNumber != "G*").FirstOrDefault();
+                    if (unpaidInstallment != null)
+                    {
+                        ViewBag.UnpaidInstallment = unpaidInstallment;
+                    }
+                }
+
+                //var getLE = _loanEligibilityAppService.GetLoanEligibilityListByApplicationId(ApplicationId).Result;
+                //if (getLE != null)
+                //{
+                //    ViewBag.LoanEligibility = getLE;
+                //    markup = double.Parse(getLE.Mark_Up);
+                //}
+                //var getBA = _bankAccountAppService.GetBankAccountDetailByApplicationId(ApplicationId).Result.FirstOrDefault();
+                //if (getBA != null)
+                //{
+                //    ViewBag.BankAccount = getBA;
+                //}
+                var decision = _bccDecisionAppService.GetBccDecisionList().Where(x => x.ApplicationId == ApplicationId).FirstOrDefault();
+                if (decision != null)
+                {
+                    decision.ApplicantName = application.ClientName;
+                    decision.ClientId = application.ClientID;
+                    decision.SchoolName = application.SchoolName;
+                    decision.CNIC = application.CNICNo;
+                    ViewBag.Decision = decision;
+                }
+
+                var branch = _branchDetailAppService.GetBranchDetailById(application.FK_branchid);
+
+                ViewBag.BranchManager = branch.ContactPerson; // _userAppService.GetUserById((long)decision.CreatorUserId).Result.FullName;
+                ViewBag.BranchManagerId = (long)branch.FK_BMid;
+                ViewBag.SdeName = _userAppService.GetUserById((long)application.CreatorUserId).Result.FullName;
+                ViewBag.SdeId = (long)application.CreatorUserId;
+            }
+
+            //Calculating IRR
+            double markupPercentage = markup / 100;
+            double IRR = (Rate(tenure, (1 + ((1 * markupPercentage) / 12 * tenure)) / tenure, -1, 0, 0) * 12);
+            ViewBag.IRR = Math.Round(IRR * 100, 2);
+            ViewBag.IRR_full = IRR * 100;
+
+            //Calculating installment Amount
+            double installmentAmount = -PMT(IRR / 12, tenure, LoanAmount, 0, 0);
+            ViewBag.InstallmentAmount = Math.Round(installmentAmount, 2);
+
+            //Calculating Yearly Markup Amount
+            double yearlyMarkup = LoanAmount * markupPercentage;
+            ViewBag.YearlyMarkup = yearlyMarkup;
+
+            //Calculating Daily Markup Amount
+            double dailyMarkup = yearlyMarkup / 365;
+            ViewBag.DailyMarkup = dailyMarkup;
+
+            ViewBag.Application = application;
+
+            return View();
+        }
+
         public IActionResult Reschedule(int ApplicationId)
         {
             List<signatories> listForSignatories = new List<signatories>();
@@ -1628,6 +1801,7 @@ namespace TFCLPortal.Web.Controllers
 
             return View();
         }
+
 
 
 
@@ -1811,6 +1985,153 @@ namespace TFCLPortal.Web.Controllers
         }
 
 
+
+        [DisableValidation]
+        [HttpPost]
+        public IActionResult ScheduleEnhancementResult(GetFromFormDto Schedule)
+        {
+
+            List<signatories> listForSignatories = new List<signatories>();
+            ViewBag.ApplicationId = Schedule.ApplicationId;
+            ViewBag.PrevApplicationId = Schedule.PrevApplicationId;
+            ViewBag.newEnhancedAmount = Schedule.newEnhancedAmount;
+            ViewBag.newEnhancedTenure = Schedule.newEnhancedTenure;
+            ViewBag.newLoanAmountDiff = Schedule.newLoanAmountDiff;
+
+            var schedule = _scheduleAppService.GetScheduleByApplicationId(Schedule.PrevApplicationId);
+            if (schedule.Result != null)
+            {
+                var paidInstallments = schedule.Result.installmentList.Where(x => x.isPaid == true).ToList();
+                Schedule.PaidInstallmentList = paidInstallments;
+                Schedule.OldSchedule = schedule.Result;
+            }
+
+            var application = _applicationAppService.GetApplicationById(Schedule.ApplicationId);
+            if (application != null)
+            {
+                ViewBag.Application = application;
+                ViewBag.BMName = _userAppService.GetUserById(Schedule.BranchManagerId).Result.FullName;
+                ViewBag.SDEName = _userAppService.GetUserById(Schedule.SdeId).Result.FullName;
+
+                signatories applicant = new signatories();
+                applicant.Name = application.ClientName;
+                applicant.Detail = "(Applicant)";
+                listForSignatories.Add(applicant);
+
+                signatories bm = new signatories();
+                bm.Name = ViewBag.BMName;
+                bm.Detail = "(Branch Manager)";
+                listForSignatories.Add(bm);
+
+                var getCoApplicants = _coApplicantDetailAppService.GetCoApplicantDetailByApplicationId(Schedule.ApplicationId).Result.ToList();
+                if (getCoApplicants != null)
+                {
+                    foreach (var coapplicant in getCoApplicants)
+                    {
+                        signatories CoApplicant = new signatories();
+                        CoApplicant.Name = coapplicant.FullName;
+                        CoApplicant.Detail = "(Co-Applicant)";
+                        listForSignatories.Add(CoApplicant);
+                    }
+                }
+
+                var getGuarantors = _guarantorDetailAppService.GetGuarantorDetailByApplicationId(Schedule.ApplicationId).Result.ToList();
+                if (getGuarantors != null)
+                {
+                    foreach (var Guarantor in getGuarantors)
+                    {
+                        signatories GuarantorObj = new signatories();
+                        GuarantorObj.Name = Guarantor.FullName;
+                        GuarantorObj.Detail = "(Guarantor)";
+                        listForSignatories.Add(GuarantorObj);
+                    }
+                }
+
+
+            }
+
+            ViewBag.Signatories = listForSignatories;
+
+
+            if (Schedule.ScheduleType == "Tranches")
+            {
+                int LoanAmount = 0;
+                int Installments = 0;
+                double markup = 0;
+
+                var getLRD = _businessPlanAppService.GetBusinessPlanByApplicationId(Schedule.ApplicationId).Result;
+                if (getLRD != null)
+                {
+                    ViewBag.LoanRequisitionDetails = getLRD;
+                    Installments = Int32.Parse(getLRD.LoanTenureRequestedName);
+                }
+
+
+
+                var getLE = _loanEligibilityAppService.GetLoanEligibilityListByApplicationId(Schedule.ApplicationId).Result;
+                if (getLE != null)
+                {
+                    ViewBag.LoanEligibility = getLE;
+                    markup = double.Parse(getLE.Mark_Up);
+                }
+                var getLRDold = _businessPlanAppService.GetBusinessPlanByApplicationId(application.PrevApplicationId).Result;
+                if (getLRDold != null)
+                {
+                    ViewBag.LoanRequisitionDetailsOld = getLRDold;
+                }
+                var getLEold = _loanEligibilityAppService.GetLoanEligibilityListByApplicationId(application.PrevApplicationId).Result;
+                if (getLEold != null)
+                {
+                    ViewBag.LoanEligibilityOld = getLEold;
+                }
+
+
+                markup = markup / 100;
+
+                int sumOfAmounts = 0;
+                foreach (var item in Schedule.listForTranches)
+                {
+
+                    //Calculation of Tenure
+                    int tranchTenure = 0;
+
+                    if (item.tranchId == 1) { tranchTenure = Installments; }
+                    else
+                    {
+                        //DateTime a = item.StartDate;
+                        DateTime a = item.StartDate;
+                        DateTime b = Schedule.LoanStartDate;
+                        //DateTime b = Schedule.LoanStartDate.AddMonths(1);
+                        //DateTime b = Schedule.listForTranches[0].StartDate;
+
+                        tranchTenure = Installments - MonthDifference(a, b);
+                    }
+                    //tranchTenure += Schedule.DefermentMonths;
+                    item.tranchTenure = tranchTenure;
+
+                    sumOfAmounts += Int32.Parse(item.Amount);
+
+                    item.Irr = (Rate(tranchTenure, (1 + ((1 * markup) / 12 * tranchTenure)) / tranchTenure, -1, 0, 0) * 12) * 100;
+
+                    item.tranchInstallment = -PMT(item.Irr / 1200, tranchTenure, sumOfAmounts, 0, 0);
+
+                    item.DailyMarkup = Int32.Parse(item.Amount) * markup / 365;
+
+                }
+            }
+
+
+
+            ViewBag.Input = Schedule;
+            var branch = _branchDetailAppService.GetBranchListDetail().Where(x => x.BranchName.Contains(Schedule.BranchName)).FirstOrDefault();
+            if (branch != null)
+            {
+                ViewBag.BranchCode = branch.BranchCode;
+            }
+            return View();
+        }
+
+
         [HttpPost]
         public JsonResult SaveSchedule(CreateScheduleDto Schedule)
         {
@@ -1839,7 +2160,20 @@ namespace TFCLPortal.Web.Controllers
             }
         }
 
-
+        [HttpPost]
+        public JsonResult SaveScheduleTempEnhancement(CreateScheduleTempDto Schedule)
+        {
+            try
+            {
+                Schedule.UpdationReason = "Enhancement";
+                _scheduleTempAppService.CreateScheduleTemp(Schedule);
+                return Json("Schedule saved successfully");
+            }
+            catch (Exception ex)
+            {
+                return Json("Error : " + ex.ToString());
+            }
+        }
 
 
         public int Branchid()

@@ -869,12 +869,12 @@ namespace TFCLPortal.Applications
             {
                 if (branchId == null || branchId == 0)
                 {
-                    return _applicationRepository.GetAllList(x => x.ScreenStatus == applicationState && x.isEnhancementApplication==false).ToList();
+                    return _applicationRepository.GetAllList(x => x.ScreenStatus == applicationState ).ToList();
                 }
                 else
                 {
                     int branch = (int)branchId;
-                    return _applicationRepository.GetAllList(x => x.ScreenStatus == applicationState && x.FK_branchid == branch && x.isEnhancementApplication == false).ToList();
+                    return _applicationRepository.GetAllList(x => x.ScreenStatus == applicationState && x.FK_branchid == branch).ToList();
                 }
             }
             catch (Exception ex)
@@ -950,17 +950,17 @@ namespace TFCLPortal.Applications
             }
         }
 
-        public List<ApplicationDto> GetApplicationList(string applicationState, int? branchId, bool showAll = false, bool IsAdmin = false)
+        public List<ApplicationDto> GetApplicationList(string applicationState, int? branchId, bool showAll = false, bool IsAdmin = false,bool isEnhanced = false)
         {
             try
             {
                 if (branchId == null)
                 {
-                    return _customRepository.GetAllApplicationList(applicationState, 0, showAll, IsAdmin);
+                    return _customRepository.GetAllApplicationList(applicationState, 0, showAll, IsAdmin, isEnhanced);
                 }
                 else
                 {
-                    return _customRepository.GetAllApplicationList(applicationState, (int)branchId, showAll, IsAdmin);
+                    return _customRepository.GetAllApplicationList(applicationState, (int)branchId, showAll, IsAdmin, isEnhanced);
                 }
             }
             catch (Exception ex)

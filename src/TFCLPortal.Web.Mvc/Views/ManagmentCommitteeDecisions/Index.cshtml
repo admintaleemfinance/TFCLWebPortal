@@ -90,6 +90,8 @@
                         <td> @{i = i + 1;} @i</td>
                         <td>
                             @Html.DisplayFor(modelItem => item.ClientID)
+
+                            @(item.isEnhancementApplication==true ? " (E)" : "")
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.ClientName)
@@ -175,64 +177,69 @@
                 @foreach (var Outeritem in Model.decisions.GroupBy(x => x.ApplicationId).ToList())
                 {
 
-                    var item = Model.decisions.Where(x => x.ApplicationId == Outeritem.Key).FirstOrDefault();
+                    var itemDecisions = Model.decisions.Where(x => x.ApplicationId == Outeritem.Key).ToList();
 
-                    <tr>
-                        <td> @{n = n + 1;} @n</td>
-                        <td>
-                            @item.ClientID
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ClientName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SchoolName)
-                        </td>
-                        @*<td>
-                                @Html.DisplayFor(modelItem => item.State)
-                            </td>*@
-                        @if (Outeritem.Count() < 3)
-                        {
-                            <td>Pending</td>
-                        }
-                        else
-                        {
-                            <td>Authorized</td>
-                        }
+                    //if(itemDecisions.Any(x=>x.Decision==""))
 
-                        <td width="10%">
+                    var item = itemDecisions.FirstOrDefault();
+
+
+                        <tr>
+                            <td> @{n = n + 1;} @n</td>
+                            <td>
+                                @item.ClientID
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ClientName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SchoolName)
+                            </td>
+                            @*<td>
+                        @Html.DisplayFor(modelItem => item.State)
+                    </td>*@
                             @if (Outeritem.Count() < 3)
                             {
-                                @(Outeritem.Count())
+                                <td>Pending</td>
                             }
                             else
                             {
-                                @(3)
+                                <td>Authorized</td>
                             }
-                        </td>
-                        <td>@item.CreationTime.ToString("dd MMM yyyy hh:mm tt")</td>
-                        <td>@(item.BccApprovalDate==null? "--": String.Format("{0:dd MMM yyyy hh:mm tt}", item.BccApprovalDate))</td>
-                        <td>
-                            <div class="dropdown">
-                                <a class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa fa-list"></i>
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    @if (item.productType == 1 || item.productType == 2)
-                                    {
-                                        <a class="dropdown-item" href="/Dashboard/Application?id=@item.ApplicationId" target="_blank"><i class="fa fa-search"></i> View Details</a>
-                                    }
-                                    else if (item.productType == 8 || item.productType == 9)
-                                    {
-                                        <a class="dropdown-item" href="/Dashboard/TdsApplication?id=@item.ApplicationId" target="_blank"><i class="fa fa-search"></i> View Details</a>
-                                    }
-                                    <a class="dropdown-item" href="/McrcDecisions/Index?ApplicationId=@item.ApplicationId" target="_blank"><i class="fa fa-comment"></i> MCRC Decisions</a>
-                                    <a class="dropdown-item" href="/BCCDecisions/Index?ApplicationId=@item.ApplicationId" target="_blank"><i class="fa fa-comment"></i> BCC Decisions</a>
 
+                            <td width="10%">
+                                @if (Outeritem.Count() < 3)
+                                {
+                                    @(Outeritem.Count())
+                                }
+                                else
+                                {
+                                    @(3)
+                                }
+                            </td>
+                            <td>@item.CreationTime.ToString("dd MMM yyyy hh:mm tt")</td>
+                            <td>@(item.BccApprovalDate==null? "--": String.Format("{0:dd MMM yyyy hh:mm tt}", item.BccApprovalDate))</td>
+                            <td>
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-list"></i>
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        @if (item.productType == 1 || item.productType == 2)
+                                        {
+                                            <a class="dropdown-item" href="/Dashboard/Application?id=@item.ApplicationId" target="_blank"><i class="fa fa-search"></i> View Details</a>
+                                        }
+                                        else if (item.productType == 8 || item.productType == 9)
+                                        {
+                                            <a class="dropdown-item" href="/Dashboard/TdsApplication?id=@item.ApplicationId" target="_blank"><i class="fa fa-search"></i> View Details</a>
+                                        }
+                                        <a class="dropdown-item" href="/McrcDecisions/Index?ApplicationId=@item.ApplicationId" target="_blank"><i class="fa fa-comment"></i> MCRC Decisions</a>
+                                        <a class="dropdown-item" href="/BCCDecisions/Index?ApplicationId=@item.ApplicationId" target="_blank"><i class="fa fa-comment"></i> BCC Decisions</a>
+
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
                 }
             </tbody>
         </table>

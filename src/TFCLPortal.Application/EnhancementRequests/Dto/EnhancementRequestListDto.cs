@@ -19,5 +19,8 @@ namespace TFCLPortal.EnhancementRequests.Dto
         public string ClientName { get; set; }
         public string ClientBusiness { get; set; }
 
+        public int OldApplicationId { get; set; }
+
+
     }
 }

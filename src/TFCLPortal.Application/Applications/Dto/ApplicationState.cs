@@ -39,6 +39,7 @@ namespace TFCLPortal.Applications.Dto
         public static string EarlySettled = "Early Settled";
         public static string Settled = "Settled";
         public static string Deceased = "Deceased";
+        public static string Enhanced = "Enhanced";
 
 
     }
