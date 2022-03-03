@@ -44,6 +44,7 @@ using TFCLPortal.TaleemTeacherSahulats.Dto;
 using TFCLPortal.NotificationLogs;
 using TFCLPortal.Branches;
 using TFCLPortal.EnhancementRequests;
+using TFCLPortal.Schedules;
 
 namespace TFCLPortal.Applications
 {
@@ -74,6 +75,7 @@ namespace TFCLPortal.Applications
         private readonly IBranchManagerActionAppService _branchManagerActionAppService;
         private string application = "Application";
         private readonly IBccStateAppService _bccStateAppService;
+        private readonly IScheduleAppService _scheduleAppService;
         private readonly INotificationLogAppService _notificationLogAppService;
         private readonly IRepository<Branch> _branchRepository;
         private readonly IRepository<EnhancementRequest> _enhancementRequestRepository;
@@ -91,6 +93,7 @@ namespace TFCLPortal.Applications
             IWorkFlowAppService workFlowAppService,
             IWorkFlowApplicationStateAppService flowApplicationStateAppService,
             IDescripentScreenAppService descripentScreenAppService,
+            IScheduleAppService scheduleAppService,
             IFinalWorkflowAppService finalWorkflowAppService,
              IRepository<GuarantorDetail> guarantorDetailAppService,
                IRepository<CoApplicantDetail> CoApplicantDetailsrepo,
@@ -109,6 +112,7 @@ namespace TFCLPortal.Applications
         {
             _notificationLogAppService = notificationLogAppService;
             _applicationRepository = applicationRepository;
+            _scheduleAppService = scheduleAppService;
             _enhancementRequestRepository = enhancementRequestRepository;
             _branchRepository = branchRepository;
             _mobilizationStatusRepository = mobilizationStatusRepository;
@@ -869,7 +873,7 @@ namespace TFCLPortal.Applications
             {
                 if (branchId == null || branchId == 0)
                 {
-                    return _applicationRepository.GetAllList(x => x.ScreenStatus == applicationState ).ToList();
+                    return _applicationRepository.GetAllList(x => x.ScreenStatus == applicationState).ToList();
                 }
                 else
                 {
@@ -950,7 +954,7 @@ namespace TFCLPortal.Applications
             }
         }
 
-        public List<ApplicationDto> GetApplicationList(string applicationState, int? branchId, bool showAll = false, bool IsAdmin = false,bool isEnhanced = false)
+        public List<ApplicationDto> GetApplicationList(string applicationState, int? branchId, bool showAll = false, bool IsAdmin = false, bool isEnhanced = false)
         {
             try
             {
@@ -1275,12 +1279,24 @@ namespace TFCLPortal.Applications
                     }
 
                 }
+                var schedules = _scheduleAppService.GetScheduleList();
                 foreach (var mob in mobilizationListDtoList)
                 {
                     if (mob.ScreenStatus == ApplicationState.Discrepent)
                     {
                         var discrepentList = _branchManagerActionAppService.getDiscrepentedForms(mob.Id);
                         mob.DescripentScreens = discrepentList;
+                    }
+
+                    var schedule = schedules.Result.Where(x => x.ApplicationId == mob.Id).FirstOrDefault();
+                    if (schedule != null)
+                    {
+                        var lastUnpaid = schedule.installmentList.Where(y => y.isPaid != true).FirstOrDefault();
+                        if (lastUnpaid != null)
+                        {
+                            mob.DueDate = lastUnpaid.InstallmentDueDate;
+                        }
+
                     }
                 }
 
