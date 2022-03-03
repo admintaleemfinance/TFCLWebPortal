@@ -44,7 +44,7 @@ using TFCLPortal.TaleemTeacherSahulats.Dto;
 using TFCLPortal.NotificationLogs;
 using TFCLPortal.Branches;
 using TFCLPortal.EnhancementRequests;
-using TFCLPortal.Schedules;
+//using TFCLPortal.Schedules;
 
 namespace TFCLPortal.Applications
 {
@@ -75,7 +75,7 @@ namespace TFCLPortal.Applications
         private readonly IBranchManagerActionAppService _branchManagerActionAppService;
         private string application = "Application";
         private readonly IBccStateAppService _bccStateAppService;
-        private readonly IScheduleAppService _scheduleAppService;
+        //private readonly IScheduleAppService _scheduleAppService;
         private readonly INotificationLogAppService _notificationLogAppService;
         private readonly IRepository<Branch> _branchRepository;
         private readonly IRepository<EnhancementRequest> _enhancementRequestRepository;
@@ -93,7 +93,7 @@ namespace TFCLPortal.Applications
             IWorkFlowAppService workFlowAppService,
             IWorkFlowApplicationStateAppService flowApplicationStateAppService,
             IDescripentScreenAppService descripentScreenAppService,
-            IScheduleAppService scheduleAppService,
+            //IScheduleAppService scheduleAppService,
             IFinalWorkflowAppService finalWorkflowAppService,
              IRepository<GuarantorDetail> guarantorDetailAppService,
                IRepository<CoApplicantDetail> CoApplicantDetailsrepo,
@@ -112,7 +112,7 @@ namespace TFCLPortal.Applications
         {
             _notificationLogAppService = notificationLogAppService;
             _applicationRepository = applicationRepository;
-            _scheduleAppService = scheduleAppService;
+            //_scheduleAppService = scheduleAppService;
             _enhancementRequestRepository = enhancementRequestRepository;
             _branchRepository = branchRepository;
             _mobilizationStatusRepository = mobilizationStatusRepository;
@@ -1280,7 +1280,7 @@ namespace TFCLPortal.Applications
                     }
 
                 }
-                var schedules = _scheduleAppService.GetScheduleList();
+                //var schedules = _scheduleAppService.GetScheduleList();
                 foreach (var mob in mobilizationListDtoList)
                 {
                     if (mob.ScreenStatus == ApplicationState.Discrepent)
