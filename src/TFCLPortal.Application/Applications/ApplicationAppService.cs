@@ -1289,16 +1289,16 @@ namespace TFCLPortal.Applications
                         mob.DescripentScreens = discrepentList;
                     }
 
-                    var schedule = schedules.Result.Where(x => x.ApplicationId == mob.Id).FirstOrDefault();
-                    if (schedule != null)
-                    {
-                        var lastUnpaid = schedule.installmentList.Where(y => y.isPaid != true).FirstOrDefault();
-                        if (lastUnpaid != null)
-                        {
-                            mob.DueDate = lastUnpaid.InstallmentDueDate;
-                        }
+                    //var schedule = schedules.Result.Where(x => x.ApplicationId == mob.Id).FirstOrDefault();
+                    //if (schedule != null)
+                    //{
+                    //    var lastUnpaid = schedule.installmentList.Where(y => y.isPaid != true).FirstOrDefault();
+                    //    if (lastUnpaid != null)
+                    //    {
+                    //        mob.DueDate = lastUnpaid.InstallmentDueDate;
+                    //    }
 
-                    }
+                    //}
                 }
 
 
