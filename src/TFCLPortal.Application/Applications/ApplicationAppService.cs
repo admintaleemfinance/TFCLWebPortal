@@ -525,6 +525,7 @@ namespace TFCLPortal.Applications
                     Applicationz NewApplication = new Applicationz();
 
                     NewApplication.ApplicationId = OldApp.ApplicationId;
+                    NewApplication.ClientID = OldApp.ClientID;
                     NewApplication.ClientName = OldApp.ClientName;
                     NewApplication.MobileNo = OldApp.MobileNo;
                     NewApplication.LandLineNo = OldApp.LandLineNo;
