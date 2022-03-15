@@ -240,6 +240,18 @@
                         <td></td>
                     </tr>
 
+
+                    <tr>
+                        <td>
+                            Machinery
+                        </td>
+                        <td>@(Model.qtyMachinery == "" || Model.qtyMachinery == null  ? "--" : Model.qtyMachinery)</td>
+                        <td>@(Model.detailsMachinery == "0" ? "--" : string.Format("{0:#,###}", Model.detailsMachinery))</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
                     <tr>
                         <td>
                             Other Assets

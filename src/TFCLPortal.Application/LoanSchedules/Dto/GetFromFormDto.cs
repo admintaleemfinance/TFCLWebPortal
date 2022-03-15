@@ -32,6 +32,9 @@ namespace TFCLPortal.LoanSchedules.Dto
         public string Markup { get; set; }
         public string LoanAmount { get; set; }
         public string Tenure { get; set; }
+        public int TurnArroundTimeMins { get; set; }
+        public string ReasonForDelayTAT { get; set; }
+
         public List<tranchList> listForTranches { get; set; }
 
         public bool isDeferrment{ get; set; }

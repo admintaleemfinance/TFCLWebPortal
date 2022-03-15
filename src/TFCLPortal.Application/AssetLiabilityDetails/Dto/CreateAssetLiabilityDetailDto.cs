@@ -32,7 +32,8 @@ namespace TFCLPortal.AssetLiabilityDetails.Dto
         public decimal BorrowerNetWorthLiability { get; set; }
         public string ScreenStatus { get; set; }
         public string Comments { get; set; }
-
+        public string qtyMachinery { get; set; }
+        public string detailsMachinery { get; set; }
         //NEW
         public decimal AssetStockInHand { get; set; }
         public decimal AssetFranchiseFee { get; set; }

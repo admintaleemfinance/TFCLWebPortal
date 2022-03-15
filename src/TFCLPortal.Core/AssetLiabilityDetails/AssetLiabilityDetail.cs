@@ -33,7 +33,8 @@ namespace TFCLPortal.AssetLiabilityDetails
         public string ScreenStatus { get; set; }
         public bool isNew { get; set; }
         public string Comments { get; set; }
-
+        public string qtyMachinery { get; set; }
+        public string detailsMachinery { get; set; }
         //NEW
         public decimal AssetStockInHand { get; set; }
         public decimal AssetFranchiseFee { get; set; }

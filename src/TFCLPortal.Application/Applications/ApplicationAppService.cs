@@ -44,6 +44,7 @@ using TFCLPortal.TaleemTeacherSahulats.Dto;
 using TFCLPortal.NotificationLogs;
 using TFCLPortal.Branches;
 using TFCLPortal.EnhancementRequests;
+using TFCLPortal.Schedules;
 //using TFCLPortal.Schedules;
 
 namespace TFCLPortal.Applications
@@ -77,6 +78,7 @@ namespace TFCLPortal.Applications
         private readonly IBccStateAppService _bccStateAppService;
         //private readonly IScheduleAppService _scheduleAppService;
         private readonly INotificationLogAppService _notificationLogAppService;
+        //private readonly IScheduleAppService _scheduleAppService;
         private readonly IRepository<Branch> _branchRepository;
         private readonly IRepository<EnhancementRequest> _enhancementRequestRepository;
 
@@ -87,6 +89,7 @@ namespace TFCLPortal.Applications
             IRepository<ProductType> ProductTyperepo,
             IMobilizationAppService mobilizationAppService,
             IUserAppService userAppService,
+            //IScheduleAppService scheduleAppService,
             IRepository<Branch> branchRepository,
             ITaleemJariSahulatAppService taleemJariSahulatAppService,
             ITaleemTeacherSahulatAppService taleemTeacherSahulatAppService,
@@ -112,6 +115,7 @@ namespace TFCLPortal.Applications
         {
             _notificationLogAppService = notificationLogAppService;
             _applicationRepository = applicationRepository;
+            //_scheduleAppService = scheduleAppService;
             //_scheduleAppService = scheduleAppService;
             _enhancementRequestRepository = enhancementRequestRepository;
             _branchRepository = branchRepository;

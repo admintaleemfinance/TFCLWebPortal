@@ -8304,6 +8304,8 @@ namespace TFCLPortal.Migrations
 
                     b.Property<string>("Tenure");
 
+                    b.Property<int>("TurnArroundTimeMins");
+
                     b.Property<string>("UpdationReason");
 
                     b.Property<string>("YearlyMarkup");
@@ -8371,6 +8373,8 @@ namespace TFCLPortal.Migrations
 
                     b.Property<string>("Reason");
 
+                    b.Property<string>("ReasonForDelayTAT");
+
                     b.Property<string>("RepaymentACnumber");
 
                     b.Property<string>("SDE");
@@ -8380,6 +8384,8 @@ namespace TFCLPortal.Migrations
                     b.Property<string>("TFCL_Branch");
 
                     b.Property<string>("Tenure");
+
+                    b.Property<int>("TurnArroundTimeMins");
 
                     b.Property<string>("YearlyMarkup");
 

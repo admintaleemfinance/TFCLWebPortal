@@ -58,6 +58,8 @@ namespace TFCLPortal.AssetLiabilityDetails.Dto
         public string qtyAssetEquipment { get; set; }
         public string qtyAssetLandBuliding { get; set; }
         public string qtyOtherAssets { get; set; }
+        public string qtyMachinery { get; set; }
+        public string detailsMachinery { get; set; }
 
 
         public string detailsLoanPayableBank { get; set; }

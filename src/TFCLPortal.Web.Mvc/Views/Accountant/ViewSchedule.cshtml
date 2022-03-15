@@ -8,6 +8,7 @@
     //CultureInfo provider = CultureInfo.InvariantCulture;
 
 }
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
 <link href="~/lib/font-awesome/css/font-awesome.css" rel="stylesheet" asp-append-version="true" />
 
@@ -281,37 +282,37 @@
 
                 }
 
-            <tr>
-                @if (Model.ScheduleType != "Standard")
-                {
-                    <th style="text-align:center" colspan="3">Grand Total</th>
+                <tr>
+                    @if (Model.ScheduleType != "Standard")
+                    {
+                        <th style="text-align:center" colspan="3">Grand Total</th>
 
-                }
-                else
-                {
-                    <th style="text-align:center" colspan="2">Grand Total</th>
-                }
+                    }
+                    else
+                    {
+                        <th style="text-align:center" colspan="2">Grand Total</th>
+                    }
 
-                @if (totalPrincipal > 999999)
-                {
-                    totalPrincipal = totalPrincipal / 100000;
-                    totalPrincipal = Math.Round(totalPrincipal);
-                    totalPrincipal = totalPrincipal * 100000;
-                }
-                else if (totalPrincipal > 99999)
-                {
-                    totalPrincipal = totalPrincipal / 10000;
-                    totalPrincipal = Math.Round(totalPrincipal);
-                    totalPrincipal = totalPrincipal * 10000;
-                }
-             
+                    @if (totalPrincipal > 999999)
+                    {
+                        totalPrincipal = totalPrincipal / 100000;
+                        totalPrincipal = Math.Round(totalPrincipal);
+                        totalPrincipal = totalPrincipal * 100000;
+                    }
+                    else if (totalPrincipal > 99999)
+                    {
+                        totalPrincipal = totalPrincipal / 10000;
+                        totalPrincipal = Math.Round(totalPrincipal);
+                        totalPrincipal = totalPrincipal * 10000;
+                    }
 
-                <th style="text-align:right">@string.Format("{0:#,##0}", totalPrincipal)</th>
 
-                <th style="text-align:right">@string.Format("{0:#,##0}", totalInterest)</th>
-                <th style="text-align:right">@string.Format("{0:#,##0}", totalInstallment)</th>
-                <th style="text-align:right"></th>
-            </tr>
+                    <th style="text-align:right">@string.Format("{0:#,##0}", totalPrincipal)</th>
+
+                    <th style="text-align:right">@string.Format("{0:#,##0}", totalInterest)</th>
+                    <th style="text-align:right">@string.Format("{0:#,##0}", totalInstallment)</th>
+                    <th style="text-align:right"></th>
+                </tr>
 
 
 

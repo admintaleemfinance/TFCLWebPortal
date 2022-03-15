@@ -18,6 +18,7 @@ namespace TFCLPortal.Applications
         public string AppStatus { get; set; }
         public string CNICNo { get; set; }
         public int Id { get; set; }
+        public int TAT { get; set; }
         public string ShortCode { get; set; }
         public string Comments { get; set; }
         public string LastScreen { get; set; }

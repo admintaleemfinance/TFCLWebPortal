@@ -34,6 +34,8 @@ namespace TFCLPortal.Schedules.Dto
         public string PerDayMarkup { get; set; }
         public bool? isAuthorizedByBM { get; set; }
         public string Reason { get; set; }
+        public int TurnArroundTimeMins { get; set; }
+        public string ReasonForDelayTAT { get; set; }
 
         public List<ScheduleInstallmenttListDto> installmentList { get; set; }
 
