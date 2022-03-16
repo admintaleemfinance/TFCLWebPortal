@@ -73,9 +73,6 @@ namespace TFCLPortal.AssetLiabilityDetails.Dto
         public string detailsProvidentFund { get; set; }
         public string qtyProvidentFund { get; set; }
 
-
-
-
         public decimal LiablityStudentSecurityDeposit { get; set; }
         public DateTime AssetLiabilityAsOn { get; set; }
 
