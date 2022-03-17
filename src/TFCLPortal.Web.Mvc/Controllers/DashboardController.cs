@@ -225,7 +225,12 @@ namespace TFCLPortal.Web.Mvc.Controllers
             _env = env;
         }
 
-        public async Task<IActionResult> Dashboard()
+        public IActionResult Dashboard()
+        {
+            return View();
+        }
+
+        public async Task<JsonResult> GetDashboardData()
         {
             long? userid = _userManager.AbpSession.UserId;
             ViewBag.userid = (int)AbpSession.UserId;
@@ -277,8 +282,7 @@ namespace TFCLPortal.Web.Mvc.Controllers
             dashbardList.TodayMeetingWithClients = returnList.Where(x => x.NextMeeting.ToString("yyyy-MM-dd") == dt).ToList().Count;
             dashbardList.MobilizationCount = returnList.Count;
 
-            return View(dashbardList);
-            //return View();
+            return Json(dashbardList);
         }
 
         public IActionResult Analytics()
