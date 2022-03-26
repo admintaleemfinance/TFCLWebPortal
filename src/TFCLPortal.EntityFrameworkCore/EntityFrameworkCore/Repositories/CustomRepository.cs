@@ -241,6 +241,7 @@ namespace TFCLPortal.EntityFrameworkCore.Repositories
                             mbo.AcademicSessionName = dataReader["AcademicSessionName"] == DBNull.Value || dataReader["AcademicSessionName"] == "" ? "" : Convert.ToString(dataReader["AcademicSessionName"]);
                             mbo.TDSBusinessNature = dataReader["TDSBusinessNature"] == DBNull.Value || dataReader["TDSBusinessNature"] == "" ? 0 : Convert.ToInt32(dataReader["TDSBusinessNature"]);
                             mbo.TDSBusinessNatureName = dataReader["TDSBusinessNatureName"] == DBNull.Value || dataReader["TDSBusinessNatureName"] == "" ? "" : Convert.ToString(dataReader["TDSBusinessNatureName"]);
+                            mbo.MobilizationRecordId = dataReader["mobilizationrecordid"] == DBNull.Value || dataReader["mobilizationrecordid"] == "" ? "" : Convert.ToString(dataReader["mobilizationrecordid"]);
 
                             mbo.AreaOfSchoolMarla = dataReader["AreaOfSchoolMarla"] == DBNull.Value || dataReader["AreaOfSchoolMarla"] == "" ? 0 : Convert.ToInt32(dataReader["AreaOfSchoolMarla"]);
 
