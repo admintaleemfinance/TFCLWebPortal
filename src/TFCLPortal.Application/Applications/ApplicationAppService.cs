@@ -488,6 +488,7 @@ namespace TFCLPortal.Applications
                         createMobilization.MonthlySalary = input.MonthlySalary;
                         createMobilization.JobTenure = input.JobTenure;
                         createMobilization.SchoolGoingDependants = input.SchoolGoingDependants;
+                        createMobilization.MobilizationRecordId = input.MobilizationRecordId;
 
 
                         //end fields by saad

@@ -187,6 +187,8 @@ using TFCLPortal.ProscribedPersons;
 using TFCLPortal.LoanStatuses;
 using TFCLPortal.FundingSources;
 using TFCLPortal.EnhancementRequests;
+using TFCLPortal.CustomerAccounts;
+using System.Transactions;
 
 namespace TFCLPortal.EntityFrameworkCore
 {
@@ -219,6 +221,7 @@ namespace TFCLPortal.EntityFrameworkCore
         public DbSet<DeceasedAuthorization> DeceasedAuthorizationDbSet { get; set; }
         public DbSet<ManagmentCommitteeDecision> ManagmentCommitteeDecisionDbSet { get; set; }
         public DbSet<LoanNature> LoanNatureDbSet { get; set; }
+        public DbSet<CustomerAccount> CustomerAccountDbSet { get; set; }
         public DbSet<BccDecision> BccDecisionDbSet { get; set; }
         public DbSet<EmploymentDetail> EmploymentDetailDbSet { get; set; }
         public DbSet<EnhancementRequest> EnhancementRequestDbSet { get; set; }
@@ -236,6 +239,7 @@ namespace TFCLPortal.EntityFrameworkCore
         public DbSet<LiabilityType> LiabilityTypeDbSet { get; set; }
         public DbSet<SchoolCategory> SchoolCategoryDbSet { get; set; }
         public DbSet<SalaryDetail> SalaryDetailDbSet { get; set; }
+        public DbSet<TFCLPortal.Transactions.Transaction> TransactionDbSet { get; set; }
         public DbSet<OtherPaymentBehaviour> OtherPaymentBehaviourDbSet { get; set; }
         public DbSet<SalaryDetailChild> SalaryDetailChildDbSet { get; set; }
         public DbSet<LoanSchedule> LoanScheduleDbSet { get; set; }

@@ -141,15 +141,15 @@
                                 <td colspan="7" class="text-right">
                                     Total (Current Liabilities)
                                 </td>
-                                <td>@(Model.CurrentTotalAmount == null || Model.CurrentTotalAmount == "" ? "0" : string.Format("{0:#,##0}", Int32.Parse(Model.CurrentTotalAmount.Replace(",", ""))))</td>
-                                <td>@(Model.CurrentTotalInstallmentpayment == null|| Model.CurrentTotalInstallmentpayment == "" ? "0" : string.Format("{0:#,##0}", Model.CurrentTotalInstallmentpayment))</td>
+                                <td>@(Model.CurrentTotalAmount == "null" || Model.CurrentTotalAmount == null || Model.CurrentTotalAmount == "" ? "0" : string.Format("{0:#,##0}", Int32.Parse(Model.CurrentTotalAmount.Replace(",", ""))))</td>
+                                <td>@(Model.CurrentTotalInstallmentpayment == "null" || Model.CurrentTotalInstallmentpayment == null|| Model.CurrentTotalInstallmentpayment == "" ? "0" : string.Format("{0:#,##0}", Model.CurrentTotalInstallmentpayment))</td>
                             </tr>
                             <tr>
                                 <td colspan="7" class="text-right">
                                     Total (Long-Term Liabilities)
                                 </td>
-                                <td>@(Model.LongtermTotalAmount == null || Model.LongtermTotalAmount == "" ? "0" : string.Format("{0:#,##0}", Int32.Parse(Model.LongtermTotalAmount.Replace(",", ""))))</td>
-                                <td>@(Model.LongtermInstallmentpayment == null|| Model.LongtermInstallmentpayment == "" ? "0" : string.Format("{0:#,##0}", Model.LongtermInstallmentpayment))</td>
+                                <td>@(Model.LongtermTotalAmount == "null" || Model.LongtermTotalAmount == null || Model.LongtermTotalAmount == "" ? "0" : string.Format("{0:#,##0}", Int32.Parse(Model.LongtermTotalAmount.Replace(",", ""))))</td>
+                                <td>@(Model.LongtermInstallmentpayment == "null" || Model.LongtermInstallmentpayment == null|| Model.LongtermInstallmentpayment == "" ? "0" : string.Format("{0:#,##0}", Model.LongtermInstallmentpayment))</td>
                             </tr>
                             <tr>
                                 <td colspan="7" class="text-right">

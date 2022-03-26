@@ -1103,6 +1103,8 @@ namespace TFCLPortal.Migrations
 
                     b.Property<string>("MobileNo");
 
+                    b.Property<string>("MobilizationRecordId");
+
                     b.Property<int>("MobilizationStatus");
 
                     b.Property<DateTime?>("NextMeeting");
@@ -3605,6 +3607,49 @@ namespace TFCLPortal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ContactDetail");
+                });
+
+            modelBuilder.Entity("TFCLPortal.CustomerAccounts.CustomerAccount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Balance");
+
+                    b.Property<string>("CNIC");
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<long?>("DeleterUserId");
+
+                    b.Property<DateTime?>("DeletionTime");
+
+                    b.Property<string>("Email");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Phone");
+
+                    b.Property<string>("ProfilePicUrl");
+
+                    b.Property<bool>("isActive");
+
+                    b.Property<bool>("isEmailVerified");
+
+                    b.Property<bool>("isPhoneVerified");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CustomerAccount");
                 });
 
             modelBuilder.Entity("TFCLPortal.DeceasedAuthorizations.DeceasedAuthorization", b =>
@@ -7070,6 +7115,8 @@ namespace TFCLPortal.Migrations
 
                     b.Property<string>("MobileNo");
 
+                    b.Property<string>("MobilizationRecordId");
+
                     b.Property<int>("MobilizationStatus");
 
                     b.Property<int>("MobilizationTableID");
@@ -9419,6 +9466,43 @@ namespace TFCLPortal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TdsInventoryDetail");
+                });
+
+            modelBuilder.Entity("TFCLPortal.Transactions.Transaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Amount");
+
+                    b.Property<decimal>("BalAfter");
+
+                    b.Property<decimal>("BalBefore");
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<long?>("DeleterUserId");
+
+                    b.Property<DateTime?>("DeletionTime");
+
+                    b.Property<int>("Fk_AccountId");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("Type");
+
+                    b.Property<bool?>("isAuthorized");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Transaction");
                 });
 
             modelBuilder.Entity("TFCLPortal.WorkFlows.ApplicationDescripantDeclineState", b =>

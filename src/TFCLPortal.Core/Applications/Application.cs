@@ -66,6 +66,7 @@ namespace TFCLPortal.Applications
 
         public bool isEnhancementApplication { get; set; } // New Dropdown
         public int PrevApplicationId { get; set; } // New Dropdown
+        public string MobilizationRecordId { get; set; }
 
 
     }

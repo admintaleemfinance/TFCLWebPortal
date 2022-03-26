@@ -1,0 +1,100 @@
+﻿@model TFCLPortal.Transactions.Dto.CreateTransactionDto
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_NewLayout.cshtml";
+}
+<main class='main-content bgc-grey-100' style="padding-top:50px">
+    <div class="row page-title">
+        <div class="col-md-6 text-left">
+            <h4 class="page-title-text">
+                Create Holiday
+            </h4>
+            <h6 class="page-title-breadcrumbs">
+                <a href="~/Dashboard/Dashboard">Home</a> > Holidays > Create Holiday
+            </h6>
+        </div>
+        <div class="col-md-6 text-right">
+            <a href="~/Dashboard/Dashboard" class="btn btn-sm btn-outline-success bg1 eft-1" title="Back"><i class="fa fa-angle-double-left"></i> Back To Home </a>
+            <a href="~/Holidays/Index" class="btn btn-sm btn-outline-success bg1 eft-1" title="Back"><i class="fa fa-angle-double-left"></i> <i class="fa fa-list"></i> Back To List</a>
+        </div>
+    </div>
+
+    <div class="card p-10 mB-20">
+        <hr />
+
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="ClientID" class="control-label">Amount</label>
+                        <input value="@ViewBag.ClientID" class="form-control"  />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Amount" class="control-label">Amount</label>
+                        <input asp-for="Amount" class="form-control" />
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Amount" class="control-label">Amount</label>
+                        <input asp-for="Amount" class="form-control" />
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Amount" class="control-label">Amount</label>
+                        <input asp-for="Amount" class="form-control" />
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Amount" class="control-label">Amount</label>
+                        <input asp-for="Amount" class="form-control" />
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Amount" class="control-label">Amount</label>
+                        <input asp-for="Amount" class="form-control" />
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group text-right">
+                    <input type="submit" value="Credit" class="btn btn-sm btn-outline-success bg1 eft-1" />
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" crossorigin="anonymous"></script>
+    <script>
+        $('#DateFrom, #DateTo').on('input', function (e) {
+            var DateFrom = moment($('#DateFrom').val());
+            var DateTo = moment($('#DateTo').val());
+
+            var diff = DateTo.diff(DateFrom, 'days');
+
+            diff++;
+
+            $('#Days').val(diff);
+            $('#inlineCheckbox').prop('checked', false); // Unchecks it
+
+        });
+    
+        $('#inlineCheckbox').on('input', function (e) {
+            $('#DateTo').val($('#DateFrom').val());
+            $('#Days').val(1);
+        });
+    </script>
+
+</main>

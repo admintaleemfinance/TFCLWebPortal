@@ -352,7 +352,30 @@
 
             </ul>
         </li>*@
+                    @if (User.Identity.Name == "admin")
+                    {
+                        <li class="nav-item dropdown collapsed" data-toggle="collapse" data-target="#CA">
+                            <a>
+                                <span class="icon-holder">
+                                    <i class="fa fa-credit-card"></i>
+                                </span>
+                                <span class="title">Customer Accounts<i class="fa fa-caret-down"></i></span>
 
+                            </a>
+                            <ul id="CA" class="collapse sidebar-menua">
+                                <li>
+                                    <a href="~/CustomerAccount/Index">
+                                        <span class="icon-holder">
+                                            <i class="fa fa-credit-card"></i>
+                                        </span>
+                                        <h6>
+                                            Accounts List
+                                        </h6>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
                     @if (IsGranted(PermissionNames.Pages_BM) || IsGranted(PermissionNames.Pages_VO))
                     {
                         <li class="nav-item dropdown collapsed" data-toggle="collapse" data-target="#LO">

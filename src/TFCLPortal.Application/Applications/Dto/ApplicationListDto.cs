@@ -36,6 +36,7 @@ namespace TFCLPortal.Applications.Dto
         public BranchDetailList Brances { get; set; }
 
         public List<DiscrepentScreensListDto> DescripentScreens { get; set; }
+        public string MobilizationRecordId { get; set; }
 
         //added new field to dto
 
