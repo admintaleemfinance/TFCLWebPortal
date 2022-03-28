@@ -45,6 +45,7 @@ using TFCLPortal.NotificationLogs;
 using TFCLPortal.Branches;
 using TFCLPortal.EnhancementRequests;
 using TFCLPortal.Schedules;
+using TFCLPortal.TaggedPortfolios;
 //using TFCLPortal.Schedules;
 
 namespace TFCLPortal.Applications
@@ -73,6 +74,7 @@ namespace TFCLPortal.Applications
         private readonly IDeviationMatrixAppService _deviationMatrixAppService;
         private readonly IFinalWorkflowAppService _finalWorkflowAppService;
         private readonly IApplicationWiseDeviationVariableAppService _applicationWiseDeviationVariableAppService;
+        private readonly ITaggedPortfolioAppService _taggedPortfolioAppService;
         private readonly IBranchManagerActionAppService _branchManagerActionAppService;
         private string application = "Application";
         private readonly IBccStateAppService _bccStateAppService;
@@ -90,6 +92,7 @@ namespace TFCLPortal.Applications
             IMobilizationAppService mobilizationAppService,
             IUserAppService userAppService,
             //IScheduleAppService scheduleAppService,
+            ITaggedPortfolioAppService taggedPortfolioAppService,
             IRepository<Branch> branchRepository,
             ITaleemJariSahulatAppService taleemJariSahulatAppService,
             ITaleemTeacherSahulatAppService taleemTeacherSahulatAppService,
@@ -134,6 +137,7 @@ namespace TFCLPortal.Applications
             _taleemJariSahulatAppService = taleemJariSahulatAppService;
             _taleemTeacherSahulatAppService = taleemTeacherSahulatAppService;
             _customRepository = customRepository;
+            _taggedPortfolioAppService = taggedPortfolioAppService;
             _mobilizationRepository = mobilizationRepository;
             _branchManagerActionAppService = branchManagerActionAppService;
             _apiCallLogAppService = apiCallLogAppService;
@@ -1306,6 +1310,13 @@ namespace TFCLPortal.Applications
                     //}
                 }
 
+                var usersTagged = _taggedPortfolioAppService.GetAllTaggedPortfolio().Where(x=>x.NewUserId==UserId);
+
+                foreach(var taggedApp in usersTagged)
+                {
+                    var app = GetApplicationById(taggedApp.ApplicationId);
+                    mobilizationListDtoList.Add(app);
+                }
 
                 return mobilizationListDtoList;
 
