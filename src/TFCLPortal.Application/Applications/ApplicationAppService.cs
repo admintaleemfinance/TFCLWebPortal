@@ -1309,7 +1309,6 @@ namespace TFCLPortal.Applications
 
                     //}
                 }
-
                 var usersTagged = _taggedPortfolioAppService.GetAllTaggedPortfolio().Where(x=>x.NewUserId==UserId);
 
                 foreach(var taggedApp in usersTagged)
@@ -1317,10 +1316,7 @@ namespace TFCLPortal.Applications
                     var app = GetApplicationById(taggedApp.ApplicationId);
                     mobilizationListDtoList.Add(app);
                 }
-
                 return mobilizationListDtoList;
-
-
             }
             catch (Exception ex)
             {
