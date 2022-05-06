@@ -57,6 +57,8 @@ using System.IO;
 using TFCLPortal.Customs;
 using TFCLPortal.FundingSources;
 using TFCLPortal.EnhancementRequests;
+using TFCLPortal.CustomerAccounts;
+using TFCLPortal.Transactions;
 
 namespace TFCLPortal.Web.Controllers
 {
@@ -93,23 +95,26 @@ namespace TFCLPortal.Web.Controllers
         private readonly IDeceasedSettlementAppService _deceasedSettlementAppService;
         private readonly IRepository<DeceasedSettlement, int> _deceasedSettlementRepository;
         private readonly IDeceasedAuthorizationAppService _deceasedAuthorizationAppService;
+        private readonly ICustomerAccountAppService _customerAccountAppAppService;
         private readonly IRepository<DeceasedAuthorization, int> _deceasedAuthorizationRepository;
         private readonly ICustomAppService _customAppService;
 
+        private readonly IRepository<Transaction, int> _transactionRepository;
         private readonly IRepository<Holiday, int> _holidayRepository;
         private readonly IRepository<FundingSource, int> _fundingSourceRepository;
         private readonly IRepository<GuarantorDetail, int> _GuarantorRepository;
         private readonly IRepository<CoApplicantDetail, int> _CoApplicantRepository;
 
         private readonly IRepository<Applicationz, Int32> _applicationRepository;
-
         private readonly IRepository<InstallmentPayment, int> _installmentPaymentRepository;
         private readonly IRepository<AuthorizeInstallmentPayment, int> _authorizeInstallmentPaymentRepository;
 
         private readonly INotificationLogAppService _notificationLogAppService;
 
-        public AccountantController(IRepository<EnhancementRequest, int> enhancementRequestRepository, IEnhancementRequestAppService enhancementRequestAppService, IRepository<FundingSource, int> fundingSourceRepository, IRepository<DeceasedAuthorization, int> deceasedAuthorizationRepository, ICustomAppService customAppService, IDeceasedAuthorizationAppService deceasedAuthorizationAppService, ITDSLoanEligibilityAppService tDSLoanEligibilityAppService, IRepository<CoApplicantDetail, int> CoApplicantRepository, IRepository<GuarantorDetail, int> GuarantorRepository, IRepository<Applicationz, Int32> applicationRepository, IRepository<ScheduleTemp, int> scheduleTempRepository, IRepository<DeceasedSettlement, int> deceasedSettlementRepository, IDeceasedSettlementAppService deceasedSettlementAppService, IRepository<WriteOff, int> writeOffRepository, IWriteOffAppService writeOffAppService, IRepository<EarlySettlement, int> earlySettlementRepository, IEarlySettlementAppService earlySettlementAppService, IRepository<AuthorizeInstallmentPayment, int> authorizeInstallmentPaymentRepository, IAuthorizeInstallmentPaymentAppService authorizeInstallmentPaymentAppService, IRepository<InstallmentPayment, int> installmentPaymentRepository, IRepository<Holiday, int> holidayRepository, IRepository<ScheduleInstallment, int> scheduleInstallmentRepository, IInstallmentPaymentAppService installmentPaymentAppService, IRepository<NatureOfPayment, int> natureOfPaymentRepository, IRepository<CompanyBankAccount, int> companyBankAccountRepository, IBADataCheckAppService IBADataCheckAppService, INotificationLogAppService notificationLogAppService, IScheduleTempAppService scheduleTempAppService, UserManager userManager, IRepository<Schedule, int> scheduleRepository, IScheduleAppService scheduleAppService, ICoApplicantDetailAppService coApplicantDetailAppService, IGuarantorDetailAppService guarantorDetailAppService, IBranchDetailAppService branchDetailAppService, IBankAccountAppService bankAccountAppService, ILoanEligibilityAppService loanEligibilityAppService, IBusinessPlanAppService businessPlanAppService, IBccDecisionAppService bccDecisionAppService, IApplicationAppService applicationAppService, IUserAppService userAppService, IFinalWorkflowAppService finalWorkflowAppService)
+        public AccountantController(IRepository<Transaction, int> transactionRepository, ICustomerAccountAppService customerAccountAppAppService, IRepository<EnhancementRequest, int> enhancementRequestRepository, IEnhancementRequestAppService enhancementRequestAppService, IRepository<FundingSource, int> fundingSourceRepository, IRepository<DeceasedAuthorization, int> deceasedAuthorizationRepository, ICustomAppService customAppService, IDeceasedAuthorizationAppService deceasedAuthorizationAppService, ITDSLoanEligibilityAppService tDSLoanEligibilityAppService, IRepository<CoApplicantDetail, int> CoApplicantRepository, IRepository<GuarantorDetail, int> GuarantorRepository, IRepository<Applicationz, Int32> applicationRepository, IRepository<ScheduleTemp, int> scheduleTempRepository, IRepository<DeceasedSettlement, int> deceasedSettlementRepository, IDeceasedSettlementAppService deceasedSettlementAppService, IRepository<WriteOff, int> writeOffRepository, IWriteOffAppService writeOffAppService, IRepository<EarlySettlement, int> earlySettlementRepository, IEarlySettlementAppService earlySettlementAppService, IRepository<AuthorizeInstallmentPayment, int> authorizeInstallmentPaymentRepository, IAuthorizeInstallmentPaymentAppService authorizeInstallmentPaymentAppService, IRepository<InstallmentPayment, int> installmentPaymentRepository, IRepository<Holiday, int> holidayRepository, IRepository<ScheduleInstallment, int> scheduleInstallmentRepository, IInstallmentPaymentAppService installmentPaymentAppService, IRepository<NatureOfPayment, int> natureOfPaymentRepository, IRepository<CompanyBankAccount, int> companyBankAccountRepository, IBADataCheckAppService IBADataCheckAppService, INotificationLogAppService notificationLogAppService, IScheduleTempAppService scheduleTempAppService, UserManager userManager, IRepository<Schedule, int> scheduleRepository, IScheduleAppService scheduleAppService, ICoApplicantDetailAppService coApplicantDetailAppService, IGuarantorDetailAppService guarantorDetailAppService, IBranchDetailAppService branchDetailAppService, IBankAccountAppService bankAccountAppService, ILoanEligibilityAppService loanEligibilityAppService, IBusinessPlanAppService businessPlanAppService, IBccDecisionAppService bccDecisionAppService, IApplicationAppService applicationAppService, IUserAppService userAppService, IFinalWorkflowAppService finalWorkflowAppService)
         {
+            _transactionRepository = transactionRepository;
+            _customerAccountAppAppService = customerAccountAppAppService;
             _enhancementRequestRepository = enhancementRequestRepository;
             _fundingSourceRepository = fundingSourceRepository;
             _customAppService = customAppService;
@@ -915,6 +920,8 @@ namespace TFCLPortal.Web.Controllers
                             CreateSchedule.isAuthorizedByBM = true;
                             CreateSchedule.Reason = getSchedule.Reason;
 
+                            decimal baloonPayment = 0;
+
                             List<CreateScheduleInstallmentDto> listInstallments = new List<CreateScheduleInstallmentDto>();
                             foreach (var installment in getSchedule.installmentList)
                             {
@@ -931,15 +938,37 @@ namespace TFCLPortal.Web.Controllers
                                 installmentDto.OsPrincipal_Closing = installment.OsPrincipal_Closing;
                                 installmentDto.isPaid = installment.isPaid;
                                 installmentDto.PaymentDate = installment.PaymentDate;
-
                                 listInstallments.Add(installmentDto);
+
+                                if (installment.AdditionalTranche != "" && installment.AdditionalTranche != "--")
+                                {
+                                    baloonPayment = Decimal.Parse(installment.AdditionalTranche.Replace(",", ""));
+                                }
 
                             }
 
                             CreateSchedule.installmentList = listInstallments;
 
+                            baloonPayment = (baloonPayment * -1);
+
 
                             _scheduleAppService.CreateSchedule(CreateSchedule);
+
+                            var custAcc = _customerAccountAppAppService.GetCustomerAccountByCNIC(app.CNICNo).Result;
+                            var transactions = new Transaction();
+                            transactions.Type = "Debit";
+                            transactions.Details = "Baloon Payment";
+                            transactions.isAuthorized = true;
+                            transactions.Fk_AccountId = custAcc.Id;
+                            transactions.ApplicationId = ApplicationId;
+                            transactions.BalBefore = custAcc.Balance;
+                            transactions.Amount = baloonPayment;
+                            transactions.AmountWords = NumberToWords((int)baloonPayment);
+                            transactions.BalAfter = (transactions.BalBefore - baloonPayment);
+                            var ts = _transactionRepository.Insert(transactions);
+                            var cs = _customerAccountAppAppService.UpdateAccountBalance(custAcc.Id, transactions.BalAfter);
+
+
 
                         }
 
@@ -948,7 +977,7 @@ namespace TFCLPortal.Web.Controllers
                             var oldApp = _applicationAppService.GetApplicationById(app.PrevApplicationId);
 
                             _applicationAppService.ChangeApplicationState(ApplicationState.Enhanced, oldApp.Id, "Application Enhanced");
-                           
+
                             CreateFinalWorkflowDto fWobj = new CreateFinalWorkflowDto();
                             fWobj.ApplicationId = oldApp.Id;
                             fWobj.Action = "Application Enhanced";
@@ -958,11 +987,13 @@ namespace TFCLPortal.Web.Controllers
 
                             _finalWorkflowAppService.CreateFinalWorkflow(fWobj);
 
-                                var currApp = _applicationRepository.Get(ApplicationId);
+                            var currApp = _applicationRepository.Get(ApplicationId);
                             currApp.isEnhancementApplication = false;
                             _applicationRepository.Update(currApp);
                         }
-                }
+
+
+                    }
                 }
 
             }
@@ -1074,6 +1105,12 @@ namespace TFCLPortal.Web.Controllers
 
             if (paidInstallments != null)
             {
+
+                if (paidInstallments.Count == 0)
+                {
+                    paidInstallments = _installmentPaymentAppService.GetInstallmentPaymentByApplicationId(Application.PrevApplicationId).Result;
+                }
+
                 foreach (var installment in getSchedule.installmentList)
                 {
                     if (installment.InstNumber != "0")
@@ -1188,6 +1225,11 @@ namespace TFCLPortal.Web.Controllers
                 firstUnpaidInstallment = null;
             }
 
+            var Acc = _customerAccountAppAppService.GetCustomerAccountByCNIC(app.CNICNo).Result;
+            if (Acc != null)
+            {
+                ViewBag.Payment = Acc.Balance;
+            }
 
             if (firstUnpaidInstallment != null)
             {
@@ -1365,23 +1407,17 @@ namespace TFCLPortal.Web.Controllers
             }
 
             var scheduleInstallment = _scheduleInstallmentRepository.Get(firstUnpaidInstallment.Id);
-
+            decimal actualPayment = 0;
             decimal paidAmount = payment.Amount;
-
             var Exists = _installmentPaymentAppService.GetInstallmentPaymentByApplicationId(payment.ApplicationId);
             if (Exists.Result != null || Exists.Result.Count >= 0)
             {
                 decimal existingAmountForSingleInstallment = 0;
-                foreach (var existingPayment in Exists.Result.Where(x => x.NoOfInstallment.ToString() == scheduleInstallment.InstNumber))
+                foreach (var existingPayment in Exists.Result.Where(x => x.NoOfInstallment.ToString() == scheduleInstallment.InstNumber && x.isAuthorized == true))
                 {
                     existingAmountForSingleInstallment += (existingPayment.Amount);
                 }
 
-
-                //Before 2-8-2021
-                //paidAmount += existingAmountForSingleInstallment;
-
-                //After 2-8-2021 Start
                 if (lastPaidInstallment != null)
                 {
                     decimal excessShortForLastPaidInstallment = 0;
@@ -1399,9 +1435,8 @@ namespace TFCLPortal.Web.Controllers
                     }
                     paidAmount += existingAmountForSingleInstallment + excessShortForLastPaidInstallment;
                 }
-                //After 2-8-2021 End
 
-
+                actualPayment = paidAmount;
 
                 var gracePeriodInstallment = schedule.installmentList.Where(x => (x.isPaid == false || x.isPaid == null) && x.InstNumber == "G*").FirstOrDefault();
                 if (gracePeriodInstallment != null)
@@ -1424,11 +1459,293 @@ namespace TFCLPortal.Web.Controllers
                 //    paidAmount += payment.PreviousBalance;
                 //} commented on 29-03-2021
             }
-
+            decimal totalPaidForThisInst = paidAmount;
             paidAmount -= Decimal.Parse(scheduleInstallment.installmentAmount);
 
             payment.isAuthorized = true;
             _installmentPaymentAppService.Create(payment);
+
+            var acc = _customerAccountAppAppService.GetCustomerAccountByApplicationId(payment.ApplicationId);
+
+            //Transaction transaction = new Transaction();
+            //transaction.Amount = payment.Amount;
+            //transaction.AmountWords = payment.AmountWords;
+            //transaction.Type = "Debit";
+            //transaction.Details = "Collection Inst No : " + scheduleInstallment.InstNumber;
+            //transaction.ModeOfPayment = payment.ModeOfPayment;
+            //transaction.isAuthorized = true;
+            //transaction.Fk_AccountId = acc.Id;
+            //transaction.BalBefore = acc.Balance;
+            //transaction.BalAfter = (transaction.BalBefore-payment.Amount);
+            //var t = _transactionRepository.Insert(transaction);
+            //CurrentUnitOfWork.SaveChanges();
+            //actualPayment = payment.Amount;
+            decimal markupForThisInstallment = decimal.Parse(scheduleInstallment.markup == "--" ? "0" : scheduleInstallment.markup.Replace(",", ""));
+
+            if (scheduleInstallment.isMarkupPaid == false)
+            {
+                if (actualPayment >= markupForThisInstallment)
+                {
+                    markupForThisInstallment -= (totalPaidForThisInst - payment.Amount);
+
+                    Transaction transaction = new Transaction();
+                    transaction.AmountWords = NumberToWords((int)markupForThisInstallment);
+                    transaction.Type = "Debit";
+                    transaction.Details = "Markup Collection Inst No # " + scheduleInstallment.InstNumber;
+                    transaction.ModeOfPayment = payment.ModeOfPayment;
+                    transaction.isAuthorized = true;
+                    transaction.Fk_AccountId = acc.Id;
+                    transaction.ApplicationId = payment.ApplicationId;
+                    transaction.BalBefore = acc.Balance;
+                    transaction.Amount = markupForThisInstallment;
+                    transaction.BalAfter = (transaction.BalBefore - markupForThisInstallment);
+                    scheduleInstallment.isMarkupPaid = true;
+                    var t = _transactionRepository.Insert(transaction);
+                    var c = _customerAccountAppAppService.UpdateAccountBalance(acc.Id, transaction.BalAfter);
+                    var si = _scheduleInstallmentRepository.Update(scheduleInstallment);
+                    actualPayment -= (markupForThisInstallment + (totalPaidForThisInst - acc.Balance));
+                    CurrentUnitOfWork.SaveChanges();
+
+                    decimal principalForThisInstallment = decimal.Parse(scheduleInstallment.principal == "--" ? "0" : scheduleInstallment.principal.Replace(",", ""));
+                    var accupdate = _customerAccountAppAppService.GetCustomerAccountByApplicationId(payment.ApplicationId);
+
+                    if (actualPayment > 0)
+                    {
+                        if (actualPayment >= principalForThisInstallment)
+                        {
+                            //decimal principalForThisInstallment = decimal.Parse(scheduleInstallment.principal == "--" ? "0" : scheduleInstallment.principal.Replace(",", ""));
+                            //var accupdate = _customerAccountAppAppService.GetCustomerAccountByApplicationId(payment.ApplicationId);
+
+                            if (Exists.Result.Where(x => x.NoOfInstallment == Int32.Parse(scheduleInstallment.InstNumber)).Count() > 1)
+                            {
+                                principalForThisInstallment -= (totalPaidForThisInst - payment.Amount - markupForThisInstallment);
+                            }
+
+                            //principalForThisInstallment -= (totalPaidForThisInst - markupForThisInstallment);
+
+                            transaction = new Transaction();
+                            transaction.BalBefore = accupdate.Balance;
+                            transaction.Type = "Debit";
+                            transaction.ModeOfPayment = payment.ModeOfPayment;
+                            transaction.ApplicationId = payment.ApplicationId;
+                            transaction.isAuthorized = true;
+                            transaction.Fk_AccountId = accupdate.Id;
+
+                            if (actualPayment >= principalForThisInstallment)
+                            {
+                                transaction.Details = "Principal Collection Inst No # " + scheduleInstallment.InstNumber;
+                                transaction.Amount = principalForThisInstallment;
+                                transaction.BalAfter = (transaction.BalBefore - principalForThisInstallment);
+                                scheduleInstallment.isPrincipalPaid = true;
+                                var sis = _scheduleInstallmentRepository.Update(scheduleInstallment);
+                                transaction.AmountWords = NumberToWords((int)principalForThisInstallment);
+                                actualPayment -= principalForThisInstallment;
+                            }
+                            else
+                            {
+                                transaction.Details = "Partial Principal Collection Inst No # " + scheduleInstallment.InstNumber;
+                                transaction.Amount = actualPayment;
+                                transaction.BalAfter = (transaction.BalBefore - actualPayment);
+                                transaction.AmountWords = NumberToWords((int)actualPayment);
+                                actualPayment = 0;
+                            }
+
+
+                            t = _transactionRepository.Insert(transaction);
+                            c = _customerAccountAppAppService.UpdateAccountBalance(acc.Id, transaction.BalAfter);
+                            //actualPayment -= principalForThisInstallment;
+                            CurrentUnitOfWork.SaveChanges();
+
+                            if (scheduleInstallment.isPrincipalPaid = true)
+                            {
+                                if (actualPayment > 0 && (principalForThisInstallment + markupForThisInstallment) < Decimal.Parse(scheduleInstallment.installmentAmount))
+                                {
+                                    decimal amountToDeduct = Decimal.Parse(scheduleInstallment.installmentAmount) - (principalForThisInstallment + markupForThisInstallment);
+                                    var accupdate2 = _customerAccountAppAppService.GetCustomerAccountByApplicationId(payment.ApplicationId);
+                                   
+                                    if(scheduleInstallment.InstNumber=="1")
+                                    {
+                                        var transactions = new Transaction();
+                                        transactions.AmountWords = NumberToWords((int)amountToDeduct);
+                                        transactions.Type = "Debit";
+                                        transactions.Details = "Grace Days Markup Collection";
+                                        transactions.ModeOfPayment = payment.ModeOfPayment;
+                                        transactions.isAuthorized = true;
+                                        transactions.ApplicationId = payment.ApplicationId;
+                                        transactions.Fk_AccountId = accupdate2.Id;
+                                        transactions.BalBefore = accupdate2.Balance;
+                                        transactions.Amount = amountToDeduct;
+                                        transactions.BalAfter = (transactions.BalBefore - amountToDeduct);
+                                        t = _transactionRepository.Insert(transactions);
+                                        c = _customerAccountAppAppService.UpdateAccountBalance(accupdate2.Id, transactions.BalAfter);
+                                        actualPayment -= amountToDeduct;
+                                        CurrentUnitOfWork.SaveChanges();
+                                    }
+
+
+                                    if(actualPayment>0)
+                                    {
+                                        var accupdate3 = _customerAccountAppAppService.GetCustomerAccountByApplicationId(payment.ApplicationId);
+                                        var transactions = new Transaction();
+                                        transactions.AmountWords = NumberToWords((int)amountToDeduct);
+                                        transactions.Type = "Debit";
+                                        transactions.Details = "Collection Inst No # " + scheduleInstallment.InstNumber;
+                                        transactions.ModeOfPayment = payment.ModeOfPayment;
+                                        transactions.isAuthorized = true;
+                                        transactions.ApplicationId = payment.ApplicationId;
+                                        transactions.Fk_AccountId = accupdate3.Id;
+                                        transactions.BalBefore = accupdate3.Balance;
+                                        transactions.Amount = actualPayment;
+                                        transactions.BalAfter = (transactions.BalBefore - actualPayment);
+                                        t = _transactionRepository.Insert(transactions);
+                                        c = _customerAccountAppAppService.UpdateAccountBalance(accupdate3.Id, transactions.BalAfter);
+                                        actualPayment -= actualPayment;
+                                        CurrentUnitOfWork.SaveChanges();
+                                    }
+                                  
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //decimal principalForThisInstallment = decimal.Parse(scheduleInstallment.principal == "--" ? "0" : scheduleInstallment.principal.Replace(",", ""));
+                            var accupdate2 = _customerAccountAppAppService.GetCustomerAccountByApplicationId(payment.ApplicationId);
+
+                            transaction = new Transaction();
+
+                            transaction.Details = "Partial Principal Collection Inst No # " + scheduleInstallment.InstNumber;
+                            transaction.BalBefore = accupdate2.Balance;
+                            transaction.Amount = actualPayment;
+                            transaction.BalAfter = (transaction.BalBefore - actualPayment);
+                            transaction.AmountWords = NumberToWords((int)actualPayment);
+                            transaction.ApplicationId = payment.ApplicationId;
+                            transaction.Type = "Debit";
+                            transaction.ModeOfPayment = payment.ModeOfPayment;
+                            transaction.isAuthorized = true;
+                            transaction.Fk_AccountId = accupdate2.Id;
+
+                            t = _transactionRepository.Insert(transaction);
+                            c = _customerAccountAppAppService.UpdateAccountBalance(acc.Id, transaction.BalAfter);
+                            actualPayment -= principalForThisInstallment;
+                            CurrentUnitOfWork.SaveChanges();
+                        }
+                    }
+
+                }
+                else
+                {
+                    Transaction transaction = new Transaction();
+                    transaction.AmountWords = NumberToWords((int)payment.Amount);
+                    transaction.Type = "Debit";
+                    transaction.Details = "Partial Markup Collection Inst No # " + scheduleInstallment.InstNumber;
+                    transaction.ModeOfPayment = payment.ModeOfPayment;
+                    transaction.ApplicationId = payment.ApplicationId;
+                    transaction.isAuthorized = true;
+                    transaction.Fk_AccountId = acc.Id;
+                    transaction.BalBefore = acc.Balance;
+                    transaction.Amount = payment.Amount;
+                    transaction.BalAfter = (transaction.BalBefore - payment.Amount);
+                    var t = _transactionRepository.Insert(transaction);
+                    var c = _customerAccountAppAppService.UpdateAccountBalance(acc.Id, transaction.BalAfter);
+                    actualPayment -= markupForThisInstallment;
+                    CurrentUnitOfWork.SaveChanges();
+                }
+            }
+            else if (scheduleInstallment.isMarkupPaid == true)
+            {
+                actualPayment -= markupForThisInstallment;
+
+                if (actualPayment > 0)
+                {
+                    if (scheduleInstallment.isPrincipalPaid == false)
+                    {
+                        decimal principalForThisInstallment = decimal.Parse(scheduleInstallment.principal == "--" ? "0" : scheduleInstallment.principal.Replace(",", ""));
+                        var accupdate = _customerAccountAppAppService.GetCustomerAccountByApplicationId(payment.ApplicationId);
+
+                        Transaction transaction = new Transaction();
+                        transaction.Type = "Debit";
+                        transaction.ModeOfPayment = payment.ModeOfPayment;
+                        transaction.isAuthorized = true;
+                        transaction.Fk_AccountId = accupdate.Id;
+                        transaction.BalBefore = accupdate.Balance;
+                        transaction.ApplicationId = payment.ApplicationId;
+
+                        if (actualPayment >= (principalForThisInstallment - 100))
+                        {
+                            //principalForThisInstallment -= (totalPaidForThisInst - acc.Balance - markupForThisInstallment);
+
+                            transaction.Details = "Principal Collection Inst No # " + scheduleInstallment.InstNumber;
+                            transaction.Amount = payment.Amount;
+                            transaction.AmountWords = NumberToWords((int)payment.Amount);
+                            transaction.BalAfter = (transaction.BalBefore - payment.Amount);
+                            scheduleInstallment.isPrincipalPaid = true;
+                            scheduleInstallment.isPaid = true;
+                            scheduleInstallment.PaymentDate = payment.DepositDate;
+                            var si = _scheduleInstallmentRepository.Update(scheduleInstallment);
+
+                            actualPayment -= principalForThisInstallment;
+
+                            if (scheduleInstallment.isPrincipalPaid = true)
+                            {
+                                if (actualPayment > 0 && (principalForThisInstallment + markupForThisInstallment) < Decimal.Parse(scheduleInstallment.installmentAmount))
+                                {
+                                    decimal amountToDeduct = Decimal.Parse(scheduleInstallment.installmentAmount) - (principalForThisInstallment + markupForThisInstallment);
+                                    var accupdate2 = _customerAccountAppAppService.GetCustomerAccountByApplicationId(payment.ApplicationId);
+                                    var transactions = new Transaction();
+                                    transactions.AmountWords = NumberToWords((int)amountToDeduct);
+                                    transactions.Type = "Debit";
+                                    transactions.Details = "Collection Inst No # " + scheduleInstallment.InstNumber;
+                                    transactions.ModeOfPayment = payment.ModeOfPayment;
+                                    transactions.isAuthorized = true;
+                                    transaction.ApplicationId = payment.ApplicationId;
+                                    transactions.Fk_AccountId = accupdate2.Id;
+                                    transactions.BalBefore = accupdate2.Balance;
+                                    transactions.Amount = amountToDeduct;
+                                    transactions.BalAfter = (transactions.BalBefore - amountToDeduct);
+                                    var ts = _transactionRepository.Insert(transactions);
+                                    var cs = _customerAccountAppAppService.UpdateAccountBalance(accupdate2.Id, transactions.BalAfter);
+                                    actualPayment -= amountToDeduct;
+                                    CurrentUnitOfWork.SaveChanges();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            transaction.Details = "Partial Principal Collection Inst No # " + scheduleInstallment.InstNumber;
+                            transaction.Amount = payment.Amount;
+                            transaction.BalAfter = (transaction.BalBefore - payment.Amount);
+                        }
+
+
+                        var t = _transactionRepository.Insert(transaction);
+                        var c = _customerAccountAppAppService.UpdateAccountBalance(acc.Id, transaction.BalAfter);
+                        actualPayment -= principalForThisInstallment;
+                        CurrentUnitOfWork.SaveChanges();
+                    }
+                }
+            }
+            else
+            {
+                Transaction transaction = new Transaction();
+                transaction.AmountWords = NumberToWords((int)payment.Amount);
+                transaction.Type = "Debit";
+                transaction.Details = "Collection Inst No # " + scheduleInstallment.InstNumber;
+                transaction.ModeOfPayment = payment.ModeOfPayment;
+                transaction.isAuthorized = true;
+                transaction.ApplicationId = payment.ApplicationId;
+                transaction.Fk_AccountId = acc.Id;
+                transaction.BalBefore = acc.Balance;
+                transaction.Amount = payment.Amount;
+                transaction.BalAfter = (transaction.BalBefore - payment.Amount);
+                scheduleInstallment.isMarkupPaid = true;
+                var t = _transactionRepository.Insert(transaction);
+                var c = _customerAccountAppAppService.UpdateAccountBalance(acc.Id, transaction.BalAfter);
+                var si = _scheduleInstallmentRepository.Update(scheduleInstallment);
+                CurrentUnitOfWork.SaveChanges();
+            }
+
+
+
 
             if (paidAmount >= -100)
             {
@@ -1436,6 +1753,7 @@ namespace TFCLPortal.Web.Controllers
                 scheduleInstallment.PaymentDate = payment.DepositDate;
                 _scheduleInstallmentRepository.Update(scheduleInstallment);
                 CurrentUnitOfWork.SaveChanges();
+
 
                 var allUnpaidInstallments = _scheduleInstallmentRepository.GetAllList(x => x.FK_ScheduleId == schedule.Id && (x.isPaid == false || x.isPaid == null));
                 if (allUnpaidInstallments.Count < 1)
@@ -1452,6 +1770,8 @@ namespace TFCLPortal.Web.Controllers
                     _finalWorkflowAppService.CreateFinalWorkflow(fWobj);
                 }
             }
+
+
             return RedirectToAction("AuthorizationInstallmentPayment");
         }
 
@@ -1703,6 +2023,9 @@ namespace TFCLPortal.Web.Controllers
             ViewBag.Application = application;
             if (application != null)
             {
+                var customerAcc = _customerAccountAppAppService.GetCustomerAccountByCNIC(application.CNICNo);
+                ViewBag.customerAcc = customerAcc;
+
                 signatories applicant = new signatories();
                 applicant.Name = application.ClientName;
                 applicant.Detail = "(Applicant)";
@@ -2350,6 +2673,9 @@ namespace TFCLPortal.Web.Controllers
             var schedule = _scheduleAppService.GetScheduleByApplicationId(ApplicationId).Result;
             if (schedule != null)
             {
+                var Acc = _customerAccountAppAppService.GetCustomerAccountByCNIC(app.CNICNo).Result;
+                ViewBag.Payment = Acc.Balance;
+
                 ViewBag.LoanAmount = schedule.LoanAmount;
                 ViewBag.Markup = schedule.Markup;
 
@@ -2417,6 +2743,103 @@ namespace TFCLPortal.Web.Controllers
         public JsonResult AuthorizeEarlySettlement(int Id, string Decision, string Reason)
         {
             var entry = _earlySettlementRepository.Get(Id);
+
+            decimal amountToDeduct = entry.amountDeposited;
+
+            var accupdate1 = _customerAccountAppAppService.GetCustomerAccountByApplicationId(entry.ApplicationId);
+            var transactions = new Transaction();
+            transactions.Type = "Debit";
+            transactions.Details = "Early Settlement Charges";
+            transactions.isAuthorized = true;
+            transactions.ApplicationId = entry.ApplicationId;
+            transactions.Fk_AccountId = accupdate1.Id;
+            transactions.BalBefore = accupdate1.Balance;
+            transactions.Amount = entry.EarlySettlmentCharges;
+            transactions.AmountWords = NumberToWords((int)entry.EarlySettlmentCharges);
+            transactions.BalAfter = (transactions.BalBefore - entry.EarlySettlmentCharges);
+            var ts = _transactionRepository.Insert(transactions);
+            var cs = _customerAccountAppAppService.UpdateAccountBalance(accupdate1.Id, transactions.BalAfter);
+            amountToDeduct -= entry.EarlySettlmentCharges;
+
+            var accupdate2 = _customerAccountAppAppService.GetCustomerAccountByApplicationId(entry.ApplicationId);
+            transactions = new Transaction();
+            transactions.Type = "Debit";
+            transactions.Details = "FED on Early Settlement Charges";
+            transactions.isAuthorized = true;
+            transactions.ApplicationId = entry.ApplicationId;
+            transactions.Fk_AccountId = accupdate2.Id;
+            transactions.BalBefore = accupdate2.Balance;
+            transactions.Amount = entry.FEDonESC;
+            transactions.AmountWords = NumberToWords((int)entry.FEDonESC);
+            transactions.BalAfter = (transactions.BalBefore - entry.FEDonESC);
+            ts = _transactionRepository.Insert(transactions);
+            cs = _customerAccountAppAppService.UpdateAccountBalance(accupdate1.Id, transactions.BalAfter);
+            amountToDeduct -= entry.FEDonESC;
+
+
+            var accupdate3 = _customerAccountAppAppService.GetCustomerAccountByApplicationId(entry.ApplicationId);
+            transactions = new Transaction();
+            transactions.Type = "Debit";
+            transactions.Details = "Late Payment Charges";
+            transactions.isAuthorized = true;
+            transactions.Fk_AccountId = accupdate3.Id;
+            transactions.ApplicationId = entry.ApplicationId;
+            transactions.BalBefore = accupdate3.Balance;
+            transactions.Amount = entry.LatePaymentCharges;
+            transactions.AmountWords = NumberToWords((int)entry.LatePaymentCharges);
+            transactions.BalAfter = (transactions.BalBefore - entry.LatePaymentCharges);
+            ts = _transactionRepository.Insert(transactions);
+            cs = _customerAccountAppAppService.UpdateAccountBalance(accupdate3.Id, transactions.BalAfter);
+            amountToDeduct -= entry.LatePaymentCharges;
+
+            var accupdate4 = _customerAccountAppAppService.GetCustomerAccountByApplicationId(entry.ApplicationId);
+            transactions = new Transaction();
+            transactions.Type = "Debit";
+            transactions.Details = "FED on Late Payment Charges";
+            transactions.isAuthorized = true;
+            transactions.ApplicationId = entry.ApplicationId;
+            transactions.Fk_AccountId = accupdate4.Id;
+            transactions.BalBefore = accupdate4.Balance;
+            transactions.Amount = entry.FEDonLPC;
+            transactions.AmountWords = NumberToWords((int)entry.FEDonLPC);
+            transactions.BalAfter = (transactions.BalBefore - entry.FEDonLPC);
+            ts = _transactionRepository.Insert(transactions);
+            cs = _customerAccountAppAppService.UpdateAccountBalance(accupdate4.Id, transactions.BalAfter);
+            amountToDeduct -= entry.FEDonLPC;
+
+            var accupdate5 = _customerAccountAppAppService.GetCustomerAccountByApplicationId(entry.ApplicationId);
+            transactions = new Transaction();
+            transactions.Type = "Debit";
+            transactions.Details = "Markup";
+            transactions.isAuthorized = true;
+            transactions.ApplicationId = entry.ApplicationId;
+            transactions.Fk_AccountId = accupdate5.Id;
+            transactions.BalBefore = accupdate5.Balance;
+            transactions.Amount = entry.MarkupPayable;
+            transactions.AmountWords = NumberToWords((int)entry.MarkupPayable);
+            transactions.BalAfter = (transactions.BalBefore - entry.MarkupPayable);
+            ts = _transactionRepository.Insert(transactions);
+            cs = _customerAccountAppAppService.UpdateAccountBalance(accupdate5.Id, transactions.BalAfter);
+            amountToDeduct -= entry.MarkupPayable;
+
+            var accupdate6 = _customerAccountAppAppService.GetCustomerAccountByApplicationId(entry.ApplicationId);
+            transactions = new Transaction();
+            transactions.Type = "Debit";
+            transactions.Details = "Principal";
+            transactions.isAuthorized = true;
+            transactions.Fk_AccountId = accupdate6.Id;
+            transactions.ApplicationId = entry.ApplicationId;
+            transactions.BalBefore = accupdate6.Balance;
+            transactions.Amount = entry.PrincipalPayable;
+            transactions.AmountWords = NumberToWords((int)entry.PrincipalPayable);
+            transactions.BalAfter = (transactions.BalBefore - entry.PrincipalPayable);
+            ts = _transactionRepository.Insert(transactions);
+            cs = _customerAccountAppAppService.UpdateAccountBalance(accupdate6.Id, transactions.BalAfter);
+            amountToDeduct -= entry.PrincipalPayable;
+
+
+
+            CurrentUnitOfWork.SaveChanges();
 
             if (Decision == "Authorize")
             {
@@ -2793,7 +3216,54 @@ namespace TFCLPortal.Web.Controllers
 
             return View(returnList);
         }
+        public static string NumberToWords(int number)
+        {
+            if (number == 0)
+                return "zero";
 
+            if (number < 0)
+                return "minus " + NumberToWords(Math.Abs(number));
+
+            string words = "";
+
+            if ((number / 1000000) > 0)
+            {
+                words += NumberToWords(number / 1000000) + " million ";
+                number %= 1000000;
+            }
+
+            if ((number / 1000) > 0)
+            {
+                words += NumberToWords(number / 1000) + " thousand ";
+                number %= 1000;
+            }
+
+            if ((number / 100) > 0)
+            {
+                words += NumberToWords(number / 100) + " hundred ";
+                number %= 100;
+            }
+
+            if (number > 0)
+            {
+                if (words != "")
+                    words += "and ";
+
+                var unitsMap = new[] { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen" };
+                var tensMap = new[] { "zero", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety" };
+
+                if (number < 20)
+                    words += unitsMap[number];
+                else
+                {
+                    words += tensMap[number / 10];
+                    if ((number % 10) > 0)
+                        words += "-" + unitsMap[number % 10];
+                }
+            }
+
+            return words;
+        }
         public IActionResult DeceasedSettlementAuthorization(int Id)
         {
             var deceasedSettlement = _deceasedSettlementAppService.GetDeceasedSettlementById(Id).Result;

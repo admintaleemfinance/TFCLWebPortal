@@ -84,6 +84,8 @@ namespace TFCLPortal.CustomerAccounts
             }
         }
 
+
+
         public async Task<string> UpdateCustomerAccount(UpdateCustomerAccountDto input)
         {
             string ResponseString = "";
@@ -220,6 +222,37 @@ namespace TFCLPortal.CustomerAccounts
             catch (Exception ex)
             {
                 throw new UserFriendlyException(L("GetMethodError{0}", CustomerAccounts));
+            }
+        }
+
+        public CustomerAccountListDto GetCustomerAccountByApplicationId(int ApplicationId)
+        {
+            try
+            {
+                var app = _applicationAppService.GetApplicationById(ApplicationId);
+                var CustomerAccount = _CustomerAccountRepository.GetAllList(x=>x.CNIC==app.CNICNo).FirstOrDefault();
+
+                return ObjectMapper.Map<CustomerAccountListDto>(CustomerAccount);
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(L("GetMethodError{0}", CustomerAccounts));
+            }
+        }
+
+        public bool UpdateAccountBalance(int accountid,decimal balance)
+        {
+            try
+            {
+                var app = _CustomerAccountRepository.Get(accountid);
+                app.Balance = balance;
+                _CustomerAccountRepository.Update(app);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
         }
     }

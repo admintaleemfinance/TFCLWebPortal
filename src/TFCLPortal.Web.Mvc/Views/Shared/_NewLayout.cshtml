@@ -189,7 +189,7 @@
                     </li>
 
                     <li class="nav-item ">
-                        <a class="sidebar-link" href="http://116.58.43.11:8097/" target="_blank">
+                        <a class="sidebar-link" href="https://lms.tfcl.app/" target="_blank">
                             <span class="icon-holder">
                                 <i class="fa fa-table"></i>
                             </span>
@@ -290,7 +290,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="http://116.58.43.11:8094/" target="_blank">
+                                <a href="https://cat.tfcl.app/" target="_blank">
                                     <span class="icon-holder">
                                         <i class="fa fa-calculator"></i>
                                     </span>
@@ -458,6 +458,14 @@
                                             <i class="fa fa-edit"></i>
                                         </span>
                                         <h6>Enhancement Request Authorizations</h6>
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a href="~/CustomerAccount/TransactionAuthorization" class="dropdown-toggle">
+                                        <span class="icon-holder">
+                                            <i class="fa fa-money"></i>
+                                        </span>
+                                        <h6>Transaction Authorizations</h6>
                                     </a>
                                 </li>
                             </ul>
@@ -854,7 +862,7 @@
                         </li>
                     }
 
-                    @if (User.Identity.Name == "nabeel")
+                    @if (User.Identity.Name == "nabeel"||User.Identity.Name=="admin")
                     {
                         <li class="nav-item dropdown">
                             <a href="~/Accountant/AuthorizationInstallmentPayment" class="dropdown-toggle">

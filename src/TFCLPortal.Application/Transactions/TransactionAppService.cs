@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TFCLPortal.Applications;
+using TFCLPortal.CustomerAccounts;
 using TFCLPortal.Transactions.Dto;
 
 namespace TFCLPortal.Transactions.Dto
@@ -12,9 +14,13 @@ namespace TFCLPortal.Transactions.Dto
     public class TransactionAppService : TFCLPortalAppServiceBase, ITransactionAppService
     {
         private readonly IRepository<Transaction, Int32> _TransactionRepository;
+        private readonly IRepository<CustomerAccount, Int32> _CustomerAccountRepository;
+        private readonly IRepository<Applicationz, Int32> _ApplicationzRepository;
         private string company = "Transaction";
-        public TransactionAppService(IRepository<Transaction, Int32> TransactionRepository)
+        public TransactionAppService(IRepository<Applicationz, Int32> ApplicationzRepository, IRepository<CustomerAccount, Int32> CustomerAccountRepository, IRepository<Transaction, Int32> TransactionRepository)
         {
+            _ApplicationzRepository = ApplicationzRepository;
+            _CustomerAccountRepository = CustomerAccountRepository;
             _TransactionRepository = TransactionRepository;
         }
         public async Task CreateTransaction(CreateTransactionDto input)
@@ -29,7 +35,7 @@ namespace TFCLPortal.Transactions.Dto
                 throw new UserFriendlyException(L("CreateMethodError{0}", company));
             }
         }
-        public  TransactionListDto GetTransactionById(int Id)
+        public TransactionListDto GetTransactionById(int Id)
         {
             try
             {
@@ -48,9 +54,22 @@ namespace TFCLPortal.Transactions.Dto
         {
             try
             {
-                var Transaction = _TransactionRepository.GetAllList(x=>x.Fk_AccountId==AccountId).ToList();
+                var Transaction = _TransactionRepository.GetAllList(x => x.Fk_AccountId == AccountId).ToList();
+                var returnList=ObjectMapper.Map<List<TransactionListDto>>(Transaction);
+                var apps = _ApplicationzRepository.GetAllList();
+                if (returnList.Count>0)
+                {
+                    foreach(var tr in returnList)
+                    {
+                        if(tr.ApplicationId!=0)
+                        {
+                            var app= apps.Where(x => x.Id == tr.ApplicationId).FirstOrDefault();
+                            tr.ClientID = app.ClientID;
+                        }
+                    }
+                }
 
-                return ObjectMapper.Map<List<TransactionListDto>>(Transaction);
+                return returnList;
 
             }
             catch (Exception ex)
@@ -63,9 +82,18 @@ namespace TFCLPortal.Transactions.Dto
         {
             try
             {
-                var Transaction = _TransactionRepository.GetAll();
+                var Transaction = _TransactionRepository.GetAllList();
 
-                return ObjectMapper.Map<List<TransactionListDto>>(Transaction);
+                var TransactionMapped = ObjectMapper.Map<List<TransactionListDto>>(Transaction);
+
+                foreach (var tran in TransactionMapped)
+                {
+                    var acc = _CustomerAccountRepository.Get(tran.Fk_AccountId);
+                    tran.Name = acc.Name;
+                    tran.CNIC = acc.CNIC;
+                }
+
+                return TransactionMapped;
 
             }
             catch (Exception ex)
@@ -92,6 +120,30 @@ namespace TFCLPortal.Transactions.Dto
                 throw new UserFriendlyException(L("UpdateMethodError{0}", company));
             }
             return ResponseString;
+        }
+
+        public List<TransactionListDto> GetUnAuthTransactionListDetail()
+        {
+            try
+            {
+                var Transaction = _TransactionRepository.GetAllList(x => x.isAuthorized == null);
+
+                var TransactionMapped = ObjectMapper.Map<List<TransactionListDto>>(Transaction);
+
+                foreach (var tran in TransactionMapped)
+                {
+                    var acc = _CustomerAccountRepository.Get(tran.Fk_AccountId);
+                    tran.Name = acc.Name;
+                    tran.CNIC = acc.CNIC;
+                }
+
+                return TransactionMapped;
+
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(L("GetMethodError{0}", company));
+            }
         }
     }
 }

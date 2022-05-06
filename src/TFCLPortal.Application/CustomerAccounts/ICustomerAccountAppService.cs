@@ -11,11 +11,13 @@ namespace TFCLPortal.CustomerAccounts
     public interface ICustomerAccountAppService : IApplicationService
     {
         CustomerAccountListDto GetCustomerAccountById(int Id);
+        CustomerAccountListDto GetCustomerAccountByApplicationId(int ApplicationId);
         Task<string> CreateCustomerAccount(CreateCustomerAccountDto input);
         Task<string> UpdateCustomerAccount(UpdateCustomerAccountDto input);
         Task<CustomerAccountListDto> GetCustomerAccountByCNIC(string CNIC);
         List<CustomerAccountListDto> GetAllCustomerAccounts();
         bool CheckCustomerAccountByCNIC(string CNIC);
         List<ApplicationListDto> GetApplicationDetailsByAccountId(int AccountId);
+        bool UpdateAccountBalance(int accountid, decimal balance);
     }
 }

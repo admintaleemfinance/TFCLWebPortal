@@ -15,6 +15,6 @@ namespace TFCLPortal.Transactions
         Task<string> UpdateTransaction(UpdateTransactionDto input);
         List<TransactionListDto> GetTransactionListDetail();
         List<TransactionListDto> GetTransactionByAccountId(int AccountId);
-
+        List<TransactionListDto> GetUnAuthTransactionListDetail();
     }
 }

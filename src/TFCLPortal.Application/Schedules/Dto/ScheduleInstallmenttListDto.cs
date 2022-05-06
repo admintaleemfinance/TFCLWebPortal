@@ -37,7 +37,9 @@ namespace TFCLPortal.Schedules.Dto
 
         public DateTime? LastPaymentDate { get; set; }
         public int DPD { get; set; }
-        
+
+        public bool isMarkupPaid { get; set; }
+        public bool isPrincipalPaid { get; set; }
 
     }
 }

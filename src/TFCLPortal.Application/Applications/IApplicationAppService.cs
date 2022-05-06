@@ -37,6 +37,7 @@ namespace TFCLPortal.Applications
         List<MobilizationSyncDto> GetMobilizationDataBySDEId(int SDEId);
 
         List<ApplicationListDto> GetStateWiseApplicationbyUserId(int UserId, string state);
+        string setMobilizationRecordId(List<setMobilizationRecordIdDto> records);
 
         DateTime getLastWorkFlowStateDate(int ApplicationId, string State);
         List<Applicationz> GetBCCShortApplicationList(int userid);

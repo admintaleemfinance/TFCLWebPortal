@@ -46,6 +46,8 @@ using TFCLPortal.Branches;
 using TFCLPortal.EnhancementRequests;
 using TFCLPortal.Schedules;
 using TFCLPortal.TaggedPortfolios;
+using TFCLPortal.CustomerAccounts;
+using TFCLPortal.CustomerAccounts.Dto;
 //using TFCLPortal.Schedules;
 
 namespace TFCLPortal.Applications
@@ -81,6 +83,7 @@ namespace TFCLPortal.Applications
         //private readonly IScheduleAppService _scheduleAppService;
         private readonly INotificationLogAppService _notificationLogAppService;
         //private readonly IScheduleAppService _scheduleAppService;
+        private readonly IRepository<CustomerAccount> _customerAccountRepository;
         private readonly IRepository<Branch> _branchRepository;
         private readonly IRepository<EnhancementRequest> _enhancementRequestRepository;
 
@@ -91,6 +94,7 @@ namespace TFCLPortal.Applications
             IRepository<ProductType> ProductTyperepo,
             IMobilizationAppService mobilizationAppService,
             IUserAppService userAppService,
+            IRepository<CustomerAccount> customerAccountRepository,
             //IScheduleAppService scheduleAppService,
             ITaggedPortfolioAppService taggedPortfolioAppService,
             IRepository<Branch> branchRepository,
@@ -118,6 +122,7 @@ namespace TFCLPortal.Applications
         {
             _notificationLogAppService = notificationLogAppService;
             _applicationRepository = applicationRepository;
+            _customerAccountRepository = customerAccountRepository;
             //_scheduleAppService = scheduleAppService;
             //_scheduleAppService = scheduleAppService;
             _enhancementRequestRepository = enhancementRequestRepository;
@@ -269,6 +274,18 @@ namespace TFCLPortal.Applications
 
                     var applications = _applicationRepository.Insert(mobilizations);
                     CurrentUnitOfWork.SaveChanges();
+
+                    var accounts = _customerAccountRepository.GetAllList(x=>x.CNIC==mobilizations.CNICNo).FirstOrDefault();
+                    if(accounts!=null)
+                    {
+                        CustomerAccount account = new CustomerAccount();
+                        account.CNIC = mobilizations.CNICNo;
+                        account.Phone = mobilizations.MobileNo;
+                        account.Name = mobilizations.ClientName;
+                        account.Balance = 0;
+                        account.isActive = true;
+                        var accountCreation = _customerAccountRepository.Insert(account);
+                    }
 
                     int ApplicationNumber = 0;
 
@@ -544,7 +561,7 @@ namespace TFCLPortal.Applications
                     NewApplication.MobilizationStatus = OldApp.MobilizationStatus;
                     NewApplication.ProductType = OldApp.ProductType;
                     NewApplication.NextMeeting = OldApp.NextMeeting;
-                    NewApplication.ScreenStatus = OldApp.ScreenStatus;
+                    NewApplication.ScreenStatus = ApplicationState.InProcess;
                     NewApplication.Comments = OldApp.Comments;
                     NewApplication.BranchCode = OldApp.BranchCode;
                     NewApplication.CreatorUserId = OldApp.CreatorUserId;
@@ -1289,6 +1306,18 @@ namespace TFCLPortal.Applications
                     }
 
                 }
+
+                var usersTagged = _taggedPortfolioAppService.GetAllTaggedPortfolio().Where(x => x.NewUserId == UserId);
+
+                foreach (var taggedApp in usersTagged)
+                {
+                    var app = GetApplicationById(taggedApp.ApplicationId);
+                    if (app.ScreenStatus.Contains(state))
+                    {
+                        mobilizationListDtoList.Add(app);
+
+                    }
+                }
                 //var schedules = _scheduleAppService.GetScheduleList();
                 foreach (var mob in mobilizationListDtoList)
                 {
@@ -1309,13 +1338,7 @@ namespace TFCLPortal.Applications
 
                     //}
                 }
-                var usersTagged = _taggedPortfolioAppService.GetAllTaggedPortfolio().Where(x=>x.NewUserId==UserId);
 
-                foreach(var taggedApp in usersTagged)
-                {
-                    var app = GetApplicationById(taggedApp.ApplicationId);
-                    mobilizationListDtoList.Add(app);
-                }
                 return mobilizationListDtoList;
             }
             catch (Exception ex)
@@ -1528,5 +1551,31 @@ namespace TFCLPortal.Applications
             }
         }
 
+
+        public string setMobilizationRecordId(List<setMobilizationRecordIdDto> records)
+        {
+
+            try
+            {
+                var applicationz = _applicationRepository.GetAllList();
+                foreach( var record in records)
+                {
+                    var app = applicationz.Where(x => x.Id == record.ApplicationId).FirstOrDefault();
+                    if(app!=null)
+                    {
+                        app.MobilizationRecordId=record.mobilizationRecordId;
+                        _applicationRepository.Update(app);
+                        CurrentUnitOfWork.SaveChanges();
+                    }
+                }
+
+
+                return "success";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message.ToString();
+            }
+        }
     }
 }

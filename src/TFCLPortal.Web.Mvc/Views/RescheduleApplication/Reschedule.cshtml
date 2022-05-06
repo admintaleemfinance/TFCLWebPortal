@@ -137,7 +137,7 @@
                     <td width="40%"><b>Loan Amount</b></td>
                     <td style="background-color:lightyellow" id="txtLoanAmount">
                         @(ViewBag.Input.LoanAmount == null || ViewBag.Input.LoanAmount == ""  ? "--" : string.Format("{0:#,##0.##}", decimal.Parse(ViewBag.Input.LoanAmount)))
-                        <a title="Edit Loan Amount" href="" id="LoanAmountChangeBtn" data-toggle="modal" data-target="#_editLoanAmount"><i class="fa fa-edit"></i></a>
+                        @*<a title="Edit Loan Amount" href="" id="LoanAmountChangeBtn" data-toggle="modal" data-target="#_editLoanAmount"><i class="fa fa-edit"></i></a>*@
                     </td>
                 </tr>
                 <tr>
@@ -354,7 +354,7 @@
 
                             <div class="col-md-12">
                                 <p class="detailHeading">Amount</p>
-                                <input id="BaloonAmountText" type="number" class="form-control" />
+                                <input id="BaloonAmountText" type="number" value="@ViewBag.customerAcc.Result.Balance" max="@ViewBag.customerAcc.Result.Balance" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -656,9 +656,15 @@
 
 
         $(document).on('click', '#applyBaloonPayment', function (e) {
+
+            var maxPayment = '@ViewBag.customerAcc.Result.Balance';
+
+
             var LastInstallmentIndex = installments.filter(x => x.isPaid == true).length - 1;
             var LastInstallmentP = installments[LastInstallmentIndex];
             var FirstInstallmentU = installments[LastInstallmentIndex + 1];
+            if (Number($('#BaloonAmountText').val()) <= maxPayment) {
+
             if (Number($('#BaloonAmountText').val()) < Number(FirstInstallmentU.osPrincipal_op.replaceAll(",", ""))) {
                 var tenure = $('#NewRemainingInstallmentsText').val();
 
@@ -687,6 +693,10 @@
             }
             else {
                 alert('Baloon Payment can not be more than or equal to current outstanding amount : ' + FirstInstallmentU.osPrincipal_op);
+                }
+            }
+            else {
+                alert('Baloon Payment can not be more than Account Balance : ' + numberWithCommas(maxPayment));
             }
         });
 

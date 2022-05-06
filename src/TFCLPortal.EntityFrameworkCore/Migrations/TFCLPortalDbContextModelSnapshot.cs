@@ -8420,6 +8420,8 @@ namespace TFCLPortal.Migrations
 
                     b.Property<string>("Markup");
 
+                    b.Property<decimal>("OpeningBalance");
+
                     b.Property<string>("PerDayMarkup");
 
                     b.Property<string>("Reason");
@@ -8487,7 +8489,11 @@ namespace TFCLPortal.Migrations
 
                     b.Property<string>("installmentAmount");
 
+                    b.Property<bool>("isMarkupPaid");
+
                     b.Property<bool?>("isPaid");
+
+                    b.Property<bool>("isPrincipalPaid");
 
                     b.Property<string>("markup");
 
@@ -9476,9 +9482,15 @@ namespace TFCLPortal.Migrations
 
                     b.Property<decimal>("Amount");
 
+                    b.Property<string>("AmountWords");
+
+                    b.Property<int>("ApplicationId");
+
                     b.Property<decimal>("BalAfter");
 
                     b.Property<decimal>("BalBefore");
+
+                    b.Property<int>("CompanyBankId");
 
                     b.Property<DateTime>("CreationTime");
 
@@ -9488,6 +9500,10 @@ namespace TFCLPortal.Migrations
 
                     b.Property<DateTime?>("DeletionTime");
 
+                    b.Property<DateTime>("DepositDate");
+
+                    b.Property<string>("Details");
+
                     b.Property<int>("Fk_AccountId");
 
                     b.Property<bool>("IsDeleted");
@@ -9495,6 +9511,12 @@ namespace TFCLPortal.Migrations
                     b.Property<DateTime?>("LastModificationTime");
 
                     b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("ModeOfPayment");
+
+                    b.Property<string>("ModeOfPaymentOther");
+
+                    b.Property<string>("Reference");
 
                     b.Property<string>("Type");
 

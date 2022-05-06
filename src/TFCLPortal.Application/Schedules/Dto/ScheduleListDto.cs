@@ -36,6 +36,7 @@ namespace TFCLPortal.Schedules.Dto
         public string Reason { get; set; }
         public int TurnArroundTimeMins { get; set; }
         public string ReasonForDelayTAT { get; set; }
+        public decimal OpeningBalance { get; set; }
 
         public List<ScheduleInstallmenttListDto> installmentList { get; set; }
 

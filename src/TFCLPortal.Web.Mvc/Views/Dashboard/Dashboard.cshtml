@@ -648,10 +648,10 @@
                     sidebarcontent += '<li> ' + vals.todayApplications + ' new Customer Acquired <span class="pull-right"><i class="fa fa-user-plus"></i></span></li>';
                 }
                 if (vals.enhancementfileCount != 0) {
-                    sidebarcontent += '<li><a class="text-white" href="~/Application/Applications?screen=Enhancement">' + vals.enhancementfileCount + ' App. under enhancement <span class="pull-right"><i class="fa fa-files-o"></i></span></a> </li>';
+                    sidebarcontent += '<li><a class="text-white" href="/Application/Applications?screen=Enhancement">' + vals.enhancementfileCount + ' App. under enhancement <span class="pull-right"><i class="fa fa-files-o"></i></span></a> </li>';
                 }
                 if (vals.enhancedfileCount != 0) {
-                    sidebarcontent += '<li><a class="text-white" href="~/Application/Applications?screen=Enhanced">' + vals.enhancedfileCount + ' Enhanced <span class="pull-right"><i class="fa fa-files-o"></i></span></a> </li>';
+                    sidebarcontent += '<li><a class="text-white" href="/Application/Applications?screen=Enhanced">' + vals.enhancedfileCount + ' Enhanced <span class="pull-right"><i class="fa fa-files-o"></i></span></a> </li>';
                 }
                 if (sidebarcontent != '') {
                     $('.dashboard-stat-list').html(sidebarcontent);

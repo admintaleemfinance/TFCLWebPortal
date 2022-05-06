@@ -36,6 +36,7 @@ namespace TFCLPortal.Schedules
         public bool? isAuthorizedByBM { get; set; }
         public int TurnArroundTimeMins { get; set; }
         public string ReasonForDelayTAT { get; set; }
+        public decimal OpeningBalance { get; set; }
 
     }
 }

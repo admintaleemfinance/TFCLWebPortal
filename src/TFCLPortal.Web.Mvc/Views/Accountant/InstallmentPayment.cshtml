@@ -2,6 +2,15 @@
 
 @{
     Layout = "~/Views/Shared/_NewLayout.cshtml";
+    decimal payment = ViewBag.Payment;
+    decimal balAfterPayment = 0;
+
+    if (payment >= ViewBag.DueAmount)
+    {
+        balAfterPayment = payment - ViewBag.DueAmount;
+        payment = ViewBag.DueAmount;
+    }
+
 }
 <style>
     .table-bordered td {
@@ -121,8 +130,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Amount (Rs) <font color="red">*</font></label>
-                            <input asp-for="Amount" value="" class="form-control" required="required" v-model="amount" />
+                            <label>Amount (Rs) <font color="red">*</font> @(balAfterPayment>0? "(Balance after Payment : "+@balAfterPayment+")" : "") </label>
+                            <input asp-for="Amount" value="@payment" readonly="readonly" class="form-control" required="required" v-model="amount" />
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -236,6 +245,13 @@
 
 
         });
+
+        var amountex = $('#Amount').val().replaceAll(',', '');
+        //alert(amountex);
+        $('#AmountWords').val(numWords(amountex));
+        $('#ExcessShortPayment').val(numberWithCommas(Number(amountex) - Number($('#DueAmount').val().replaceAll(',', ''))));
+
+
 
         function onDepositDateUpdate() {
             var depositDate = moment($("#DepositDate").val());

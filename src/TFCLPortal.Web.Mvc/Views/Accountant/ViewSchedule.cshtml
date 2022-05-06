@@ -173,11 +173,11 @@
                             </td>
                         }
 
+                    <td style="text-align:right">
+                        <font class="@(item.isPrincipalPaid?"text-success":"text-gray")">@item.principal</font>
+                    </td>
                         <td style="text-align:right">
-                            @item.principal
-                        </td>
-                        <td style="text-align:right">
-                            @item.markup
+                            <font class="@(item.isMarkupPaid?"text-success":"text-gray")">@item.markup</font>
                         </td>
                         <td style="text-align:right">
                             @item.installmentAmount
@@ -208,7 +208,7 @@
                             @(item.PaidAmount == null ||item.PaidAmount=="" || item.PaidAmount == "0" ? "--" : string.Format("{0:#,##0}", Decimal.Parse((item.PaidAmount).Replace(",", ""))))
                         </td>
                         <td style="text-align:center">
-                            @(item.ExcessShort == null ||item.ExcessShort == "" || item.ExcessShort == "0" ? "--" : string.Format("{0:##,###}", Decimal.Parse((item.ExcessShort).Replace(",", ""))))
+                            @(item.ExcessShort == null ||item.ExcessShort == "" || item.ExcessShort == "0.00" || item.ExcessShort == "0" ? "--" : string.Format("{0:##,###}", Decimal.Parse((item.ExcessShort).Replace(",", ""))))
                         </td>
 
 
