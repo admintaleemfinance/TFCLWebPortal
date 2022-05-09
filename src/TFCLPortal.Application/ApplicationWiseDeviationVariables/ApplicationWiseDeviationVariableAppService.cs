@@ -206,7 +206,7 @@ namespace TFCLPortal.ApplicationWiseDeviationVariables
                         var checkApplications = _applicationRepository.GetAllList().Where(x => x.Id == input.ApplicationId).FirstOrDefault();
                         if (checkApplications != null)
                         {
-                            var checkCNICs = _applicationRepository.GetAllList().Where(x => x.CNICNo == checkApplications.CNICNo && x.ScreenStatus != ApplicationState.Decline).ToList();
+                            var checkCNICs = _applicationRepository.GetAllList().Where(x => x.CNICNo == checkApplications.CNICNo && x.ScreenStatus != ApplicationState.Decline && x.isEnhancementApplication==false).ToList();
                             if (checkCNICs.Count > 1)
                             {
                                 isFresh = false;

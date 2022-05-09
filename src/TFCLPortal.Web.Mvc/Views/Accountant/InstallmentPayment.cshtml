@@ -2,7 +2,7 @@
 
 @{
     Layout = "~/Views/Shared/_NewLayout.cshtml";
-    decimal payment = ViewBag.Payment;
+    decimal payment = (ViewBag.Payment==null?0: ViewBag.Payment);
     decimal balAfterPayment = 0;
 
     if (payment >= ViewBag.DueAmount)

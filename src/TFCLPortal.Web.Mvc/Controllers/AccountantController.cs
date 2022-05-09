@@ -2674,8 +2674,10 @@ namespace TFCLPortal.Web.Controllers
             if (schedule != null)
             {
                 var Acc = _customerAccountAppAppService.GetCustomerAccountByCNIC(app.CNICNo).Result;
-                ViewBag.Payment = Acc.Balance;
-
+                if (Acc != null)
+                {
+                    ViewBag.Payment = Acc.Balance;
+                }
                 ViewBag.LoanAmount = schedule.LoanAmount;
                 ViewBag.Markup = schedule.Markup;
 
