@@ -1409,6 +1409,7 @@ namespace TFCLPortal.Web.Controllers
             var scheduleInstallment = _scheduleInstallmentRepository.Get(firstUnpaidInstallment.Id);
             decimal actualPayment = 0;
             decimal paidAmount = payment.Amount;
+            decimal excessShortForLastPaidInstallment = 0;
             var Exists = _installmentPaymentAppService.GetInstallmentPaymentByApplicationId(payment.ApplicationId);
             if (Exists.Result != null || Exists.Result.Count >= 0)
             {
@@ -1420,7 +1421,6 @@ namespace TFCLPortal.Web.Controllers
 
                 if (lastPaidInstallment != null)
                 {
-                    decimal excessShortForLastPaidInstallment = 0;
                     if (lastPaidInstallment.InstNumber != "G*")
                     {
                         var lastPaidinstallmentPayment = Exists.Result.Where(x => x.NoOfInstallment == Int32.Parse(lastPaidInstallment.InstNumber)).ToList();
@@ -1487,6 +1487,25 @@ namespace TFCLPortal.Web.Controllers
                 if (actualPayment >= markupForThisInstallment)
                 {
                     markupForThisInstallment -= (totalPaidForThisInst - payment.Amount);
+
+                    if(excessShortForLastPaidInstallment>0)
+                    {
+                        Transaction transaction1 = new Transaction();
+                        transaction1.AmountWords = NumberToWords((int)excessShortForLastPaidInstallment);
+                        transaction1.Type = "Debit";
+                        transaction1.Details = "Markup Collection from Previous Balance Inst No # " + scheduleInstallment.InstNumber;
+                        transaction1.ModeOfPayment = payment.ModeOfPayment;
+                        transaction1.isAuthorized = true;
+                        transaction1.Fk_AccountId = acc.Id;
+                        transaction1.ApplicationId = payment.ApplicationId;
+                        transaction1.BalBefore = acc.Balance;
+                        transaction1.Amount = excessShortForLastPaidInstallment;
+                        transaction1.BalAfter = acc.Balance;
+                        var t1 = _transactionRepository.Insert(transaction1);
+                        var c1 = _customerAccountAppAppService.UpdateAccountBalance(acc.Id, transaction1.BalAfter);
+                        CurrentUnitOfWork.SaveChanges();
+
+                    }
 
                     Transaction transaction = new Transaction();
                     transaction.AmountWords = NumberToWords((int)markupForThisInstallment);
@@ -1583,25 +1602,25 @@ namespace TFCLPortal.Web.Controllers
                                     }
 
 
-                                    if(actualPayment>0)
-                                    {
-                                        var accupdate3 = _customerAccountAppAppService.GetCustomerAccountByApplicationId(payment.ApplicationId);
-                                        var transactions = new Transaction();
-                                        transactions.AmountWords = NumberToWords((int)amountToDeduct);
-                                        transactions.Type = "Debit";
-                                        transactions.Details = "Collection Inst No # " + scheduleInstallment.InstNumber;
-                                        transactions.ModeOfPayment = payment.ModeOfPayment;
-                                        transactions.isAuthorized = true;
-                                        transactions.ApplicationId = payment.ApplicationId;
-                                        transactions.Fk_AccountId = accupdate3.Id;
-                                        transactions.BalBefore = accupdate3.Balance;
-                                        transactions.Amount = actualPayment;
-                                        transactions.BalAfter = (transactions.BalBefore - actualPayment);
-                                        t = _transactionRepository.Insert(transactions);
-                                        c = _customerAccountAppAppService.UpdateAccountBalance(accupdate3.Id, transactions.BalAfter);
-                                        actualPayment -= actualPayment;
-                                        CurrentUnitOfWork.SaveChanges();
-                                    }
+                                    //if(actualPayment>0)
+                                    //{
+                                    //    var accupdate3 = _customerAccountAppAppService.GetCustomerAccountByApplicationId(payment.ApplicationId);
+                                    //    var transactions = new Transaction();
+                                    //    transactions.AmountWords = NumberToWords((int)amountToDeduct);
+                                    //    transactions.Type = "Debit";
+                                    //    transactions.Details = "Collection Inst No # " + scheduleInstallment.InstNumber;
+                                    //    transactions.ModeOfPayment = payment.ModeOfPayment;
+                                    //    transactions.isAuthorized = true;
+                                    //    transactions.ApplicationId = payment.ApplicationId;
+                                    //    transactions.Fk_AccountId = accupdate3.Id;
+                                    //    transactions.BalBefore = accupdate3.Balance;
+                                    //    transactions.Amount = actualPayment;
+                                    //    transactions.BalAfter = (transactions.BalBefore - actualPayment);
+                                    //    t = _transactionRepository.Insert(transactions);
+                                    //    c = _customerAccountAppAppService.UpdateAccountBalance(accupdate3.Id, transactions.BalAfter);
+                                    //    actualPayment -= actualPayment;
+                                    //    CurrentUnitOfWork.SaveChanges();
+                                    //}
                                   
                                 }
                             }
