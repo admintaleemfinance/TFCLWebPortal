@@ -862,7 +862,7 @@
                         </li>
                     }
 
-                    @if (User.Identity.Name == "nabeel"||User.Identity.Name=="admin")
+                    @if (IsGranted(PermissionNames.Pages_BM) || User.Identity.Name == "admin")
                     {
                         <li class="nav-item dropdown">
                             <a href="~/Accountant/AuthorizationInstallmentPayment" class="dropdown-toggle">
@@ -872,7 +872,10 @@
                                 <h6>Installment Collection Authorizations</h6>
                             </a>
                         </li>
+                    }
 
+                    @if (User.Identity.Name == "nabeel" || User.Identity.Name == "admin")
+                    {
 
                         <li class="nav-item dropdown">
                             <a href="~/Accountant/EarlySettlementAuthorizationList" class="dropdown-toggle">

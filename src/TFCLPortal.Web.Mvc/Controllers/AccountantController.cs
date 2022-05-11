@@ -1421,7 +1421,7 @@ namespace TFCLPortal.Web.Controllers
 
                 if (lastPaidInstallment != null)
                 {
-                    if (lastPaidInstallment.InstNumber != "G*")
+                    if (lastPaidInstallment.InstNumber != "G*" && lastPaidInstallment.InstNumber != null && lastPaidInstallment.InstNumber != "")
                     {
                         var lastPaidinstallmentPayment = Exists.Result.Where(x => x.NoOfInstallment == Int32.Parse(lastPaidInstallment.InstNumber)).ToList();
                         if (lastPaidinstallmentPayment.Count == 1)
@@ -1506,6 +1506,28 @@ namespace TFCLPortal.Web.Controllers
                         CurrentUnitOfWork.SaveChanges();
 
                     }
+
+                    if (excessShortForLastPaidInstallment < 0)
+                    {
+                        excessShortForLastPaidInstallment *= -1;
+
+                        Transaction transaction1 = new Transaction();
+                        transaction1.AmountWords = NumberToWords((int)excessShortForLastPaidInstallment);
+                        transaction1.Type = "Debit";
+                        transaction1.Details = "Previous Installment Deduction";
+                        transaction1.ModeOfPayment = payment.ModeOfPayment;
+                        transaction1.isAuthorized = true;
+                        transaction1.Fk_AccountId = acc.Id;
+                        transaction1.ApplicationId = payment.ApplicationId;
+                        transaction1.BalBefore = acc.Balance;
+                        transaction1.Amount = excessShortForLastPaidInstallment;
+                        transaction1.BalAfter = acc.Balance- excessShortForLastPaidInstallment;
+                        var t1 = _transactionRepository.Insert(transaction1);
+                        var c1 = _customerAccountAppAppService.UpdateAccountBalance(acc.Id, transaction1.BalAfter);
+                        CurrentUnitOfWork.SaveChanges();
+                    }
+
+                    acc = _customerAccountAppAppService.GetCustomerAccountByApplicationId(payment.ApplicationId);
 
                     Transaction transaction = new Transaction();
                     transaction.AmountWords = NumberToWords((int)markupForThisInstallment);
@@ -1653,6 +1675,27 @@ namespace TFCLPortal.Web.Controllers
                 }
                 else
                 {
+
+                    if (excessShortForLastPaidInstallment > 0)
+                    {
+                        Transaction transaction1 = new Transaction();
+                        transaction1.AmountWords = NumberToWords((int)excessShortForLastPaidInstallment);
+                        transaction1.Type = "Debit";
+                        transaction1.Details = "Markup Collection from Previous Balance Inst No # " + scheduleInstallment.InstNumber;
+                        transaction1.ModeOfPayment = payment.ModeOfPayment;
+                        transaction1.isAuthorized = true;
+                        transaction1.Fk_AccountId = acc.Id;
+                        transaction1.ApplicationId = payment.ApplicationId;
+                        transaction1.BalBefore = acc.Balance;
+                        transaction1.Amount = excessShortForLastPaidInstallment;
+                        transaction1.BalAfter = acc.Balance;
+                        var t1 = _transactionRepository.Insert(transaction1);
+                        var c1 = _customerAccountAppAppService.UpdateAccountBalance(acc.Id, transaction1.BalAfter);
+                        CurrentUnitOfWork.SaveChanges();
+
+                    }
+
+                    acc = _customerAccountAppAppService.GetCustomerAccountByApplicationId(payment.ApplicationId);
                     Transaction transaction = new Transaction();
                     transaction.AmountWords = NumberToWords((int)payment.Amount);
                     transaction.Type = "Debit";
